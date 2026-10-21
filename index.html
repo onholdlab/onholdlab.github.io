@@ -419,7 +419,11 @@ en:{h1:'onholdlab waiting space: the next creation is taking shape.',tag:'Ideas 
  petnote:'The small creature wandering along the bottom of the page is your own visitor. It lives only in your browser and nothing is uploaded. Drag it, toss it, or tap it.',
  ft:'Tool Twins',fd:'Check whether your skills and MCP tools compete for the same requests. It flags pairs with similar names or descriptions and estimates token use. Nothing is uploaded.'}};
 
-var NEW=[];
+var NEW=[
+ {u:'FvQ4e5jATzvNj8H45w3LYu',ic:'☎️',nw:1,tg:['game','zh / en','free'],
+  zh:['AI 客服求生記','你是什麼都知道的 AI，客戶不是。用專業、嗆辣、胡說八道三種風格，撐過每一通電話。'],
+  en:['AI Support Survival','You know everything. Your customers don\'t. Survive every call in three reply styles.']}
+];
 var GAMES=[];
 var TOOLS=[];
 var FACTS={zh:[],en:[]};
@@ -439,8 +443,9 @@ function render(){var t=T[L];document.documentElement.lang=L==='zh'?'zh-Hant':'e
  $('tools').innerHTML=TOOLS.map(function(x){return card(x,t)}).join('');
  $('facts').innerHTML=FACTS[L].map(function(f){return '<div class="fact"><b>'+f[0]+'</b><span>'+f[1]+'</span></div>'}).join('');
  var arch=CONFIG.showArchive;
- [$('hn').parentNode,$('newgames'),$('hg'),$('games'),$('ht'),$('tools'),$('hf').parentNode,$('foot')].forEach(function(n){n.hidden=!arch});
- $('slot').hidden=arch;
+ [$('hg'),$('games'),$('ht'),$('tools'),$('hf').parentNode,$('foot')].forEach(function(n){n.hidden=!arch});
+ [$('hn').parentNode,$('newgames')].forEach(function(n){n.hidden=!(arch||NEW.length)});
+ $('slot').hidden=arch||!!NEW.length;
  var cells=$('cd').children;for(var i=0;i<4;i++)cells[i].lastChild.textContent=t.units[i];
  document.querySelectorAll('#seg button').forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-l')===L?'true':'false')});
  caption();tick();fit();}
