@@ -24,7 +24,7 @@ window.PROJECTS = [
     "thumbnail": null,
     "url": "https://claude.ai/artifact/FvQ4e5jATzvNj8H45w3LYu",
     "type": "game",
-    "icon": "☎️",
+    "icon": ".",
     "section": "demo",
     "repo": null
   },
