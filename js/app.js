@@ -4,9 +4,7 @@ var CONFIG={
  // 每 7 天一輪的倒數起點（台灣時間）。第一版小說上線日確定後，改成那天的日期時間。
  updateAnchor:'2026-10-28T00:00:00+08:00',
  // false = 只顯示已公開上線的作品（工具雙胞胎）；true = 連同遊戲與文件的私人預覽卡片一起顯示
- showArchive:false,
- toolTwinsLive:'https://onholdlab.github.io/tool-twins/',
- toolTwinsRepo:'https://github.com/onholdlab/tool-twins'
+ showArchive:false
 };
 
 var L=(function(){try{var v=localStorage.getItem('olab-lang');if(v==='zh'||v==='en')return v}catch(e){}return /^zh/i.test(navigator.language||'zh')?'zh':'en'})();
@@ -20,8 +18,7 @@ zh:{h1:'onholdlab 等候空間：下一件作品，正在醞釀。',tag:'一個�
  hd:'完成品區',hds:'已離開等待',hdm:'試玩區',hdms:'還會修改',hl:'線上公開',hn:'新作',hns:'10/18 新增',hg:'更早的遊戲',ht:'工具與文件',hf:'幕後數字',
  open:'打開 →',newTag:'新',liveTag:'線上版',openLive:'開啟線上版 →',src:'原始碼', foot:'',
  slot:'下一件完成品的位置，還空著。',
- petnote:'在頁面底部走動的小生物是你專屬的訪客：它只存在你的瀏覽器裡，不會上傳任何資料。可以拖著它走、拋出去，或點一下。',
- ft:'工具雙胞胎',fd:'檢查你的 skills 和 MCP 工具會不會互相搶觸發，標出相似的名稱與描述，估算 token 用量。資料不會上傳。'},
+ petnote:'在頁面底部走動的小生物是你專屬的訪客：它只存在你的瀏覽器裡，不會上傳任何資料。可以拖著它走、拋出去，或點一下。'},
 en:{h1:'onholdlab waiting space: the next creation is taking shape.',tag:'Ideas on hold. Creations in progress.',
  lede:'Look around, try things out, or stay for the next update. The waiting room is what is happening now; the finished works are the things that already left the queue.',
  cap0:'The window is shut and the bell is still. Try ringing it.',cap1:'Ding. The window is open: Tool Twins is done.',capLink:'Walk to the window →',bell:'Ring the service bell',
@@ -31,31 +28,29 @@ en:{h1:'onholdlab waiting space: the next creation is taking shape.',tag:'Ideas 
  hd:'Finished works',hds:'out of the queue',hdm:'Demo',hdms:'still changing',hl:'Live now',hn:'New',hns:'added Oct 18',hg:'Earlier games',ht:'Tools and documents',hf:'Behind the numbers',
  open:'Open →',newTag:'new',liveTag:'live',openLive:'Open the live tool →',src:'Source', foot:'',
  slot:'Room for the next finished work. Still empty.',
- petnote:'The small creature wandering along the bottom of the page is your own visitor. It lives only in your browser and nothing is uploaded. Drag it, toss it, or tap it.',
- ft:'Tool Twins',fd:'Check whether your skills and MCP tools compete for the same requests. It flags pairs with similar names or descriptions and estimates token use. Nothing is uploaded.'}};
+ petnote:'The small creature wandering along the bottom of the page is your own visitor. It lives only in your browser and nothing is uploaded. Drag it, toss it, or tap it.'}};
 
-var NEW=[];
-/* 試玩區：還會繼續修改的遊戲。方格只放圖示和名字，不放簡介。新增一個遊戲就加一行。 */
-var DEMO=[
- {u:'FvQ4e5jATzvNj8H45w3LYu',ic:'☎️',zh:'AI 客服求生記',en:'AI Support Survival'}
-];
-var GAMES=[];
-var TOOLS=[];
+/* 作品資料在 data/projects.js；section 決定放在哪一區：live（線上公開大卡）、demo（試玩區方格）、new、games、tools */
+var P=window.PROJECTS;
+if(!Array.isArray(P)){console.warn('onholdlab: data/projects.js 沒有載入，作品區會是空的');P=[]}
+function pick(s){return P.filter(function(x){return x.section===s})}
+var LIVE=pick('live')[0],NEW=pick('new'),DEMO=pick('demo'),GAMES=pick('games'),TOOLS=pick('tools');
 var FACTS={zh:[],en:[]};
 
 function $(id){return document.getElementById(id)}
-function card(x,t,isNew){return '<a class="card" target="_blank" rel="noopener" href="https://claude.ai/artifact/'+x.u+'"><div class="th">'+(x.c?'<img src="covers/'+x.c+'.jpg" alt="" loading="lazy" width="420" height="333">':'<span class="ic" aria-hidden="true">'+x.ic+'</span>')+((isNew||x.nw)?'<span class="new">'+t.newTag+'</span>':'')+'</div><div class="bd"><h3>'+x[L][0]+'</h3><p>'+x[L][1]+'</p><div class="tags">'+x.tg.map(function(g){return '<span>'+g+'</span>'}).join('')+'</div><span class="go">'+t.open+'</span></div></a>'}
+function tags(x){return '<div class="tags">'+x.tags.map(function(g){return '<span>'+g+'</span>'}).join('')+'</div>'}
+function card(x,t,isNew){return '<a class="card" target="_blank" rel="noopener" href="'+x.url+'"><div class="th">'+(x.thumbnail?'<img src="'+x.thumbnail+'" alt="" loading="lazy" width="420" height="333">':'<span class="ic" aria-hidden="true">'+x.icon+'</span>')+(isNew?'<span class="new">'+t.newTag+'</span>':'')+'</div><div class="bd"><h3>'+x.title[L]+'</h3><p>'+x.tagline[L]+'</p>'+tags(x)+'<span class="go">'+t.open+'</span></div></a>'}
 
 var open=false;
-function caption(){var t=T[L];$('capt').textContent=open?t.cap1:t.cap0;var a=$('caplink');a.hidden=!open;a.textContent=t.capLink;a.href=CONFIG.toolTwinsLive;
+function caption(){var t=T[L];$('capt').textContent=open?t.cap1:t.cap0;var a=$('caplink');a.hidden=!open||!LIVE;a.textContent=t.capLink;if(LIVE)a.href=LIVE.url;
  var b=$('bell');b.setAttribute('aria-label',t.bell);b.setAttribute('aria-pressed',open?'true':'false')}
 
 function render(){var t=T[L];document.documentElement.lang=L==='zh'?'zh-Hant':'en';
  ['h1','tag','lede','hw','hws','cdl','cdn','nvp','nvt','nvd','nxl','nxt','nxd','nxa','hd','hds','hdm','hdms','hl','hn','hns','hg','ht','hf','foot','petnote','slot'].forEach(function(k){$(k).textContent=t[k]});
- $('feature').innerHTML='<div class="fi" aria-hidden="true">👯</div><div class="fb"><h3>'+t.ft+' <span class="live">'+t.liveTag+'</span></h3><p>'+t.fd+'</p><div class="tags"><span>dev</span><span>mcp</span><span>skills</span></div><div class="btns"><a class="btn p" target="_blank" rel="noopener" href="'+CONFIG.toolTwinsLive+'">'+t.openLive+'</a><a class="btn" target="_blank" rel="noopener" href="'+CONFIG.toolTwinsRepo+'">'+t.src+'</a></div></div>';
+ $('feature').innerHTML=LIVE?'<div class="fi" aria-hidden="true">'+LIVE.icon+'</div><div class="fb"><h3>'+LIVE.title[L]+' <span class="live">'+t.liveTag+'</span></h3><p>'+LIVE.tagline[L]+'</p>'+tags(LIVE)+'<div class="btns"><a class="btn p" target="_blank" rel="noopener" href="'+LIVE.url+'">'+t.openLive+'</a>'+(LIVE.repo?'<a class="btn" target="_blank" rel="noopener" href="'+LIVE.repo+'">'+t.src+'</a>':'')+'</div></div>':'';
  $('newgames').innerHTML=NEW.map(function(x){return card(x,t,true)}).join('');
  $('games').innerHTML=GAMES.map(function(x){return card(x,t)}).join('');
- $('demo').innerHTML=DEMO.map(function(x){return '<a class="tile" target="_blank" rel="noopener" href="https://claude.ai/artifact/'+x.u+'" title="'+x[L]+'"><span class="ic" aria-hidden="true">'+x.ic+'</span><b>'+x[L]+'</b></a>'}).join('');
+ $('demo').innerHTML=DEMO.map(function(x){return '<a class="tile" target="_blank" rel="noopener" href="'+x.url+'" title="'+x.title[L]+'"><span class="ic" aria-hidden="true">'+x.icon+'</span><b>'+x.title[L]+'</b></a>'}).join('');
  $('tools').innerHTML=TOOLS.map(function(x){return card(x,t)}).join('');
  $('facts').innerHTML=FACTS[L].map(function(f){return '<div class="fact"><b>'+f[0]+'</b><span>'+f[1]+'</span></div>'}).join('');
  var arch=CONFIG.showArchive;
