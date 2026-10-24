@@ -37,12 +37,12 @@ onholdlab 等候空間：作品集首頁，放在 GitHub Pages。純靜態網站
 | 欄位 | 說明 |
 |---|---|
 | `id` | 唯一、小寫、用 `-` 連接。 |
-| `title` / `tagline` | 中英各一。試玩區方格只顯示 `title`。 |
+| `title` / `tagline` | 中英各一。試玩區方格顯示 `icon` 與 `title`，不顯示 `tagline`。 |
 | `tags` | 最多 3 個。 |
-| `thumbnail` | 縮圖路徑，相對於網站根目錄、不以 `/` 開頭；沒有就填 `null`，改顯示 `icon`。**大小寫要和檔名完全一致**：Windows 不分大小寫，GitHub Pages 分。 |
+| `thumbnail` | 縮圖路徑，只用在 `new`、`games`、`tools` 的卡片（`live` 大卡和 `demo` 方格不用縮圖）。路徑相對於網站根目錄、不以 `/` 開頭；沒有就填 `null`，卡片改顯示 `icon`。**大小寫要和檔名完全一致**：Windows 不分大小寫，GitHub Pages 分。 |
 | `url` | 作品網址，必填，不能是 `null`。 |
 | `type` | `game`（直接可玩）或 `tool`（之後會先開介紹卡；目前還沒有這個行為）。 |
-| `icon` | 一個 emoji，沒有縮圖時顯示。 |
+| `icon` | 一個 emoji。`live` 大卡和 `demo` 方格一律顯示它；其他區沒有縮圖時才顯示。 |
 | `section` | 放在哪一區：`live`（線上公開大卡，只顯示第一筆）、`demo`（試玩區方格）、`new`（新作）、`games`（更早的遊戲）、`tools`（工具與文件）。 |
 | `repo` | 原始碼網址，只有 `live` 大卡會顯示「原始碼」按鈕；沒有就填 `null`。 |
 
