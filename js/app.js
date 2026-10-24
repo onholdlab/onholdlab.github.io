@@ -32,14 +32,15 @@ en:{h1:'onholdlab waiting space: the next creation is taking shape.',tag:'Ideas 
 
 /* 作品資料在 data/projects.js；section 決定放在哪一區：live（線上公開大卡）、demo（試玩區方格）、new、games、tools */
 var P=window.PROJECTS;
-if(!Array.isArray(P)){console.warn('onholdlab: data/projects.js 沒有載入，作品區會是空的');P=[]}
+if(!Array.isArray(P)){console.warn('onholdlab: data/projects.js 沒有載入或有語法錯誤（看上一則 SyntaxError 的行號），作品區會是空的');P=[]}
 function pick(s){return P.filter(function(x){return x.section===s})}
 var LIVE=pick('live')[0],NEW=pick('new'),DEMO=pick('demo'),GAMES=pick('games'),TOOLS=pick('tools');
 var FACTS={zh:[],en:[]};
 
 function $(id){return document.getElementById(id)}
-function tags(x){return '<div class="tags">'+x.tags.map(function(g){return '<span>'+g+'</span>'}).join('')+'</div>'}
-function card(x,t,isNew){return '<a class="card" target="_blank" rel="noopener" href="'+x.url+'"><div class="th">'+(x.thumbnail?'<img src="'+x.thumbnail+'" alt="" loading="lazy" width="420" height="333">':'<span class="ic" aria-hidden="true">'+x.icon+'</span>')+(isNew?'<span class="new">'+t.newTag+'</span>':'')+'</div><div class="bd"><h3>'+x.title[L]+'</h3><p>'+x.tagline[L]+'</p>'+tags(x)+'<span class="go">'+t.open+'</span></div></a>'}
+/* 少填 tags 或 tagline 時當成空的，避免 render() 中途停下讓倒數、服務鈴說明一起壞掉 */
+function tags(x){return '<div class="tags">'+(x.tags||[]).map(function(g){return '<span>'+g+'</span>'}).join('')+'</div>'}
+function card(x,t,isNew){return '<a class="card" target="_blank" rel="noopener" href="'+x.url+'"><div class="th">'+(x.thumbnail?'<img src="'+x.thumbnail+'" alt="" loading="lazy" width="420" height="333">':'<span class="ic" aria-hidden="true">'+x.icon+'</span>')+(isNew?'<span class="new">'+t.newTag+'</span>':'')+'</div><div class="bd"><h3>'+x.title[L]+'</h3><p>'+((x.tagline||{})[L]||'')+'</p>'+tags(x)+'<span class="go">'+t.open+'</span></div></a>'}
 
 var open=false;
 function caption(){var t=T[L];$('capt').textContent=open?t.cap1:t.cap0;var a=$('caplink');a.hidden=!open||!LIVE;a.textContent=t.capLink;if(LIVE)a.href=LIVE.url;
@@ -47,7 +48,7 @@ function caption(){var t=T[L];$('capt').textContent=open?t.cap1:t.cap0;var a=$('
 
 function render(){var t=T[L];document.documentElement.lang=L==='zh'?'zh-Hant':'en';
  ['h1','tag','lede','hw','hws','cdl','cdn','nvp','nvt','nvd','nxl','nxt','nxd','nxa','hd','hds','hdm','hdms','hl','hn','hns','hg','ht','hf','foot','petnote','slot'].forEach(function(k){$(k).textContent=t[k]});
- $('feature').innerHTML=LIVE?'<div class="fi" aria-hidden="true">'+LIVE.icon+'</div><div class="fb"><h3>'+LIVE.title[L]+' <span class="live">'+t.liveTag+'</span></h3><p>'+LIVE.tagline[L]+'</p>'+tags(LIVE)+'<div class="btns"><a class="btn p" target="_blank" rel="noopener" href="'+LIVE.url+'">'+t.openLive+'</a>'+(LIVE.repo?'<a class="btn" target="_blank" rel="noopener" href="'+LIVE.repo+'">'+t.src+'</a>':'')+'</div></div>':'';
+ $('feature').innerHTML=LIVE?'<div class="fi" aria-hidden="true">'+LIVE.icon+'</div><div class="fb"><h3>'+LIVE.title[L]+' <span class="live">'+t.liveTag+'</span></h3><p>'+((LIVE.tagline||{})[L]||'')+'</p>'+tags(LIVE)+'<div class="btns"><a class="btn p" target="_blank" rel="noopener" href="'+LIVE.url+'">'+t.openLive+'</a>'+(LIVE.repo?'<a class="btn" target="_blank" rel="noopener" href="'+LIVE.repo+'">'+t.src+'</a>':'')+'</div></div>':'';
  $('newgames').innerHTML=NEW.map(function(x){return card(x,t,true)}).join('');
  $('games').innerHTML=GAMES.map(function(x){return card(x,t)}).join('');
  $('demo').innerHTML=DEMO.map(function(x){return '<a class="tile" target="_blank" rel="noopener" href="'+x.url+'" title="'+x.title[L]+'"><span class="ic" aria-hidden="true">'+x.icon+'</span><b>'+x.title[L]+'</b></a>'}).join('');

@@ -32,6 +32,8 @@ onholdlab 等候空間：作品集首頁，放在 GitHub Pages。純靜態網站
 }
 ```
 
+每個欄位都要寫。沒有內容時，文字寫 `""`、清單寫 `[]`、網址或路徑寫 `null`。
+
 | 欄位 | 說明 |
 |---|---|
 | `id` | 唯一、小寫、用 `-` 連接。 |
@@ -45,6 +47,8 @@ onholdlab 等候空間：作品集首頁，放在 GitHub Pages。純靜態網站
 | `repo` | 原始碼網址，只有 `live` 大卡會顯示「原始碼」按鈕；沒有就填 `null`。 |
 
 `games` 與 `tools` 兩區只在 `js/app.js` 的 `CONFIG.showArchive` 為 `true` 時顯示。
+
+改完後作品區變成空白，通常是 `projects.js` 有語法錯誤（例如兩筆之間漏了逗號）。打開瀏覽器的開發者工具（F12）→ Console，看 `SyntaxError` 那一行指出的行號。
 
 ## 本機預覽
 
