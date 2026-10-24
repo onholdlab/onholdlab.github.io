@@ -27,5 +27,41 @@ window.PROJECTS = [
     "icon": "☎️",
     "section": "demo",
     "repo": null
+  },
+     {
+    "id": "dodge-dog",
+    "title": { "zh": "閃身犬", "en": "Dodge Dog" },
+    "tagline": { "zh": "一隻會閃身步的狗，被圍攻時反而變強", "en": "A dodging dog that grows stronger under pressure." },
+    "tags": [],
+    "thumbnail": null,
+    "url": "https://onholdlab.github.io/dodge-dog/",
+    "type": "game",
+    "icon": "🐶",
+    "section": "new",
+    "repo": null
+  },
+  {
+    "id": "clapping-cat",
+    "title": { "zh": "拍手貓", "en": "Clapping Cat" },
+    "tagline": { "zh": "說「放颱風假」，牠就拍手", "en": "Say the magic words, and the cat claps." },
+    "tags": [],
+    "thumbnail": null,
+    "url": "https://onholdlab.github.io/clapping-cat/",
+    "type": "game",
+    "icon": "🐱",
+    "section": "new",
+    "repo": null
+  },
+  {
+    "id": "crossroad-survival",
+    "title": { "zh": "十字路口求生", "en": "Crossroad Survival" },
+    "tagline": { "zh": "十字路口，所有路人都想撞你。", "en": "Everyone at the crossing is out to bump into you." },
+    "tags": [],
+    "thumbnail": null,
+    "url": "https://onholdlab.github.io/crossroadhit/",
+    "type": "game",
+    "icon": "🚦",
+    "section": "new",
+    "repo": null
   }
 ];
