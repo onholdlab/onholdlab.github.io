@@ -267,7 +267,14 @@ const NEWS=[
  ['拍手貓','說出那句話,牠就拍手。','遊戲','https://onholdlab.github.io/clapping-cat/'],
  ['閃身犬','被圍攻時反而變強的狗。','遊戲','https://onholdlab.github.io/dodge-dog/'],
  ['工具雙胞胎','檢查你的 skills 和 MCP 工具會不會互搶觸發。','工具','https://onholdlab.github.io/tool-twins/']];
-$('news').innerHTML=NEWS.map((n,i)=>`<li><a href="${n[3]}" target="_blank" rel="noopener"><span class="k">${String(NEWS.length-i).padStart(2,'0')}</span><span class="t">${n[0]}<small>${n[1]}</small></span><span class="ty">${n[2]}</span></a></li>`).join('')+'<li class="old">↓ 越往下越舊</li>';
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function drawNews(list){
+ $('news').innerHTML=list.map((n,i)=>`<li><a href="${esc(n[3])}" target="_blank" rel="noopener"><span class="k">${String(list.length-i).padStart(2,'0')}</span><span class="t">${esc(n[0])}${n[1]?`<small>${esc(n[1])}</small>`:''}</span><span class="ty">${esc(n[2])}</span></a></li>`).join('')+'<li class="old">↓ 越往下越舊</li>';
+ if(list[0]){$('latest').textContent=list[0][0];$('latest').href=list[0][3]}}
+drawNews(NEWS);
+/* works.json 由 GitHub Action 自動產生:所有開了 Pages 的公開 repo。拿不到就保留上面的備用清單。 */
+fetch('works.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(d=>{
+ if(d&&Array.isArray(d.works)&&d.works.length)drawNews(d.works.map(w=>[w.title,w.blurb,w.type,w.url]))}).catch(()=>{});
 
 /* ---------- 窗口與鈴 ---------- */
 let called=store.get('ohl_num',41),winT=0;
