@@ -171,6 +171,21 @@ button{font:inherit;color:inherit}
 <style>body{margin:0}[hidden]{display:none!important}</style>
 <script data-goatcounter="https://onholdlab.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
+<style id="inapp-keep1">
+/* Threads / IG 內建瀏覽器:頁面最少比畫面高 2px,並保持捲到 1px 以上;
+   App 就不會在頂端把往下拖當成「關閉瀏覽器面板」。正常上下捲動不受影響。 */
+html{min-height:calc(100% + 2px);overscroll-behavior-y:none}
+body{min-height:calc(100vh + 2px)}
+</style>
+<script id="inapp-keep1-js">
+(function(){
+  function keep(){ if(window.scrollY<1){ try{window.scrollTo({top:1,behavior:'instant'});}catch(e){window.scrollTo(0,1);} } }
+  addEventListener('load',keep); addEventListener('resize',keep);
+  addEventListener('scroll',function(){ if(window.scrollY<1) requestAnimationFrame(keep); },{passive:true});
+  document.addEventListener('touchstart',keep,{passive:true,capture:true});
+  if(document.readyState!=='loading') keep(); else document.addEventListener('DOMContentLoaded',keep);
+})();
+</script>
 </head>
 <body>
 <div class="wrap">
