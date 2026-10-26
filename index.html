@@ -4,170 +4,376 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>onholdlab 等候空間</title>
-<meta name="description" content="onholdlab 等候空間：下一件作品，正在醞釀。一個人，用 AI 把想法做成作品。">
-<meta name="color-scheme" content="light dark">
+<meta name="description" content="onholdlab 等候空間：一個人用 AI 把想法做成作品的地方。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap"></noscript>
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;900&family=Poppins:wght@500;600;700&display=swap">
+<style>
+/* 版面:頂部窗口+鈴 → 拱形舞台(桌寵打廣告)→ 最新資訊 → 三欄(提問/列表/展示),手機單欄。
+   三個方向各自是固定的一個世界,不跟隨系統深淺色;每個方向的顏色都寫在自己的 token 裡。 */
+:root{
+  --bg:#d7e7df;--ink:#12302a;--muted:#3d5a52;--panel:#eef5f1;--line:#12302a;--accent:#c2281d;--on-accent:#ffffff;
+  --stage-bg:#bcd8cb;--ad-bg:#ffe45c;--ad-ink:#1a1a1a;--ad-bar:#c2281d;--art:#12302a;--hit:#c2281d;
+  --cb:#f4a259;--cd:#e08a2e;--cbelly:#fff1dc;--cstroke:none;
+  --f-disp:"Noto Sans TC","Noto Sans CJK TC",system-ui,sans-serif;
+  --f-body:"Noto Sans TC","Noto Sans CJK TC",system-ui,sans-serif;
+  --f-num:"Inter","Noto Sans TC",system-ui,sans-serif;
+  color-scheme:light;
+}
+/* A 叫號候診:醫院候診室的薄荷綠磁磚、紅色 LED 叫號、黃色俗豔廣告 */
+:root[data-d="a"]{}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--f-body);overflow-x:hidden}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 56px;display:grid;gap:22px;position:relative}
+
+/* ---------- 頂部:品牌、窗口、鈴 ---------- */
+.top{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:12px}
+.brand{font:700 15px/1.2 var(--f-num);letter-spacing:.02em;align-self:start;padding-top:6px}
+.brand small{display:block;font:500 12px/1.4 var(--f-body);color:var(--muted);letter-spacing:0}
+.winbox{display:flex;align-items:flex-end;gap:10px}
+.win{position:relative;width:180px;height:92px;overflow:hidden;border:3px solid var(--line);background:var(--panel);display:grid;place-items:center;text-align:center}
+.win .in{display:grid;gap:2px;padding:6px}
+.win .lab{font:500 12px/1.2 var(--f-body);color:var(--muted)}
+.win .num{display:none}
+.win a{font:700 15px/1.3 var(--f-disp);text-decoration:none;min-height:44px;display:grid;place-items:center;padding:0 8px}
+.win a:hover{text-decoration:underline}
+.shutter{position:absolute;inset:0;transition:transform .55s cubic-bezier(.3,.7,.2,1);background:repeating-linear-gradient(var(--line) 0 2px,var(--panel) 2px 11px);opacity:.92}
+.win.open .shutter{transform:translateY(-100%)}
+.sh-l{position:absolute;right:8px;bottom:6px;font:700 12px/1 var(--f-body);background:var(--panel);color:var(--ink);padding:4px 7px}
+.bell{width:56px;height:56px;border:0;background:none;cursor:pointer;padding:0;display:grid;place-items:end center}
+.bell svg{width:52px;height:46px;overflow:visible}
+.bell.ring svg{animation:ring .5s ease-out}
+@keyframes ring{20%{transform:rotate(-14deg)}45%{transform:rotate(11deg)}70%{transform:rotate(-6deg)}}
+
+/* ---------- 舞台 ---------- */
+.stage{position:relative;height:420px;background:var(--stage-bg);overflow:hidden;isolation:isolate;touch-action:manipulation}
+.deco{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.deco>*{display:none}
+.hud{position:absolute;right:14px;top:12px;font:800 28px/1 var(--f-num);font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:8px;z-index:3}
+.hud small{font:500 12px/1.2 var(--f-body)}
+.hint{position:absolute;left:16px;top:14px;font:500 14px/1.3 var(--f-body);color:var(--muted);z-index:3;max-width:60%}
+.ad{position:absolute;display:grid;grid-template-rows:22px 1fr;width:220px;height:118px;border:2px solid var(--ad-ink);background:var(--ad-bg);color:var(--ad-ink);padding:0;cursor:pointer;text-align:left;z-index:2;box-shadow:5px 5px 0 var(--ad-ink);transition:opacity .25s}
+.ad .bar{background:var(--ad-bar);display:flex;justify-content:flex-end;align-items:center;padding:0 6px;gap:5px}
+.ad .bar i{width:9px;height:9px;border-radius:50%;background:var(--ad-bg);display:block}
+.ad b{display:block;padding:8px 12px;font:900 18px/1.25 var(--f-disp);text-wrap:balance}
+.ad.tgt{outline:3px dashed var(--hit);outline-offset:4px}
+.ad.pop{animation:pop .35s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+.ad.hit{background:transparent;box-shadow:none;color:transparent}
+.ad.hit .bar{background:transparent;border-bottom:2px solid var(--ad-ink)}
+.ad.hit .bar i{background:transparent;border:2px solid var(--ad-ink)}
+.cat{position:absolute;left:0;top:0;width:96px;height:106px;z-index:4;pointer-events:none;will-change:transform}
+.cat .face{transform-origin:48px 60px}
+.cat svg{display:block;overflow:visible;width:96px;height:106px}
+.cat svg *{transform-box:view-box}
+.cat .tail{transform-origin:28px 80px;animation:tail .6s infinite ease-in-out alternate}
+.cat.run .bob{animation:bob .26s infinite ease-in-out}
+.cat.run .legf{transform-origin:60px 90px;animation:leg .26s infinite}
+.cat.run .legb{transform-origin:38px 90px;animation:leg .26s infinite reverse}
+.cat .arm{transform-origin:65px 64px}
+.cat.punch .arm{animation:punch .42s forwards cubic-bezier(.2,.8,.2,1)}
+.cat.punch .bob{animation:jump .42s forwards}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-8px) rotate(4deg)}}
+@keyframes leg{0%,100%{transform:rotate(28deg)}50%{transform:rotate(-28deg)}}
+@keyframes tail{from{transform:rotate(-14deg)}to{transform:rotate(14deg)}}
+@keyframes punch{30%{transform:rotate(35deg)}100%{transform:rotate(-170deg)}}
+@keyframes jump{30%{transform:translateY(4px)}100%{transform:translateY(-22px)}}
+.fx{position:absolute;inset:0;pointer-events:none;z-index:5}
+.ringfx{position:absolute;width:40px;height:40px;margin:-20px 0 0 -20px;border:5px solid var(--hit);border-radius:50%}
+.spark{position:absolute;width:10px;height:10px;margin:-5px 0 0 -5px;background:var(--hit);border:2px solid var(--ad-ink)}
+.ghost{position:absolute;border:2px solid var(--art);pointer-events:none;z-index:20;transform-origin:0 0}
+.ghost::before{content:"";position:absolute;left:0;right:0;top:20px;border-top:2px solid var(--art)}
+
+/* ---------- 最新資訊 + 三欄 ---------- */
+.news-h{margin:0;text-align:center;font:900 26px/1.2 var(--f-disp);text-wrap:balance;padding-bottom:10px;border-bottom:2px solid var(--line)}
+.low{display:grid;grid-template-columns:1fr 1.25fr 1fr;grid-template-areas:"ask news show";gap:28px;align-items:start}
+.low>*{min-width:0}
+.ask{grid-area:ask;display:grid;gap:12px}
+.news{grid-area:news;list-style:none;margin:0;padding:0;display:grid}
+.show{grid-area:show;margin:0;display:grid;gap:6px}
+.h3{font:700 14px/1.3 var(--f-body);color:var(--muted);margin:0}
+.news li a{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;min-height:56px;padding:8px 2px;text-decoration:none;border-bottom:1px solid var(--line)}
+.news li a:hover .t{text-decoration:underline}
+.news .k{font:700 12px/1 var(--f-num);font-variant-numeric:tabular-nums;color:var(--muted)}
+.news .t{font:700 17px/1.3 var(--f-disp)}
+.news .t small{display:block;font:400 13px/1.4 var(--f-body);color:var(--muted)}
+.news .ty{font:500 12px/1 var(--f-body);border:1px solid var(--line);padding:4px 7px}
+.news .old{font:500 12px/1.4 var(--f-body);color:var(--muted);text-align:center;padding-top:8px;border:0}
+.faq{display:flex;flex-wrap:wrap;gap:8px}
+.faq button{min-height:44px;padding:8px 12px;border:2px solid var(--line);background:var(--panel);cursor:pointer;font:500 14px/1.3 var(--f-body)}
+.faq button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.ans{min-height:52px;font:400 15px/1.6 var(--f-body);margin:0}
+.qrow{display:flex;align-items:center;gap:8px;border-bottom:2px solid var(--line)}
+.qrow input{flex:1;min-width:0;min-height:44px;border:0;background:transparent;font:500 16px/1.4 var(--f-body);color:var(--ink);padding:0}
+.qrow input::placeholder{color:var(--muted);opacity:1}
+.qrow input:focus{outline:none}
+.qrow:focus-within{border-bottom-color:var(--accent)}
+.qform{display:grid;gap:10px}
+.qrow button{min-height:44px;min-width:56px;border:0;cursor:pointer;font:700 15px/1 var(--f-body);background:var(--accent);color:var(--on-accent);padding:0 14px}
+.qrow button:disabled{opacity:.6;cursor:wait}
+.qrow.sub{border-bottom-width:1px}
+.qrow.sub input{font-size:14px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.qnote a{text-underline-offset:3px}
+.qnote{font:400 14px/1.5 var(--f-body);color:var(--muted);min-height:21px;margin:0}
+.qnote.ok{color:var(--ink);font-weight:700}
+.contact{display:flex;flex-wrap:wrap;gap:6px 14px}
+.contact a{min-height:44px;display:inline-grid;place-items:center;font:700 14px/1 var(--f-num);text-underline-offset:4px}
+.show svg{width:100%;height:auto;display:block;border:2px solid var(--line);background:var(--panel);aspect-ratio:3/2;max-width:100%}
+.artw{position:relative}
+.empty{position:absolute;inset:0;display:grid;place-items:center;margin:0;padding:16px;text-align:center;font:500 14px/1.5 var(--f-body);color:var(--muted);pointer-events:none}
+.show figcaption{font:400 13px/1.4 var(--f-body);color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.show figcaption b{font:800 16px/1 var(--f-num);font-variant-numeric:tabular-nums;color:var(--ink)}
+.show button{border:0;background:none;text-decoration:underline;cursor:pointer;min-height:44px;color:var(--muted);font-size:13px;padding:0}
+
+/* ================= A 叫號候診 ================= */
+[data-d="a"] .stage{border-radius:46% 46% 0 0/18% 18% 0 0;border:3px solid var(--line);border-bottom:0;
+  background:linear-gradient(transparent 76%,#9fbfb2 76%),
+    repeating-linear-gradient(90deg,transparent 0 47px,rgba(18,48,42,.13) 47px 49px),
+    repeating-linear-gradient(transparent 0 47px,rgba(18,48,42,.13) 47px 49px),var(--stage-bg)}
+[data-d="a"] .deco .a{display:block;position:absolute;left:0;right:0;bottom:0;height:24%;
+  background:radial-gradient(circle at 20% 30%,#5f7d72 1.5px,transparent 2px) 0 0/23px 19px,radial-gradient(circle at 60% 70%,#e9f2ee 1.5px,transparent 2px) 0 0/31px 27px,radial-gradient(circle at 40% 50%,#c2281d 1.2px,transparent 1.8px) 0 0/43px 37px}
+[data-d="a"] .win{height:118px;background:#151a18;border-color:#151a18;border-radius:6px;box-shadow:0 0 0 4px #9aa8a2}
+[data-d="a"] .win .lab{color:#ff9d93}
+[data-d="a"] .win a{color:#ffb4ac}
+[data-d="a"] .win .num{display:block;font:800 40px/1 var(--f-num);font-variant-numeric:tabular-nums;color:#ff3b2f;letter-spacing:.06em;
+  -webkit-mask:radial-gradient(circle,#000 58%,transparent 62%) 0 0/4px 4px;mask:radial-gradient(circle,#000 58%,transparent 62%) 0 0/4px 4px;text-shadow:0 0 10px #ff3b2f}
+[data-d="a"] .shutter{background:repeating-linear-gradient(#2b302e 0 2px,#4a524f 2px 10px)}
+[data-d="a"] .news-h{font-weight:900;letter-spacing:.04em}
+[data-d="a"] .hud{color:var(--accent);top:30px;right:34px}
+[data-d="a"] .hint{top:30px;left:34px}
+[data-d="a"] .shutter{display:none}
+[data-d="a"] .win.blink .num{animation:blink .18s steps(2) 4}
+@keyframes blink{50%{opacity:.15}}
+[data-d="a"] .ad{box-shadow:5px 5px 0 #12302a}
+[data-d="a"] .ad:nth-child(3n+2){--ad-bg:#ff7a59}
+[data-d="a"] .ad:nth-child(3n){--ad-bg:#ffffff;--ad-bar:#1f6fd6}
+
+@media (max-width:760px){
+  .top{grid-template-columns:1fr auto}
+  .brand{grid-column:1/-1}
+  .winbox{grid-column:1/-1;justify-self:center}
+  .stage{height:330px}
+  .low{grid-template-columns:1fr;grid-template-areas:"news" "show" "ask";gap:26px}
+  .ad{width:calc(50% - 20px);height:92px;grid-template-rows:18px 1fr}
+  .ad b{font-size:15px;padding:5px 8px}
+  .hud{font-size:22px}
+  .cat,.cat svg{width:76px;height:84px}
+  .news-h{font-size:22px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+<style>body{margin:0}[hidden]{display:none!important}</style>
 </head>
 <body>
 <div class="wrap">
- <div class="top">
-  <p class="lede" id="lede"></p>
-  <div class="seg" id="seg" role="group" aria-label="Language"><button type="button" data-l="zh">繁中</button><button type="button" data-l="en">EN</button></div>
- </div>
- <h1 class="sr" id="h1"></h1>
- <p class="sr" id="tag"></p>
-
- <div class="stage" id="stage">
-  <div class="stage-in">
-  <svg id="scene" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid slice" focusable="false" aria-hidden="true">
-   <defs>
-    <linearGradient id="gw" gradientUnits="userSpaceOnUse" x1="0" y1="-40" x2="0" y2="270"><stop offset="0" style="stop-color:var(--s-wall-a)"/><stop offset="1" style="stop-color:var(--s-wall-b)"/></linearGradient>
-    <linearGradient id="gf" gradientUnits="userSpaceOnUse" x1="0" y1="262" x2="0" y2="430"><stop offset="0" style="stop-color:var(--s-floor-a)"/><stop offset="1" style="stop-color:var(--s-floor-b)"/></linearGradient>
-    <radialGradient id="gl" cx=".5" cy=".5" r=".5"><stop offset="0" style="stop-color:var(--s-glow);stop-opacity:.6"/><stop offset="1" style="stop-color:var(--s-glow);stop-opacity:0"/></radialGradient>
-    <radialGradient id="gv" cx=".5" cy=".5" r=".72"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" style="stop-opacity:var(--s-vig)"/></radialGradient>
-    <clipPath id="wclip"><rect x="334" y="70" width="152" height="124" rx="4"/></clipPath>
-   </defs>
-   <g id="world">
-    <!-- back wall + reserved empty space -->
-    <g class="ly" style="--d:3">
-     <rect x="-3000" y="-3000" width="9000" height="3270" fill="url(#gw)"/>
-     <path class="fl" opacity=".18" d="M110 -3000V270M230 -3000V270M550 -3000V270M640 -3000V270M760 -3000V270M-10 -3000V270"/>
-     <rect x="524" y="74" width="92" height="120" rx="4" fill="none" stroke="var(--s-line)" stroke-width="1.5" stroke-dasharray="4 7" opacity=".4"/>
-    </g>
-    <!-- floor -->
-    <g class="ly" style="--d:5">
-     <rect x="-3000" y="262" width="9000" height="3000" fill="url(#gf)"/>
-     <path class="fl" opacity=".22" d="M320 262L-5832 1800M320 262L-4074 1800M320 262L-2518 1800M320 262L-1526 1800M320 262L-595 1800M320 262L1235 1800M320 262L2166 1800M320 262L3158 1800M320 262L4714 1800M320 262L6472 1800"/>
-     <path class="fl" opacity=".14" d="M-3000 292H6000M-3000 328H6000M-3000 376H6000M-3000 440H6000M-3000 520H6000M-3000 630H6000M-3000 780H6000M-3000 960H6000"/>
-    </g>
-    <!-- window, counter -->
-    <g class="ly" style="--d:7">
-     <ellipse class="glowhalo" cx="410" cy="140" rx="150" ry="110" fill="url(#gl)"/>
-     <rect x="326" y="62" width="168" height="140" rx="8" style="fill:var(--s-frame)"/>
-     <rect x="334" y="70" width="152" height="124" rx="4" style="fill:var(--s-glow)"/>
-     <rect x="368" y="108" width="44" height="58" rx="6" style="fill:var(--s-f2)" opacity=".9"/>
-     <rect x="392" y="118" width="44" height="58" rx="6" style="fill:var(--s-f1)" opacity=".9"/>
-     <g clip-path="url(#wclip)"><g class="shutter">
-      <rect x="334" y="70" width="152" height="124" style="fill:var(--s-shutter)"/>
-      <path d="M334 82H486M334 94H486M334 106H486M334 118H486M334 130H486M334 142H486M334 154H486M334 166H486M334 178H486" style="stroke:var(--s-frame)" stroke-width="1.2" opacity=".45" fill="none"/>
-     </g></g>
-     <rect class="sliver" x="338" y="190" width="144" height="3" rx="1.5" style="fill:var(--s-glow)"/>
-     <ellipse cx="420" cy="272" rx="140" ry="9" fill="#000" opacity=".16"/>
-     <rect x="296" y="198" width="248" height="14" rx="3" style="fill:var(--s-counter-top)"/>
-     <rect x="300" y="212" width="240" height="56" style="fill:var(--s-counter)"/>
-     <path d="M340 212V268M420 212V268M500 212V268" style="stroke:var(--s-frame)" stroke-width="1.2" opacity=".5" fill="none"/>
-    </g>
-    <!-- service bell -->
-    <g class="ly" style="--d:9">
-     <g class="bell" id="bell" role="button" tabindex="0" aria-pressed="false">
-      <circle class="hint" cx="420" cy="188" r="22"/>
-      <circle class="ring-focus" cx="420" cy="188" r="30"/>
-      <ellipse cx="420" cy="199" rx="19" ry="4.5" style="fill:var(--s-frame)"/>
-      <g class="bell-body">
-       <path d="M403 198C403 176 437 176 437 198Z" style="fill:var(--s-bell)"/>
-       <path d="M409 190C410 183 416 181 421 181" fill="none" style="stroke:var(--s-bell-hi)" stroke-width="2.2" stroke-linecap="round" opacity=".8"/>
-       <rect x="417.5" y="173" width="5" height="4.5" rx="1.5" style="fill:var(--s-bell)"/>
-      </g>
-      <path class="wave" style="--wx:-6px" d="M397 178q-7 6-7 16"/>
-      <path class="wave" style="--wx:6px" d="M443 178q7 6 7 16"/>
-      <circle cx="420" cy="188" r="42" fill="transparent"/>
-     </g>
-    </g>
-    <!-- queue: far to near -->
-    <g class="ly" style="--d:12">
-     <ellipse cx="262" cy="300" rx="22" ry="5" fill="#000" opacity=".2"/>
-     <g class="fig" style="animation-delay:-1s"><rect x="248.5" y="260.3" width="27" height="39.7" rx="12" style="fill:var(--s-f1)"/>
-      <circle class="head" cx="262" cy="253" r="8.3" style="fill:var(--s-h1)"/></g>
-    </g>
-    <g class="ly" style="--d:15">
-     <ellipse cx="196" cy="322" rx="25" ry="5.5" fill="#000" opacity=".22"/>
-     <g class="fig" style="animation-delay:-2.6s"><rect x="180.5" y="276.1" width="31" height="45.9" rx="14" style="fill:var(--s-f2)"/>
-      <circle class="head" style="fill:var(--s-h2);animation-delay:-3s" cx="196" cy="267.5" r="9.6"/></g>
-    </g>
-    <g class="ly" style="--d:19">
-     <ellipse cx="122" cy="346" rx="29" ry="6" fill="#000" opacity=".24"/>
-     <g class="fig" style="animation-delay:-3.8s"><rect x="104" y="292.7" width="36" height="53.3" rx="16" style="fill:var(--s-f3)"/>
-      <circle class="head" style="fill:var(--s-h3);animation-delay:-5s" cx="122" cy="282.7" r="11.2"/></g>
-     <path d="M137 302Q150 304 158 313" fill="none" style="stroke:var(--s-f3)" stroke-width="6" stroke-linecap="round"/>
-     <g class="glass">
-      <path d="M152 291h12c0 9-3 14-6 14s-6-5-6-14z" style="fill:var(--s-glass)" opacity=".55"/>
-      <path d="M153.2 296h9.6c-.3 6-2.3 8.6-4.8 8.6s-4.5-2.6-4.8-8.6z" style="fill:var(--s-wine)"/>
-      <path d="M158 305v10M153 315.5h10" fill="none" style="stroke:var(--s-glass)" stroke-width="1.6" stroke-linecap="round"/>
-     </g>
-    </g>
-    <!-- floating dust, nearest layer -->
-    <g class="ly dust" style="--d:30">
-     <circle cx="80" cy="120" r="2.2"/><circle cx="170" cy="70" r="1.6" style="animation-delay:-3s"/><circle cx="300" cy="150" r="2" style="animation-delay:-6s"/>
-     <circle cx="540" cy="110" r="2.4" style="animation-delay:-2s"/><circle cx="590" cy="250" r="1.8" style="animation-delay:-8s"/><circle cx="470" cy="300" r="2.2" style="animation-delay:-5s"/>
-     <circle cx="30" cy="260" r="1.8" style="animation-delay:-9s"/><circle cx="360" cy="40" r="1.6" style="animation-delay:-4s"/>
-     <circle cx="-120" cy="90" r="2" style="animation-delay:-1s"/><circle cx="-60" cy="210" r="1.8" style="animation-delay:-7s"/><circle cx="660" cy="60" r="2" style="animation-delay:-10s"/>
-     <circle cx="720" cy="190" r="2.2" style="animation-delay:-3.5s"/><circle cx="790" cy="120" r="1.6" style="animation-delay:-6.5s"/><circle cx="-170" cy="300" r="2" style="animation-delay:-2.5s"/>
-    </g>
-   </g>
-   <rect class="vig" x="-200" y="-200" width="4000" height="3000" fill="url(#gv)"/>
-  </svg>
-  </div>
- </div>
- <div class="caption" id="caption" aria-live="polite"><span id="capt"></span><a id="caplink" hidden target="_blank" rel="noopener"></a></div>
-
- <div class="layout" id="layout">
-  <aside id="wait" class="pane" aria-labelledby="hw">
-   <h2><span id="hw"></span><small id="hws"></small></h2>
-   <div class="wcards">
-    <div class="wc">
-     <span class="lbl" id="cdl"></span>
-     <div class="cd" id="cd"><div><b>--</b><span></span></div><div><b>--</b><span></span></div><div><b>--</b><span></span></div><div><b>--</b><span></span></div></div>
-     <p id="cdn"></p>
-    </div>
-    <div class="wc">
-     <span class="pill" id="nvp"></span>
-     <h3 id="nvt"></h3>
-     <p id="nvd"></p>
-    </div>
-    <div class="wc">
-     <span class="lbl" id="nxl"></span>
-     <h3 id="nxt"></h3>
-     <p id="nxd"></p>
-     <form class="fb" id="fb" novalidate>
-      <label class="vh" for="fbm" id="fbml"></label>
-      <textarea id="fbm" rows="3" maxlength="2000" required></textarea>
-      <label class="vh" for="fbc" id="fbcl"></label>
-      <input id="fbc" type="text" maxlength="200" autocomplete="off">
-      <div class="fbrow"><button type="submit" id="fbs"></button><span id="fbst" role="status" aria-live="polite"></span></div>
-     </form>
-     <a id="nxa" target="_blank" rel="noopener" href="https://github.com/onholdlab/tool-twins/issues"></a>
-    </div>
+ <header class="top">
+  <div class="brand">onholdlab<small>等候空間</small></div>
+  <div class="winbox">
+   <div class="win" id="win">
+    <div class="in"><span class="num" id="num" aria-hidden="true"></span><span class="lab">最新完成</span><a id="latest" href="https://onholdlab.github.io/crossroadhit/" target="_blank" rel="noopener" tabindex="-1">十字路口求生</a></div>
+    <div class="shutter" aria-hidden="true"><span class="sh-l">按鈴</span></div>
    </div>
-   <section class="demo" aria-labelledby="hdm">
-    <h3 class="dh"><span id="hdm"></span><small id="hdms"></small></h3>
-    <div class="dgrid" id="demo"></div>
-   </section>
-  </aside>
+   <button class="bell" id="bell" type="button" aria-label="按鈴,打開窗口看最新作品" aria-expanded="false" aria-controls="win">
+    <svg viewBox="0 0 52 46" aria-hidden="true"><ellipse cx="26" cy="42" rx="22" ry="4" fill="var(--line)"/><path d="M6 40C6 16 46 16 46 40Z" fill="var(--accent)" stroke="var(--line)" stroke-width="2.5"/><path d="M13 32c1-7 6-10 11-10" fill="none" stroke="var(--on-accent)" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><rect x="22" y="9" width="8" height="8" rx="2" fill="var(--line)"/></svg>
+   </button>
+  </div>
+ </header>
 
-  <main id="done" class="pane" aria-labelledby="hd">
-   <h2><span id="hd"></span><small id="hds"></small></h2>
-   <h3 class="sub" id="hl"></h3>
-   <div class="feature" id="feature"></div>
-   <div class="slot" id="slot"></div>
-   <h3 class="sub"><span id="hn"></span><small id="hns"></small></h3>
-   <div class="grid" id="newgames"></div>
-   <h3 class="sub" id="hg"></h3>
-   <div class="grid" id="games"></div>
-   <h3 class="sub" id="ht"></h3>
-   <div class="grid" id="tools"></div>
-  </main>
+ <section class="stage" id="stage" aria-label="打廣告小遊戲:點廣告,貓會衝過去打掉">
+  <div class="deco" aria-hidden="true">
+   <div class="a"></div>
+     </div>
+  <p class="hint" id="hint">點廣告,貓會幫你打掉</p>
+  <div class="hud" aria-live="polite"><small>今天打掉</small><span id="cnt">0</span></div>
+  <div id="ads"></div>
+  <div class="cat" id="cat" aria-hidden="true"><div class="face"><div class="bob">
+   <svg viewBox="0 0 100 110">
+    <path class="tail" d="M26 82C6 80 4 56 16 50" fill="none" stroke="var(--cd)" stroke-width="8" stroke-linecap="round"/>
+    <rect class="legb" x="33" y="88" width="10" height="18" rx="5" fill="var(--cd)"/>
+    <rect class="legf" x="57" y="88" width="10" height="18" rx="5" fill="var(--cd)"/>
+    <ellipse cx="48" cy="78" rx="26" ry="19" fill="var(--cb)"/>
+    <ellipse cx="52" cy="85" rx="14" ry="10" fill="var(--cbelly)"/>
+    <path d="M28 68l6 4M26 76l7 2M30 84l6 0" stroke="var(--cd)" stroke-width="3" stroke-linecap="round"/>
+    <g class="arm"><rect x="60" y="62" width="10" height="22" rx="5" fill="var(--cb)"/><circle cx="65" cy="86" r="7.5" fill="var(--cb)" stroke="var(--cd)" stroke-width="2"/></g>
+    <g class="head">
+     <polygon points="28,26 32,3 50,17" fill="var(--cb)"/><polygon points="76,26 72,3 54,17" fill="var(--cb)"/>
+     <polygon points="33,22 35,10 44,17" fill="#ffb3b3"/><polygon points="71,22 69,10 60,17" fill="#ffb3b3"/>
+     <circle cx="52" cy="42" r="27" fill="var(--cb)"/>
+     <path d="M44 20l2 7M52 18v8M60 20l-2 7" stroke="var(--cd)" stroke-width="3" stroke-linecap="round"/>
+     <ellipse cx="42" cy="42" rx="6" ry="7" fill="#fff"/><ellipse cx="63" cy="42" rx="6" ry="7" fill="#fff"/>
+     <circle cx="44" cy="43" r="3.2" fill="#222"/><circle cx="65" cy="43" r="3.2" fill="#222"/>
+     <path d="M33 31l16 6M72 31l-16 6" stroke="#5a3310" stroke-width="3.5" stroke-linecap="round"/>
+     <path d="M49 50h7l-3.5 4z" fill="#e0707a"/>
+     <path d="M44 60q8-7 16 0" fill="none" stroke="#5a3310" stroke-width="2.5" stroke-linecap="round"/>
+    </g>
+   </svg></div></div></div>
+  <div class="fx" id="fx"></div>
+ </section>
+
+ <h2 class="news-h">最新資訊</h2>
+ <div class="low">
+  <div class="ask">
+   <p class="h3">常被問的</p>
+   <div class="faq" id="faq">
+    <button type="button" aria-pressed="false" data-a="一個人用 AI 把想法做成作品的地方。還沒完成的作品,也會先放在這裡讓你試。">onholdlab 是什麼?</button>
+    <button type="button" aria-pressed="false" data-a="目前全部免費,打開瀏覽器就能玩,不用下載、不用註冊。">要付錢嗎?</button>
+    <button type="button" aria-pressed="false" data-a="上面那個舞台保留了合作的位置。想合作或刊登,在下面留言或私訊我們。">想合作?</button>
+   </div>
+   <p class="ans" id="ans" aria-live="polite"></p>
+   <form class="qform" id="qform" novalidate>
+    <label class="h3" for="q">直接問,或留下回饋</label>
+    <div class="qrow"><input id="q" name="q" type="text" placeholder="在這裡打字…" autocomplete="off" maxlength="2000"><button id="send" type="submit">送出</button></div>
+    <div class="qrow sub"><label class="sr" for="qc">想收到回覆就留聯絡方式</label><input id="qc" name="qc" type="text" placeholder="想收到回覆?留 email 或 IG(可不填)" autocomplete="email" maxlength="200"></div>
+    <input class="hp" id="qhp" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <p class="qnote" id="qnote" aria-live="polite"></p>
+   </form>
+   <p class="h3">找到我們</p>
+   <div class="contact">
+    <a href="https://www.instagram.com/onholdlab/" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://www.threads.net/@onholdlab" target="_blank" rel="noopener">Threads</a>
+    <a href="https://x.com/onholdlab" target="_blank" rel="noopener">X</a>
+    <a href="https://onholdlab.itch.io/" target="_blank" rel="noopener">itch.io</a>
+   </div>
+  </div>
+  <ol class="news" id="news" aria-label="最新資訊,由新到舊"></ol>
+  <figure class="show">
+   <div class="artw"><svg id="art" viewBox="0 0 300 200" role="img" aria-label="被打掉的廣告留下的線條"></svg><p class="empty" id="empty">打掉的廣告會變成線條,住進這裡</p></div>
+   <figcaption><span>被打掉的廣告,留下的線</span><b id="artn">0</b></figcaption>
+   <button type="button" id="clear">清掉重來</button>
+  </figure>
  </div>
-
- <section class="facts-sec" aria-labelledby="hf"><h2 id="hf"></h2><div class="facts" id="facts"></div></section>
- <footer><span id="copy">© 2026 onholdlab</span><span id="foot"></span><span id="petnote"></span></footer>
 </div>
-<div class="pet" id="pet" aria-hidden="true"></div>
 
-<script src="data/projects.js"></script>
 <script src="js/feedback.js"></script>
-<script src="js/app.js"></script>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+let ready=false;
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+
+document.documentElement.dataset.d='a';
+
+/* ---------- 最新資訊 ---------- */
+const NEWS=[
+ ['十字路口求生','路口的每個路人都想撞你。','遊戲','https://onholdlab.github.io/crossroadhit/'],
+ ['拍手貓','說出那句話,牠就拍手。','遊戲','https://onholdlab.github.io/clapping-cat/'],
+ ['閃身犬','被圍攻時反而變強的狗。','遊戲','https://onholdlab.github.io/dodge-dog/'],
+ ['工具雙胞胎','檢查你的 skills 和 MCP 工具會不會互搶觸發。','工具','https://onholdlab.github.io/tool-twins/']];
+$('news').innerHTML=NEWS.map((n,i)=>`<li><a href="${n[3]}" target="_blank" rel="noopener"><span class="k">${String(NEWS.length-i).padStart(2,'0')}</span><span class="t">${n[0]}<small>${n[1]}</small></span><span class="ty">${n[2]}</span></a></li>`).join('')+'<li class="old">↓ 越往下越舊</li>';
+
+/* ---------- 窗口與鈴 ---------- */
+let called=store.get('ohl_num',41),winT=0;
+$('num').textContent=String(called).padStart(4,'0');
+$('bell').onclick=()=>{
+ const b=$('bell');b.classList.remove('ring');void b.offsetWidth;b.classList.add('ring');
+ called++;store.set('ohl_num',called);$('num').textContent=String(called).padStart(4,'0');
+ const W2=$('win');W2.classList.remove('blink');void W2.offsetWidth;W2.classList.add('blink');W2.classList.add('open');b.setAttribute('aria-expanded','true');$('latest').tabIndex=0;
+ clearTimeout(winT);winT=setTimeout(()=>{if(document.activeElement===$('latest'))return;$('win').classList.remove('open');b.setAttribute('aria-expanded','false');$('latest').tabIndex=-1},6000)};
+$('latest').addEventListener('blur',()=>{clearTimeout(winT);winT=setTimeout(()=>{$('win').classList.remove('open');$('bell').setAttribute('aria-expanded','false');$('latest').tabIndex=-1},2500)});
+
+/* ---------- 提問 ---------- */
+$('faq').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ const on=b.getAttribute('aria-pressed')!=='true';document.querySelectorAll('#faq button').forEach(x=>x.setAttribute('aria-pressed','false'));
+ b.setAttribute('aria-pressed',on);$('ans').textContent=on?b.dataset.a:''});
+const IG='https://ig.me/m/onholdlab';
+$('qform').addEventListener('submit',e=>{e.preventDefault();
+ const note=$('qnote'),btn=$('send'),t=$('q').value.trim(),c=$('qc').value.trim();note.classList.remove('ok');
+ if(!t){note.textContent='先打幾個字。';$('q').focus();return}
+ if($('qhp').value){note.textContent='收到了,謝謝。';note.classList.add('ok');$('q').value='';return}
+ const fallback=msg=>{note.innerHTML=msg+'也可以<a href="'+IG+'" target="_blank" rel="noopener">私訊 Instagram</a>。'};
+ if(!OHLFeedback.configured()){fallback('回饋功能還沒接上。');return}
+ btn.disabled=true;note.textContent='送出中…';
+ OHLFeedback.send({source:'home',kind:'message',message:t,contact:c}).then(r=>{btn.disabled=false;
+  if(r.ok){note.textContent='收到了,謝謝。'+(c?'我們會用你留的方式回覆。':'');note.classList.add('ok');$('q').value='';$('qc').value='';return}
+  if(r.reason==='rate_limited')fallback('10 分鐘內送太多次了,晚點再試。');
+  else if(r.reason==='invalid')fallback('內容太長或格式不對,縮短一點再送。');
+  else fallback('沒有送出去,可能是網路問題。');});
+});
+/* ---------- 打廣告 ---------- */
+const ADS=['恭喜!你是第 1,000,000 位訪客','下載更多 RAM','貓砂買一送九十九','附近有 3 個鈴鐺想認識你','限時:免費等待','你的電腦很乾淨(才怪)','點這裡變有錢','一鍵清除煩惱'];
+const stage=$('stage'),adsEl=$('ads'),cat=$('cat'),fx=$('fx');
+let ads=[],queue=[],adSeq=0,count=0;
+let cx=40,cy=0,tx=40,ty=0,mode='idle',busy=null,flip=1,wanderT=0;
+const catSize=()=>({w:cat.offsetWidth,h:cat.offsetHeight});
+function floorY(){return stage.clientHeight-catSize().h-6}
+function layoutCat(){if(!stage)return;cy=ty=floorY()}
+function slots(){const W=stage.clientWidth,H=stage.clientHeight,aw=adsEl.firstChild?adsEl.firstChild.offsetWidth:Math.min(220,W*.56);
+ const ah=W<760?92:118,top=W<760?66:74;
+ const cols=W<760?2:3,rows=2,out=[];
+ for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const x=cols===1?0:(W-aw-16)*c/(cols-1)+8,y=top+r*(H-top-ah-catSize().h*.5)/(rows-1||1);out.push([Math.max(8,Math.min(W-aw-8,x+(W<760?0:(r%2?(c%2?-24:24):0)))),Math.max(top,y+(W<760&&c?18:0))])}
+ return out}
+function spawn(){if(ads.length>=(stage.clientWidth<760?3:4))return;
+ const used=new Set(ads.map(a=>a.slot)),sl=slots(),free=sl.map((_,i)=>i).filter(i=>!used.has(i));if(!free.length)return;
+ const si=free[(Math.random()*free.length)|0],el=document.createElement('button');
+ el.type='button';el.className='ad pop';const txt=ADS[adSeq++%ADS.length];
+ el.innerHTML=`<span class="bar" aria-hidden="true"><i></i><i></i></span><b>${txt}</b>`;el.setAttribute('aria-label','打掉廣告:'+txt);
+ adsEl.appendChild(el);const[x,y]=sl[si];el.style.left=x+'px';el.style.top=y+'px';
+ const a={el,slot:si,born:performance.now(),txt};ads.push(a);
+ el.addEventListener('click',()=>target(a));}
+function target(a){if(a.dead||queue.includes(a)||busy===a)return;a.el.classList.add('tgt');queue.push(a);$('hint').hidden=true}
+function impact(a){a.dead=true;const r=a.el.getBoundingClientRect(),s=stage.getBoundingClientRect();
+ const x=r.left-s.left+r.width/2,y=r.top-s.top+r.height/2;
+ if(!RM){const ring=document.createElement('div');ring.className='ringfx';ring.style.left=x+'px';ring.style.top=y+'px';fx.appendChild(ring);
+  ring.animate([{transform:'scale(.2)',opacity:1},{transform:'scale(6)',opacity:0}],{duration:480,easing:'ease-out'}).onfinish=()=>ring.remove();
+  for(let i=0;i<12;i++){const p=document.createElement('div');p.className='spark';p.style.left=x+'px';p.style.top=y+'px';fx.appendChild(p);
+   const an=i/12*6.283+Math.random()*.4,d=50+Math.random()*70;p.animate([{transform:'translate(0,0) rotate(0)',opacity:1},{transform:`translate(${Math.cos(an)*d}px,${Math.sin(an)*d}px) rotate(200deg) scale(.2)`,opacity:0}],{duration:560,easing:'ease-out'}).onfinish=()=>p.remove()}
+  stage.animate([{transform:'translate(0,0)'},{transform:'translate(0,5px)'},{transform:'translate(0,-2px)'},{transform:'none'}],{duration:340})}
+ a.el.classList.add('hit');a.el.classList.remove('tgt');
+ count++;$('cnt').textContent=count;
+ setTimeout(()=>toLines(a,r),RM?0:380)}
+/* 廣告只剩線條,飛進右邊的展示框,成為一筆線條作品 */
+function toLines(a,r){const art=$('art'),ar=art.getBoundingClientRect(),wr=document.querySelector('.wrap').getBoundingClientRect();
+ const k=ar.width/300,w=40+Math.random()*50,hh=w*.54,px=10+Math.random()*(280-w),py=10+Math.random()*(180-hh),rot=(Math.random()-.5)*40;
+ const rec={x:+px.toFixed(1),y:+py.toFixed(1),w:+w.toFixed(1),h:+hh.toFixed(1),r:+rot.toFixed(1),t:a.txt.length};
+ const done=()=>{a.el.remove();ads=ads.filter(z=>z!==a);addArt(rec,true);const L=store.get('ohl_art',[]);L.push(rec);store.set('ohl_art',L.slice(-80))};
+ if(RM||!ar.width){done();return}
+ const g=document.createElement('div');g.className='ghost';document.querySelector('.wrap').appendChild(g);
+ g.style.left=(r.left-wr.left)+'px';g.style.top=(r.top-wr.top)+'px';g.style.width=r.width+'px';g.style.height=r.height+'px';
+ a.el.style.opacity=0;
+ const tx=ar.left-wr.left+(px+w/2)*k-r.width/2,ty2=ar.top-wr.top+(py+hh/2)*k-r.height/2,sc=w*k/r.width;
+ g.animate([{transform:'translate(0,0) rotate(0) scale(1)'},{transform:`translate(${(tx-(r.left-wr.left))*.5}px,${(ty2-(r.top-wr.top))*.5-60}px) rotate(${rot/2}deg) scale(${(1+sc)/2})`,offset:.5},{transform:`translate(${tx-(r.left-wr.left)}px,${ty2-(r.top-wr.top)}px) rotate(${rot}deg) scale(${sc})`}],{duration:900,easing:'cubic-bezier(.5,0,.3,1)'}).onfinish=()=>{g.remove();done()}}
+function addArt(o,fresh){const art=$('art'),NS='http://www.w3.org/2000/svg',g=document.createElementNS(NS,'g');
+ g.setAttribute('transform',`rotate(${o.r} ${o.x+o.w/2} ${o.y+o.h/2})`);g.setAttribute('fill','none');g.setAttribute('stroke','var(--art)');g.setAttribute('stroke-width','1.4');
+ const ln=(x1,y1,x2,y2)=>{const l=document.createElementNS(NS,'line');l.setAttribute('x1',x1);l.setAttribute('y1',y1);l.setAttribute('x2',x2);l.setAttribute('y2',y2);g.appendChild(l)};
+ const{x,y,w,h}=o,bar=h*.19;ln(x,y,x+w,y);ln(x+w,y,x+w,y+h);ln(x+w,y+h,x,y+h);ln(x,y+h,x,y);ln(x,y+bar,x+w,y+bar);
+ const lines=1+(o.t>8?1:0);for(let i=0;i<lines;i++)ln(x+w*.12,y+bar+h*(.3+i*.25),x+w*(.5+((o.t*7+i*13)%40)/100),y+bar+h*(.3+i*.25));
+ art.appendChild(g);$('artn').textContent=art.childNodes.length;$('empty').hidden=true;
+ if(fresh&&!RM)g.animate([{opacity:0},{opacity:1}],{duration:300})}
+store.get('ohl_art',[]).forEach(o=>addArt(o,false));
+$('clear').onclick=()=>{$('art').innerHTML='';$('artn').textContent=0;$('empty').hidden=false;store.set('ohl_art',[])};
+
+function tick(now){
+ const fy=floorY(),W=stage.clientWidth;
+ if(!busy){
+  ads.forEach(a=>{if(!a.dead&&!queue.includes(a)&&now-a.born>9000)queue.push(a)});
+  while(queue.length&&queue[0].dead)queue.shift();
+  if(queue.length){busy=queue.shift();mode='go'}
+ }
+ if(mode==='go'&&busy){const e=busy.el;tx=Math.max(0,Math.min(W-catSize().w,e.offsetLeft-catSize().w*.55));ty=Math.max(10,Math.min(fy,e.offsetTop+e.offsetHeight-catSize().h*.75));}
+ else if(mode==='idle'){if(now>wanderT){wanderT=now+2500+Math.random()*2500;tx=10+Math.random()*(W-catSize().w-20)}ty=fy}
+ const k=mode==='go'?0.12:0.035,dx=tx-cx,dy=ty-cy;
+ if(RM&&mode==='go'){cx=tx;cy=ty}else{cx+=dx*k;cy+=dy*k}
+ const moving=Math.hypot(dx,dy)>2&&mode!=='punch';cat.classList.toggle('run',moving);
+ if(Math.abs(dx)>4&&mode!=='punch')flip=dx>0?1:-1;
+ cat.firstChild.style.transform=`scaleX(${mode==='punch'?1:flip})`;
+ cat.style.transform=`translate(${cx}px,${cy}px)`;
+ if(mode==='go'&&busy&&Math.hypot(dx,dy)<6){mode='punch';cat.classList.remove('run');cat.classList.add('punch');const a=busy;
+  setTimeout(()=>impact(a),RM?0:300);setTimeout(()=>{cat.classList.remove('punch');busy=null;mode='idle';wanderT=0},RM?50:620)}
+ requestAnimationFrame(tick)}
+layoutCat();cx=30;cy=floorY();
+spawn();spawn();setTimeout(spawn,300);
+setInterval(()=>{if(!document.hidden)spawn()},2800);
+addEventListener('resize',()=>{layoutCat();const sl=slots();ads.forEach(a=>{if(!a.dead){a.el.style.left=sl[a.slot%sl.length][0]+'px';a.el.style.top=sl[a.slot%sl.length][1]+'px'}})});
+ready=true;requestAnimationFrame(tick);
+})();
+</script>
 </body>
 </html>
