@@ -234,3 +234,12 @@ footer{font-size:12px;color:var(--muted);border-top:1px solid var(--line);paddin
  .card:hover{transform:none}
  html{scroll-behavior:auto}
 }
+
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.fb{display:grid;gap:8px;margin:10px 0 8px}
+.fb textarea,.fb input{font:400 14px/1.4 var(--f-body);color:var(--ink);background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;width:100%;box-sizing:border-box;resize:vertical}
+.fb textarea:focus,.fb input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+.fbrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.fb button{font:600 14px var(--f-body);background:var(--accent);color:var(--on-accent);border:0;border-radius:999px;padding:8px 18px;min-height:40px;cursor:pointer}
+.fb button:disabled{opacity:.6;cursor:wait}
+#fbst{font-size:13px;color:var(--muted)}

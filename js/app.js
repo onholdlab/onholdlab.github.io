@@ -14,7 +14,7 @@ zh:{h1:'onholdlab 等候空間：下一件作品，正在醞釀。',tag:'一個�
  cap0:'窗口關著，鈴鐺靜置。敲一下試試。',cap1:'叮。窗口打開了，工具雙胞胎已經完成。',capLink:'走到窗口 →',bell:'敲響服務鈴',
  hw:'等候區',hws:'正在發生',cdl:'下次更新倒數・每 7 天一版',cdn:'每 7 天換一版。',units:['天','時','分','秒'],
  nvp:'籌備中',nvt:'本週小說',nvd:'第一版上線時會出現在這裡。每七天換一版，舊版會消失，只留下標題與日期。',
- nxl:'下一件作品',nxt:'還不知道會是什麼',nxd:'試用過工具雙胞胎的話，歡迎到 GitHub 回報問題或提出想法。',nxa:'前往 GitHub 回饋 →',
+ nxl:'下一件作品',nxt:'還不知道會是什麼',nxd:'想看到什麼、哪裡壞了，直接寫在這裡。',nxa:'或到 GitHub 回報 →',fbm:'你的想法或問題',fbc:'想收到回覆的話，留 email 或 IG（可不填）',fbs:'送出',fbok:'收到了，謝謝。',fbempty:'先寫點什麼再送出。',fberr:'沒送出去，稍後再試一次。',fbing:'送出中…',
  hd:'完成品區',hds:'已離開等待',hdm:'試玩區',hdms:'還會修改',hl:'線上公開',hn:'新作',hns:'10/18 新增',hg:'更早的遊戲',ht:'工具與文件',hf:'幕後數字',
  open:'打開 →',newTag:'新',liveTag:'線上版',openLive:'開啟線上版 →',src:'原始碼', foot:'',
  slot:'下一件完成品的位置，還空著。',
@@ -24,7 +24,7 @@ en:{h1:'onholdlab waiting space: the next creation is taking shape.',tag:'Ideas 
  cap0:'The window is shut and the bell is still. Try ringing it.',cap1:'Ding. The window is open: Tool Twins is done.',capLink:'Walk to the window →',bell:'Ring the service bell',
  hw:'Waiting room',hws:'happening now',cdl:'Next update in · every 7 days',cdn:'A new version every 7 days.',units:['d','h','m','s'],
  nvp:'in preparation',nvt:'This week\'s novel',nvd:'The first version will appear here. It changes every seven days; old versions vanish, leaving only a title and a date.',
- nxl:'The next work',nxt:'Not known yet',nxd:'If you have tried Tool Twins, report a problem or suggest an idea on GitHub.',nxa:'Give feedback on GitHub →',
+ nxl:'The next work',nxt:'Not known yet',nxd:'What you want to see, or what broke — write it here.',nxa:'Or report on GitHub →',fbm:'Your idea or problem',fbc:'Email or IG if you want a reply (optional)',fbs:'Send',fbok:'Got it, thank you.',fbempty:'Write something first.',fberr:'It didn\'t go through. Try again later.',fbing:'Sending…',
  hd:'Finished works',hds:'out of the queue',hdm:'Demo',hdms:'still changing',hl:'Live now',hn:'New',hns:'added Oct 18',hg:'Earlier games',ht:'Tools and documents',hf:'Behind the numbers',
  open:'Open →',newTag:'new',liveTag:'live',openLive:'Open the live tool →',src:'Source', foot:'',
  slot:'Room for the next finished work. Still empty.',
@@ -46,8 +46,8 @@ var open=false;
 function caption(){var t=T[L];$('capt').textContent=open?t.cap1:t.cap0;var a=$('caplink');a.hidden=!open||!LIVE;a.textContent=t.capLink;if(LIVE)a.href=LIVE.url;
  var b=$('bell');b.setAttribute('aria-label',t.bell);b.setAttribute('aria-pressed',open?'true':'false')}
 
-function render(){var t=T[L];document.documentElement.lang=L==='zh'?'zh-Hant':'en';
- ['h1','tag','lede','hw','hws','cdl','cdn','nvp','nvt','nvd','nxl','nxt','nxd','nxa','hd','hds','hdm','hdms','hl','hn','hns','hg','ht','hf','foot','petnote','slot'].forEach(function(k){$(k).textContent=t[k]});
+function render(){var t=T[L];document.documentElement.lang=L==='zh'?'zh-Hant':'en';$('fbml').textContent=$('fbm').placeholder=t.fbm;$('fbcl').textContent=$('fbc').placeholder=t.fbc;
+ ['h1','tag','lede','hw','hws','cdl','cdn','nvp','nvt','nvd','nxl','nxt','nxd','nxa','fbs','hd','hds','hdm','hdms','hl','hn','hns','hg','ht','hf','foot','petnote','slot'].forEach(function(k){$(k).textContent=t[k]});
  $('feature').innerHTML=LIVE?'<div class="fi" aria-hidden="true">'+LIVE.icon+'</div><div class="fb"><h3>'+LIVE.title[L]+' <span class="live">'+t.liveTag+'</span></h3><p>'+((LIVE.tagline||{})[L]||'')+'</p>'+tags(LIVE)+'<div class="btns"><a class="btn p" target="_blank" rel="noopener" href="'+LIVE.url+'">'+t.openLive+'</a>'+(LIVE.repo?'<a class="btn" target="_blank" rel="noopener" href="'+LIVE.repo+'">'+t.src+'</a>':'')+'</div></div>':'';
  $('newgames').innerHTML=NEW.map(function(x){return card(x,t,true)}).join('');
  $('games').innerHTML=GAMES.map(function(x){return card(x,t)}).join('');
@@ -178,6 +178,15 @@ if(!reduce){
  document.addEventListener('visibilitychange',function(){if(!document.hidden)kick()});
  addEventListener('resize',function(){x=cl(x,0,maxX());put();kick()});
  x=Math.random()*maxX();put();until=now()+1500;idleSince=now();kick();
+(function(){var f=document.getElementById('fb');if(!f)return;var busy=false;
+f.addEventListener('submit',function(e){e.preventDefault();if(busy)return;var t=T[L],st=document.getElementById('fbst'),m=document.getElementById('fbm'),c=document.getElementById('fbc'),b=document.getElementById('fbs');
+ if(!m.value.trim()){st.textContent=t.fbempty;m.focus();return}
+ if(!window.onholdFeedback){st.textContent=t.fberr;return}
+ busy=true;b.disabled=true;st.textContent=t.fbing;
+ onholdFeedback.send({source:'home',message:m.value,contact:c.value}).then(function(r){busy=false;b.disabled=false;
+  if(r.ok){m.value='';c.value='';st.textContent=T[L].fbok}else{st.textContent=T[L].fberr}})});
+})();
 })();
 render();
 })();
+
