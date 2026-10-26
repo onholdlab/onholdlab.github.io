@@ -1,6 +1,7 @@
 // 列出 onholdlab 所有開了 GitHub Pages 的公開 repo，寫進 works.json，首頁的「最新資訊」讀這個檔。
 // 類型看 repo 的 topics：有 game → 遊戲，有 tool → 工具，都沒有 → 作品。
 // 名稱與介紹看 repo 的 description：寫成「中文名稱｜一句話介紹」；沒有｜就整段當介紹，名稱用 repo 名。
+// 要英文版就寫成「中文名稱｜中文介紹｜English name｜English blurb」，英文首頁會用後兩段。
 import { writeFileSync } from 'node:fs';
 
 const OWNER = process.env.OWNER || 'onholdlab';
@@ -26,9 +27,12 @@ export function toWork(r) {
              : topics.some(t => t === 'tool' || t.endsWith('-tool')) ? '工具' : '作品';
   const desc = (r.description || '').trim();
   const m = desc.split(/\s*[｜|]\s*/);
-  const [title, blurb] = m.length > 1 ? [m[0], m.slice(1).join(' ')] : [r.name, desc];
+  let title, blurb, title_en = '', blurb_en = '';
+  if (m.length >= 4) [title, blurb, title_en, blurb_en] = [m[0], m[1], m[2], m.slice(3).join(' ')];
+  else if (m.length > 1) [title, blurb] = [m[0], m.slice(1).join(' ')];
+  else [title, blurb] = [r.name, desc];
   const url = (r.homepage && /^https?:\/\//.test(r.homepage)) ? r.homepage : `https://${OWNER}.github.io/${r.name}/`;
-  return { title, blurb, type, url, repo: r.name, created: r.created_at };
+  return { title, blurb, title_en, blurb_en, type, url, repo: r.name, created: r.created_at };
 }
 
 export function build(repos) {

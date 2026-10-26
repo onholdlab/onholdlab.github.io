@@ -33,6 +33,8 @@ button{font:inherit;color:inherit}
 .top{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:12px}
 .brand{font:700 15px/1.2 var(--f-num);letter-spacing:.02em;align-self:start;padding-top:6px}
 .brand small{display:block;font:500 12px/1.4 var(--f-body);color:var(--muted);letter-spacing:0}
+.lang{margin-top:6px;min-height:36px;padding:4px 12px;border:2px solid var(--line);background:var(--panel);cursor:pointer;font:700 13px/1 var(--f-num)}
+.lang:hover{background:var(--ink);color:var(--bg)}
 .winbox{display:flex;align-items:flex-end;gap:10px}
 .win{position:relative;width:180px;height:92px;overflow:hidden;border:3px solid var(--line);background:var(--panel);display:grid;place-items:center;text-align:center}
 .win .in{display:grid;gap:2px;padding:6px}
@@ -190,24 +192,24 @@ body{min-height:calc(100vh + 2px)}
 <body>
 <div class="wrap">
  <header class="top">
-  <div class="brand">onholdlab<small>等候空間</small></div>
+  <div class="brand">onholdlab<small data-i="brandSub">等候空間</small><button class="lang" id="lang" type="button" lang="en">English</button></div>
   <div class="winbox">
    <div class="win" id="win">
-    <div class="in"><span class="num" id="num" aria-hidden="true"></span><span class="lab">最新完成</span><a id="latest" href="https://onholdlab.github.io/crossroadhit/" target="_blank" rel="noopener" tabindex="-1">十字路口求生</a></div>
-    <div class="shutter" aria-hidden="true"><span class="sh-l">按鈴</span></div>
+    <div class="in"><span class="num" id="num" aria-hidden="true"></span><span class="lab" data-i="latestLab">最新完成</span><a id="latest" href="https://onholdlab.github.io/crossroadhit/" target="_blank" rel="noopener" tabindex="-1">十字路口求生</a></div>
+    <div class="shutter" aria-hidden="true"><span class="sh-l" data-i="bellLab">按鈴</span></div>
    </div>
-   <button class="bell" id="bell" type="button" aria-label="按鈴,打開窗口看最新作品" aria-expanded="false" aria-controls="win">
+   <button class="bell" id="bell" type="button" aria-label="按鈴,打開窗口看最新作品" data-i-aria="bellAria" aria-expanded="false" aria-controls="win">
     <svg viewBox="0 0 52 46" aria-hidden="true"><ellipse cx="26" cy="42" rx="22" ry="4" fill="var(--line)"/><path d="M6 40C6 16 46 16 46 40Z" fill="var(--accent)" stroke="var(--line)" stroke-width="2.5"/><path d="M13 32c1-7 6-10 11-10" fill="none" stroke="var(--on-accent)" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><rect x="22" y="9" width="8" height="8" rx="2" fill="var(--line)"/></svg>
    </button>
   </div>
  </header>
 
- <section class="stage" id="stage" aria-label="打廣告小遊戲:點廣告,貓會衝過去打掉">
+ <section class="stage" id="stage" aria-label="打廣告小遊戲:點廣告,貓會衝過去打掉" data-i-aria="stageAria">
   <div class="deco" aria-hidden="true">
    <div class="a"></div>
      </div>
-  <p class="hint" id="hint">點廣告,貓會幫你打掉</p>
-  <div class="hud" aria-live="polite"><small>今天打掉</small><span id="cnt">0</span></div>
+  <p class="hint" id="hint" data-i="hint">點廣告,貓會幫你打掉</p>
+  <div class="hud" aria-live="polite"><small data-i="today">今天打掉</small><span id="cnt">0</span></div>
   <div id="ads"></div>
   <div class="cat" id="cat" aria-hidden="true"><div class="face"><div class="bob">
    <svg viewBox="0 0 100 110">
@@ -233,36 +235,38 @@ body{min-height:calc(100vh + 2px)}
   <div class="fx" id="fx"></div>
  </section>
 
- <h2 class="news-h">最新資訊</h2>
+ <h2 class="news-h" data-i="newsH">最新資訊</h2>
  <div class="low">
   <div class="ask">
-   <p class="h3">常被問的</p>
+   <p class="h3" data-i="faqH">常被問的</p>
    <div class="faq" id="faq">
-    <button type="button" aria-pressed="false" data-a="一個人用 AI 把想法做成作品的地方。還沒完成的作品,也會先放在這裡讓你試。">onholdlab 是什麼?</button>
-    <button type="button" aria-pressed="false" data-a="目前全部免費,打開瀏覽器就能玩,不用下載、不用註冊。">要付錢嗎?</button>
-    <button type="button" aria-pressed="false" data-a="上面那個舞台保留了合作的位置。想合作或刊登,在下面留言或私訊我們。">想合作?</button>
+    <button type="button" aria-pressed="false" data-i="q1" data-ia="a1">onholdlab 是什麼?</button>
+    <button type="button" aria-pressed="false" data-i="q2" data-ia="a2">要付錢嗎?</button>
+    <button type="button" aria-pressed="false" data-i="q3" data-ia="a3">想合作?</button>
    </div>
    <p class="ans" id="ans" aria-live="polite"></p>
    <form class="qform" id="qform" novalidate>
-    <label class="h3" for="q">直接問,或留下回饋</label>
-    <div class="qrow"><input id="q" name="q" type="text" placeholder="在這裡打字…" autocomplete="off" maxlength="2000"><button id="send" type="submit">送出</button></div>
-    <div class="qrow sub"><label class="sr" for="qc">想收到回覆就留聯絡方式</label><input id="qc" name="qc" type="text" placeholder="想收到回覆?留 email 或 IG(可不填)" autocomplete="email" maxlength="200"></div>
+    <label class="h3" for="q" data-i="askLabel">直接問,或留下回饋</label>
+    <div class="qrow"><input id="q" name="q" type="text" placeholder="在這裡打字…" data-i-ph="qPh" autocomplete="off" maxlength="2000"><button id="send" type="submit" data-i="send">送出</button></div>
+    <div class="qrow sub"><label class="sr" for="qc" data-i="qcLabel">想收到回覆就留聯絡方式</label><input id="qc" name="qc" type="text" placeholder="想收到回覆?留 email 或 IG(可不填)" data-i-ph="qcPh" autocomplete="email" maxlength="200"></div>
     <input class="hp" id="qhp" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
     <p class="qnote" id="qnote" aria-live="polite"></p>
    </form>
-   <p class="h3">找到我們</p>
+   <p class="h3" data-i="findH">找到我們</p>
    <div class="contact">
     <a href="https://www.instagram.com/onholdlab/" target="_blank" rel="noopener">Instagram</a>
     <a href="https://www.threads.net/@onholdlab" target="_blank" rel="noopener">Threads</a>
     <a href="https://x.com/onholdlab" target="_blank" rel="noopener">X</a>
     <a href="https://onholdlab.itch.io/" target="_blank" rel="noopener">itch.io</a>
+    <a href="https://www.tiktok.com/@onholdlab" target="_blank" rel="noopener">TikTok</a>
+    <a href="https://www.reddit.com/user/onholdlab/" target="_blank" rel="noopener">Reddit</a>
    </div>
   </div>
-  <ol class="news" id="news" aria-label="最新資訊,由新到舊"></ol>
+  <ol class="news" id="news" aria-label="最新資訊,由新到舊" data-i-aria="newsAria"></ol>
   <figure class="show">
-   <div class="artw"><svg id="art" viewBox="0 0 300 200" role="img" aria-label="被打掉的廣告留下的線條"></svg><p class="empty" id="empty">打掉的廣告會變成線條,住進這裡</p></div>
-   <figcaption><span>被打掉的廣告,留下的線</span><b id="artn">0</b></figcaption>
-   <button type="button" id="clear">清掉重來</button>
+   <div class="artw"><svg id="art" viewBox="0 0 300 200" role="img" aria-label="被打掉的廣告留下的線條" data-i-aria="artAria"></svg><p class="empty" id="empty" data-i="empty">打掉的廣告會變成線條,住進這裡</p></div>
+   <figcaption><span data-i="cap">被打掉的廣告,留下的線</span><b id="artn">0</b></figcaption>
+   <button type="button" id="clear" data-i="clear">清掉重來</button>
   </figure>
  </div>
 </div>
@@ -278,20 +282,73 @@ const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.
 
 document.documentElement.dataset.d='a';
 
+/* ---------- 中英文 ---------- */
+const T={zh:{
+ title:'onholdlab 等候空間',desc:'onholdlab 等候空間：一個人用 AI 把想法做成作品的地方。',
+ brandSub:'等候空間',latestLab:'最新完成',bellLab:'按鈴',bellAria:'按鈴,打開窗口看最新作品',
+ stageAria:'打廣告小遊戲:點廣告,貓會衝過去打掉',hint:'點廣告,貓會幫你打掉',today:'今天打掉',newsH:'最新資訊',faqH:'常被問的',
+ q1:'onholdlab 是什麼?',a1:'一個人用 AI 把想法做成作品的地方。還沒完成的作品,也會先放在這裡讓你試。',
+ q2:'要付錢嗎?',a2:'目前全部免費,打開瀏覽器就能玩,不用下載、不用註冊。',
+ q3:'想合作?',a3:'上面那個舞台保留了合作的位置。想合作或刊登,在下面留言或私訊我們。',
+ askLabel:'直接問,或留下回饋',qPh:'在這裡打字…',send:'送出',qcLabel:'想收到回覆就留聯絡方式',qcPh:'想收到回覆?留 email 或 IG(可不填)',
+ findH:'找到我們',newsAria:'最新資訊,由新到舊',older:'↓ 越往下越舊',artAria:'被打掉的廣告留下的線條',
+ empty:'打掉的廣告會變成線條,住進這裡',cap:'被打掉的廣告,留下的線',clear:'清掉重來',
+ needText:'先打幾個字。',thanks:'收到了,謝謝。',thanksReply:'我們會用你留的方式回覆。',sending:'送出中…',
+ orDm:'也可以<a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">私訊 Instagram</a>。',
+ notConfigured:'回饋功能還沒接上。',rateLimited:'10 分鐘內送太多次了,晚點再試。',invalid:'內容太長或格式不對,縮短一點再送。',network:'沒有送出去,可能是網路問題。',
+ adAria:'打掉廣告:',other:'English',
+ types:{'遊戲':'遊戲','工具':'工具','作品':'作品'},
+ ads:['恭喜!你是第 1,000,000 位訪客','下載更多 RAM','貓砂買一送九十九','附近有 3 個鈴鐺想認識你','限時:免費等待','你的電腦很乾淨(才怪)','點這裡變有錢','一鍵清除煩惱']
+},en:{
+ title:'onholdlab · The Waiting Room',desc:'onholdlab, The Waiting Room: one person turning ideas into things with AI.',
+ brandSub:'The Waiting Room',latestLab:'Just finished',bellLab:'Ring',bellAria:'Ring the bell to open the window and see the latest work',
+ stageAria:'Ad-smashing mini game: tap an ad and the cat runs over to knock it out',hint:'Tap an ad. The cat will knock it out.',today:'Smashed today',newsH:'Latest',faqH:'Often asked',
+ q1:'What is onholdlab?',a1:'One person turning ideas into things with AI. Unfinished works go up here first, so you can try them early.',
+ q2:'Does it cost anything?',a2:'Everything is free for now. It runs in your browser: no download, no sign-up.',
+ q3:'Want to work together?',a3:'The stage above has a spot saved for partners. To collaborate or advertise, leave a message below or DM us.',
+ askLabel:'Ask us, or leave feedback',qPh:'Type here…',send:'Send',qcLabel:'Leave a contact if you want a reply',qcPh:'Want a reply? Leave an email or IG handle (optional)',
+ findH:'Find us',newsAria:'Latest works, newest first',older:'↓ Older further down',artAria:'Lines left behind by smashed ads',
+ empty:'Smashed ads turn into lines and live here',cap:'What the smashed ads left behind',clear:'Clear and start over',
+ needText:'Type something first.',thanks:'Got it, thank you.',thanksReply:' We\'ll reply the way you left.',sending:'Sending…',
+ orDm:' You can also <a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">DM us on Instagram</a>.',
+ notConfigured:'Feedback isn\'t connected yet.',rateLimited:'Too many messages in 10 minutes. Try again later.',invalid:'Too long or in the wrong format. Shorten it and try again.',network:'It didn\'t go through, maybe a network problem.',
+ adAria:'Smash ad: ',other:'中文',
+ types:{'遊戲':'Game','工具':'Tool','作品':'Work'},
+ ads:['Congrats! You are visitor #1,000,000','Download more RAM','Cat litter: buy 1, get 99 free','3 bells near you want to meet you','Limited time: free waiting','Your computer is very clean (not)','Click here to get rich','Clear all your worries in one click']
+}};
+let lang=(()=>{const q=new URLSearchParams(location.search).get('lang');if(q==='en'||q==='zh')return q;
+ const s=store.get('ohl_lang',null);if(s==='en'||s==='zh')return s;return /^zh/i.test(navigator.language||'')?'zh':'en'})();
+const t=k=>T[lang][k];
+let newsData=null,applyLangHooks=[];
+function applyLang(){const L=T[lang];
+ document.documentElement.lang=lang==='zh'?'zh-Hant':'en';document.title=L.title;
+ const md=document.querySelector('meta[name="description"]');if(md)md.content=L.desc;
+ document.querySelectorAll('[data-i]').forEach(e=>{e.textContent=L[e.dataset.i]});
+ document.querySelectorAll('[data-i-ph]').forEach(e=>{e.placeholder=L[e.dataset.iPh]});
+ document.querySelectorAll('[data-i-aria]').forEach(e=>{e.setAttribute('aria-label',L[e.dataset.iAria])});
+ const lb=$('lang');lb.textContent=L.other;lb.lang=lang==='zh'?'en':'zh-Hant';
+ applyLangHooks.forEach(f=>f())}
+$('lang').onclick=()=>{lang=lang==='zh'?'en':'zh';store.set('ohl_lang',lang);
+ try{const u=new URL(location.href);u.searchParams.set('lang',lang);history.replaceState(null,'',u)}catch(e){}
+ applyLang()};
+
 /* ---------- 最新資訊 ---------- */
 const NEWS=[
- ['十字路口求生','路口的每個路人都想撞你。','遊戲','https://onholdlab.github.io/crossroadhit/'],
- ['拍手貓','說出那句話,牠就拍手。','遊戲','https://onholdlab.github.io/clapping-cat/'],
- ['閃身犬','被圍攻時反而變強的狗。','遊戲','https://onholdlab.github.io/dodge-dog/'],
- ['工具雙胞胎','檢查你的 skills 和 MCP 工具會不會互搶觸發。','工具','https://onholdlab.github.io/tool-twins/']];
-const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function drawNews(list){
- $('news').innerHTML=list.map((n,i)=>`<li><a href="${esc(n[3])}" target="_blank" rel="noopener"><span class="k">${String(list.length-i).padStart(2,'0')}</span><span class="t">${esc(n[0])}${n[1]?`<small>${esc(n[1])}</small>`:''}</span><span class="ty">${esc(n[2])}</span></a></li>`).join('')+'<li class="old">↓ 越往下越舊</li>';
- if(list[0]){$('latest').textContent=list[0][0];$('latest').href=list[0][3]}}
+ {title:'十字路口',blurb:'去撞人來被撞',title_en:'Crossroad',blurb_en:'Dodge the crowd, or bump into it.',type:'遊戲',url:'https://onholdlab.github.io/crossroad/'},
+ {title:'閃身犬',blurb:'倖存割草',title_en:'Dodge Dog',blurb_en:'Survive the swarm.',type:'遊戲',url:'https://onholdlab.github.io/dodge-dog/'},
+ {title:'拍手貓',blurb:'說出那句話,牠就拍手。',title_en:'Clapping Cat',blurb_en:'Say the words and it claps.',type:'遊戲',url:'https://onholdlab.github.io/clapping-cat/'},
+ {title:'工具雙胞胎',blurb:'檢查你的 skills 和 MCP 工具會不會互搶觸發。',title_en:'Tool Twins',blurb_en:'Check whether your Claude skills and MCP tools compete for the same requests.',type:'工具',url:'https://onholdlab.github.io/tool-twins/'}];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* 英文頁:作品有英文名稱/介紹就用,沒有就顯示中文 */
+function drawNews(list){newsData=list;
+ const pick=n=>lang==='en'&&n.title_en?[n.title_en,n.blurb_en||'']:[n.title,n.blurb];
+ $('news').innerHTML=list.map((n,i)=>{const[ti,bl]=pick(n);return `<li><a href="${esc(n.url)}" target="_blank" rel="noopener"><span class="k">${String(list.length-i).padStart(2,'0')}</span><span class="t">${esc(ti)}${bl?`<small>${esc(bl)}</small>`:''}</span><span class="ty">${esc(t('types')[n.type]||n.type)}</span></a></li>`}).join('')+`<li class="old">${esc(t('older'))}</li>`;
+ if(list[0]){$('latest').textContent=pick(list[0])[0];$('latest').href=list[0].url}}
+applyLangHooks.push(()=>{if(newsData)drawNews(newsData)});
 drawNews(NEWS);
 /* works.json 由 GitHub Action 自動產生:所有開了 Pages 的公開 repo。拿不到就保留上面的備用清單。 */
 fetch('works.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(d=>{
- if(d&&Array.isArray(d.works)&&d.works.length)drawNews(d.works.map(w=>[w.title,w.blurb,w.type,w.url]))}).catch(()=>{});
+ if(d&&Array.isArray(d.works)&&d.works.length)drawNews(d.works)}).catch(()=>{});
 
 /* ---------- 窗口與鈴 ---------- */
 let called=store.get('ohl_num',41),winT=0;
@@ -306,23 +363,22 @@ $('latest').addEventListener('blur',()=>{clearTimeout(winT);winT=setTimeout(()=>
 /* ---------- 提問 ---------- */
 $('faq').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
  const on=b.getAttribute('aria-pressed')!=='true';document.querySelectorAll('#faq button').forEach(x=>x.setAttribute('aria-pressed','false'));
- b.setAttribute('aria-pressed',on);$('ans').textContent=on?b.dataset.a:''});
-const IG='https://ig.me/m/onholdlab';
+ b.setAttribute('aria-pressed',on);$('ans').textContent=on?t(b.dataset.ia):''});
+applyLangHooks.push(()=>{const b=document.querySelector('#faq button[aria-pressed="true"]');$('ans').textContent=b?t(b.dataset.ia):''});
 $('qform').addEventListener('submit',e=>{e.preventDefault();
- const note=$('qnote'),btn=$('send'),t=$('q').value.trim(),c=$('qc').value.trim();note.classList.remove('ok');
- if(!t){note.textContent='先打幾個字。';$('q').focus();return}
- if($('qhp').value){note.textContent='收到了,謝謝。';note.classList.add('ok');$('q').value='';return}
- const fallback=msg=>{note.innerHTML=msg+'也可以<a href="'+IG+'" target="_blank" rel="noopener">私訊 Instagram</a>。'};
- if(!OHLFeedback.configured()){fallback('回饋功能還沒接上。');return}
- btn.disabled=true;note.textContent='送出中…';
- OHLFeedback.send({source:'home',kind:'message',message:t,contact:c}).then(r=>{btn.disabled=false;
-  if(r.ok){note.textContent='收到了,謝謝。'+(c?'我們會用你留的方式回覆。':'');note.classList.add('ok');$('q').value='';$('qc').value='';return}
-  if(r.reason==='rate_limited')fallback('10 分鐘內送太多次了,晚點再試。');
-  else if(r.reason==='invalid')fallback('內容太長或格式不對,縮短一點再送。');
-  else fallback('沒有送出去,可能是網路問題。');});
+ const note=$('qnote'),btn=$('send'),q=$('q').value.trim(),c=$('qc').value.trim();note.classList.remove('ok');
+ if(!q){note.textContent=t('needText');$('q').focus();return}
+ if($('qhp').value){note.textContent=t('thanks');note.classList.add('ok');$('q').value='';return}
+ const fallback=k=>{note.innerHTML=esc(t(k))+t('orDm')};
+ if(!OHLFeedback.configured()){fallback('notConfigured');return}
+ btn.disabled=true;note.textContent=t('sending');
+ OHLFeedback.send({source:lang==='en'?'home-en':'home',kind:'message',message:q,contact:c}).then(r=>{btn.disabled=false;
+  if(r.ok){note.textContent=t('thanks')+(c?t('thanksReply'):'');note.classList.add('ok');$('q').value='';$('qc').value='';return}
+  if(r.reason==='rate_limited')fallback('rateLimited');
+  else if(r.reason==='invalid')fallback('invalid');
+  else fallback('network');});
 });
 /* ---------- 打廣告 ---------- */
-const ADS=['恭喜!你是第 1,000,000 位訪客','下載更多 RAM','貓砂買一送九十九','附近有 3 個鈴鐺想認識你','限時:免費等待','你的電腦很乾淨(才怪)','點這裡變有錢','一鍵清除煩惱'];
 const stage=$('stage'),adsEl=$('ads'),cat=$('cat'),fx=$('fx');
 let ads=[],queue=[],adSeq=0,count=0;
 let cx=40,cy=0,tx=40,ty=0,mode='idle',busy=null,flip=1,wanderT=0;
@@ -337,10 +393,10 @@ function slots(){const W=stage.clientWidth,H=stage.clientHeight,aw=adsEl.firstCh
 function spawn(){if(ads.length>=(stage.clientWidth<760?3:4))return;
  const used=new Set(ads.map(a=>a.slot)),sl=slots(),free=sl.map((_,i)=>i).filter(i=>!used.has(i));if(!free.length)return;
  const si=free[(Math.random()*free.length)|0],el=document.createElement('button');
- el.type='button';el.className='ad pop';const txt=ADS[adSeq++%ADS.length];
- el.innerHTML=`<span class="bar" aria-hidden="true"><i></i><i></i></span><b>${txt}</b>`;el.setAttribute('aria-label','打掉廣告:'+txt);
+ el.type='button';el.className='ad pop';const ai=adSeq++%T.zh.ads.length,txt=t('ads')[ai];
+ el.innerHTML=`<span class="bar" aria-hidden="true"><i></i><i></i></span><b>${esc(txt)}</b>`;el.setAttribute('aria-label',t('adAria')+txt);
  adsEl.appendChild(el);const[x,y]=sl[si];el.style.left=x+'px';el.style.top=y+'px';
- const a={el,slot:si,born:performance.now(),txt};ads.push(a);
+ const a={el,slot:si,born:performance.now(),txt,ai};ads.push(a);
  el.addEventListener('click',()=>target(a));}
 function target(a){if(a.dead||queue.includes(a)||busy===a)return;a.el.classList.add('tgt');queue.push(a);$('hint').hidden=true}
 function impact(a){a.dead=true;const r=a.el.getBoundingClientRect(),s=stage.getBoundingClientRect();
@@ -372,6 +428,7 @@ function addArt(o,fresh){const art=$('art'),NS='http://www.w3.org/2000/svg',g=do
  art.appendChild(g);$('artn').textContent=art.childNodes.length;$('empty').hidden=true;
  if(fresh&&!RM)g.animate([{opacity:0},{opacity:1}],{duration:300})}
 store.get('ohl_art',[]).forEach(o=>addArt(o,false));
+applyLangHooks.push(()=>ads.forEach(a=>{if(a.dead)return;a.txt=t('ads')[a.ai];a.el.querySelector('b').textContent=a.txt;a.el.setAttribute('aria-label',t('adAria')+a.txt)}));
 $('clear').onclick=()=>{$('art').innerHTML='';$('artn').textContent=0;$('empty').hidden=false;store.set('ohl_art',[])};
 
 function tick(now){
@@ -396,6 +453,7 @@ layoutCat();cx=30;cy=floorY();
 spawn();spawn();setTimeout(spawn,300);
 setInterval(()=>{if(!document.hidden)spawn()},2800);
 addEventListener('resize',()=>{layoutCat();const sl=slots();ads.forEach(a=>{if(!a.dead){a.el.style.left=sl[a.slot%sl.length][0]+'px';a.el.style.top=sl[a.slot%sl.length][1]+'px'}})});
+applyLang();
 ready=true;requestAnimationFrame(tick);
 })();
 </script>
