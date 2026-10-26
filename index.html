@@ -129,6 +129,8 @@ button{font:inherit;color:inherit}
 .empty{position:absolute;inset:0;display:grid;place-items:center;margin:0;padding:16px;text-align:center;font:500 14px/1.5 var(--f-body);color:var(--muted);pointer-events:none}
 .show figcaption{font:400 13px/1.4 var(--f-body);color:var(--muted);display:flex;justify-content:space-between;gap:8px}
 .show figcaption b{font:800 16px/1 var(--f-num);font-variant-numeric:tabular-nums;color:var(--ink)}
+.foot{display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;align-items:center;font:500 13px/1.4 var(--f-body);color:var(--muted);padding-top:18px;border-top:1px solid var(--line)}
+.foot a{min-height:44px;display:inline-grid;place-items:center;text-underline-offset:4px}
 .show button{border:0;background:none;text-decoration:underline;cursor:pointer;min-height:44px;color:var(--muted);font-size:13px;padding:0}
 
 /* ================= A 叫號候診 ================= */
@@ -269,6 +271,7 @@ body{min-height:calc(100vh + 2px)}
    <button type="button" id="clear" data-i="clear">清掉重來</button>
   </figure>
  </div>
+ <footer class="foot"><a href="privacy/" id="privLink" data-i="privacy">隱私權政策</a><span>© 2026 onholdlab</span></footer>
 </div>
 
 <script src="js/feedback.js"></script>
@@ -296,7 +299,7 @@ const T={zh:{
  needText:'先打幾個字。',thanks:'收到了,謝謝。',thanksReply:'我們會用你留的方式回覆。',sending:'送出中…',
  orDm:'也可以<a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">私訊 Instagram</a>。',
  notConfigured:'回饋功能還沒接上。',rateLimited:'10 分鐘內送太多次了,晚點再試。',invalid:'內容太長或格式不對,縮短一點再送。',network:'沒有送出去,可能是網路問題。',
- adAria:'打掉廣告:',other:'English',
+ adAria:'打掉廣告:',other:'English',privacy:'隱私權政策',
  types:{'遊戲':'遊戲','工具':'工具','作品':'作品'},
  ads:['恭喜!你是第 1,000,000 位訪客','下載更多 RAM','貓砂買一送九十九','附近有 3 個鈴鐺想認識你','限時:免費等待','你的電腦很乾淨(才怪)','點這裡變有錢','一鍵清除煩惱']
 },en:{
@@ -312,7 +315,7 @@ const T={zh:{
  needText:'Type something first.',thanks:'Got it, thank you.',thanksReply:' We\'ll reply the way you left.',sending:'Sending…',
  orDm:' You can also <a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">DM us on Instagram</a>.',
  notConfigured:'Feedback isn\'t connected yet.',rateLimited:'Too many messages in 10 minutes. Try again later.',invalid:'Too long or in the wrong format. Shorten it and try again.',network:'It didn\'t go through, maybe a network problem.',
- adAria:'Smash ad: ',other:'中文',
+ adAria:'Smash ad: ',other:'中文',privacy:'Privacy policy',
  types:{'遊戲':'Game','工具':'Tool','作品':'Work'},
  ads:['Congrats! You are visitor #1,000,000','Download more RAM','Cat litter: buy 1, get 99 free','3 bells near you want to meet you','Limited time: free waiting','Your computer is very clean (not)','Click here to get rich','Clear all your worries in one click']
 }};
@@ -326,6 +329,7 @@ function applyLang(){const L=T[lang];
  document.querySelectorAll('[data-i]').forEach(e=>{e.textContent=L[e.dataset.i]});
  document.querySelectorAll('[data-i-ph]').forEach(e=>{e.placeholder=L[e.dataset.iPh]});
  document.querySelectorAll('[data-i-aria]').forEach(e=>{e.setAttribute('aria-label',L[e.dataset.iAria])});
+ $('privLink').href=lang==='en'?'privacy/?lang=en':'privacy/';
  const lb=$('lang');lb.textContent=L.other;lb.lang=lang==='zh'?'en':'zh-Hant';
  applyLangHooks.forEach(f=>f())}
 $('lang').onclick=()=>{lang=lang==='zh'?'en':'zh';store.set('ohl_lang',lang);
