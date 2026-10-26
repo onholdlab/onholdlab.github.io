@@ -40,6 +40,8 @@ button{font:inherit;color:inherit}
 .win .in{display:grid;gap:2px;padding:6px}
 .win .lab{font:500 12px/1.2 var(--f-body);color:var(--muted)}
 .win .num{display:none}
+.win{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.win .lab.say{color:#fff;font-weight:700;white-space:pre-line;line-height:1.35}
 .win a{font:700 15px/1.3 var(--f-disp);text-decoration:none;min-height:44px;display:grid;place-items:center;padding:0 8px}
 .win a:hover{text-decoration:underline}
 .shutter{position:absolute;inset:0;transition:transform .55s cubic-bezier(.3,.7,.2,1);background:repeating-linear-gradient(var(--line) 0 2px,var(--panel) 2px 11px);opacity:.92}
@@ -143,7 +145,7 @@ button{font:inherit;color:inherit}
 [data-d="a"] .win{height:118px;background:#151a18;border-color:#151a18;border-radius:6px;box-shadow:0 0 0 4px #9aa8a2}
 [data-d="a"] .win .lab{color:#ff9d93}
 [data-d="a"] .win a{color:#ffb4ac}
-[data-d="a"] .win .num{display:block;font:800 40px/1 var(--f-num);font-variant-numeric:tabular-nums;color:#ff3b2f;letter-spacing:.06em;
+[data-d="a"] .win .num{display:block;border:0;background:none;padding:0;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;font:800 40px/1 var(--f-num);font-variant-numeric:tabular-nums;color:#ff3b2f;letter-spacing:.06em;
   -webkit-mask:radial-gradient(circle,#000 58%,transparent 62%) 0 0/4px 4px;mask:radial-gradient(circle,#000 58%,transparent 62%) 0 0/4px 4px;text-shadow:0 0 10px #ff3b2f}
 [data-d="a"] .shutter{background:repeating-linear-gradient(#2b302e 0 2px,#4a524f 2px 10px)}
 [data-d="a"] .news-h{font-weight:900;letter-spacing:.04em}
@@ -156,6 +158,10 @@ button{font:inherit;color:inherit}
 [data-d="a"] .ad:nth-child(3n+2){--ad-bg:#ff7a59}
 [data-d="a"] .ad:nth-child(3n){--ad-bg:#ffffff;--ad-bar:#1f6fd6}
 
+@media (min-width:761px){
+  [data-d="a"] .hud{top:46px;right:96px}
+  [data-d="a"] .hint{top:46px;left:96px}
+}
 @media (max-width:760px){
   .top{grid-template-columns:1fr auto}
   .brand{grid-column:1/-1}
@@ -197,7 +203,7 @@ body{min-height:calc(100vh + 2px)}
   <div class="brand">onholdlab<small data-i="brandSub">等候空間</small><button class="lang" id="lang" type="button" lang="en">English</button></div>
   <div class="winbox">
    <div class="win" id="win">
-    <div class="in"><span class="num" id="num" aria-hidden="true"></span><span class="lab" data-i="latestLab">最新完成</span><a id="latest" href="https://onholdlab.github.io/crossroadhit/" target="_blank" rel="noopener" tabindex="-1">十字路口求生</a></div>
+    <div class="in"><button class="num" id="num" type="button" data-i-aria="numAria" aria-label="今天有新作嗎?"></button><span class="lab" data-i="latestLab">最新完成</span><a id="latest" href="https://onholdlab.github.io/crossroadhit/" target="_blank" rel="noopener" tabindex="-1">十字路口求生</a></div>
     <div class="shutter" aria-hidden="true"><span class="sh-l" data-i="bellLab">按鈴</span></div>
    </div>
    <button class="bell" id="bell" type="button" aria-label="按鈴,打開窗口看最新作品" data-i-aria="bellAria" aria-expanded="false" aria-controls="win">
@@ -299,9 +305,9 @@ const T={zh:{
  needText:'先打幾個字。',thanks:'收到了,謝謝。',thanksReply:'我們會用你留的方式回覆。',sending:'送出中…',
  orDm:'也可以<a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">私訊 Instagram</a>。',
  notConfigured:'回饋功能還沒接上。',rateLimited:'10 分鐘內送太多次了,晚點再試。',invalid:'內容太長或格式不對,縮短一點再送。',network:'沒有送出去,可能是網路問題。',
- adAria:'打掉廣告:',other:'English',privacy:'隱私權政策',
+ adAria:'打掉廣告:',other:'English',numAria:'今天有新作嗎?',newToday:'今天有新作!',noneToday:'今天還沒有新作',lastAgo:n=>'上一件:'+n+' 天前',privacy:'隱私權政策',
  types:{'遊戲':'遊戲','工具':'工具','作品':'作品'},
- ads:['恭喜!你是第 1,000,000 位訪客','下載更多 RAM','貓砂買一送九十九','附近有 3 個鈴鐺想認識你','限時:免費等待','你的電腦很乾淨(才怪)','點這裡變有錢','一鍵清除煩惱']
+ ads:['Bro 你認真的嗎居然還沒玩我的遊戲','下載更多 RAM','貓砂買一送九十九','附近有 3 個鈴鐺想認識你','限時:免費等待','你的電腦很乾淨(才怪)','點這裡變有錢','一鍵清除煩惱']
 },en:{
  title:'onholdlab · The Waiting Room',desc:'onholdlab, The Waiting Room: one person turning ideas into things with AI.',
  brandSub:'The Waiting Room',latestLab:'Just finished',bellLab:'Ring',bellAria:'Ring the bell to open the window and see the latest work',
@@ -315,9 +321,9 @@ const T={zh:{
  needText:'Type something first.',thanks:'Got it, thank you.',thanksReply:' We\'ll reply the way you left.',sending:'Sending…',
  orDm:' You can also <a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">DM us on Instagram</a>.',
  notConfigured:'Feedback isn\'t connected yet.',rateLimited:'Too many messages in 10 minutes. Try again later.',invalid:'Too long or in the wrong format. Shorten it and try again.',network:'It didn\'t go through, maybe a network problem.',
- adAria:'Smash ad: ',other:'中文',privacy:'Privacy policy',
+ adAria:'Smash ad: ',other:'中文',numAria:'Anything new today?',newToday:'New work today!',noneToday:'Nothing new today',lastAgo:n=>'Last one: '+n+(n===1?' day ago':' days ago'),privacy:'Privacy policy',
  types:{'遊戲':'Game','工具':'Tool','作品':'Work'},
- ads:['Congrats! You are visitor #1,000,000','Download more RAM','Cat litter: buy 1, get 99 free','3 bells near you want to meet you','Limited time: free waiting','Your computer is very clean (not)','Click here to get rich','Clear all your worries in one click']
+ ads:['Bro. You still haven\'t played my games?','Download more RAM','Cat litter: buy 1, get 99 free','3 bells near you want to meet you','Limited time: free waiting','Your computer is very clean (not)','Click here to get rich','Clear all your worries in one click']
 }};
 let lang=(()=>{const q=new URLSearchParams(location.search).get('lang');if(q==='en'||q==='zh')return q;
  const s=store.get('ohl_lang',null);if(s==='en'||s==='zh')return s;return /^zh/i.test(navigator.language||'')?'zh':'en'})();
@@ -362,6 +368,15 @@ $('bell').onclick=()=>{
  called++;store.set('ohl_num',called);$('num').textContent=String(called).padStart(4,'0');
  const W2=$('win');W2.classList.remove('blink');void W2.offsetWidth;W2.classList.add('blink');W2.classList.add('open');b.setAttribute('aria-expanded','true');$('latest').tabIndex=0;
  clearTimeout(winT);winT=setTimeout(()=>{if(document.activeElement===$('latest'))return;$('win').classList.remove('open');b.setAttribute('aria-expanded','false');$('latest').tabIndex=-1},6000)};
+/* 點叫號數字:告訴你今天有沒有新作(看作品清單裡最新一件的建立日期) */
+let sayT=0;
+$('num').onclick=()=>{const lab=document.querySelector('.win .lab'),w=$('win');
+ const d=newsData&&newsData[0]&&newsData[0].created?new Date(newsData[0].created):null;
+ const day=x=>{const y=new Date(x);y.setHours(0,0,0,0);return y};
+ const ago=d?Math.round((day(new Date())-day(d))/864e5):null;
+ lab.textContent=ago===0?t('newToday'):(ago==null?t('noneToday'):t('noneToday')+'\n'+t('lastAgo')(ago));
+ lab.classList.add('say');w.classList.remove('blink');void w.offsetWidth;w.classList.add('blink');
+ clearTimeout(sayT);sayT=setTimeout(()=>{lab.classList.remove('say');lab.textContent=t('latestLab')},4000)};
 $('latest').addEventListener('blur',()=>{clearTimeout(winT);winT=setTimeout(()=>{$('win').classList.remove('open');$('bell').setAttribute('aria-expanded','false');$('latest').tabIndex=-1},2500)});
 
 /* ---------- 提問 ---------- */
