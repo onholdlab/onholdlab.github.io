@@ -1,11 +1,11 @@
 {
- "updated": "2026-10-26T15:04:37.569Z",
+ "updated": "2026-10-26T19:02:56.645Z",
  "works": [
   {
    "title": "8棒接力",
-   "blurb": "[demo] 猜哪一棒是AI畫的",
+   "blurb": "猜哪一棒是AI畫的",
    "title_en": "8-Leg Relay",
-   "blurb_en": "[demo] Guess which leg the AI drew",
+   "blurb_en": "Guess which leg the AI drew",
    "type": "遊戲",
    "url": "https://onholdlab.github.io/relay-ai-guess/",
    "repo": "relay-ai-guess",
