@@ -1,9 +1,11 @@
 {
- "updated": "2026-10-26T07:06:19.116Z",
+ "updated": "2026-10-26T08:58:46.451Z",
  "works": [
   {
    "title": "crossroad",
    "blurb": "去撞人來被撞",
+   "title_en": "",
+   "blurb_en": "",
    "type": "遊戲",
    "url": "https://onholdlab.github.io/crossroad/",
    "repo": "crossroad",
@@ -12,6 +14,8 @@
   {
    "title": "dodge-dog",
    "blurb": "閃身犬-倖存割草",
+   "title_en": "",
+   "blurb_en": "",
    "type": "遊戲",
    "url": "https://onholdlab.github.io/dodge-dog/",
    "repo": "dodge-dog",
@@ -20,6 +24,8 @@
   {
    "title": "clapping-cat",
    "blurb": "聽到你指令就clappingcat",
+   "title_en": "",
+   "blurb_en": "",
    "type": "遊戲",
    "url": "https://onholdlab.github.io/clapping-cat/",
    "repo": "clapping-cat",
@@ -28,6 +34,8 @@
   {
    "title": "tool-twins",
    "blurb": "Check whether your Claude skills and MCP tools compete for the same requests. 查看你的 skills 會不會互相搶觸發 ·",
+   "title_en": "",
+   "blurb_en": "",
    "type": "工具",
    "url": "https://onholdlab.github.io/tool-twins/",
    "repo": "tool-twins",
