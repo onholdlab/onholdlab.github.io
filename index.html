@@ -204,7 +204,7 @@ body{min-height:calc(100vh + 2px)}
 <body>
 <div class="wrap">
  <header class="top">
-  <div class="brand">onholdlab<small data-i="brandSub">等候空間</small><button class="lang" id="lang" type="button" lang="en">English</button></div>
+  <div class="brand">onholdlab<small data-i="brandSub">等候空間</small><select class="lang" id="lang" aria-label="Language"></select></div>
   <div class="winbox">
    <div class="win" id="win">
     <div class="in"><button class="num" id="num" type="button" data-i-aria="numAria" aria-label="今天有新作嗎?"></button><span class="lab" data-i="latestLab">最新完成</span><a id="latest" href="https://onholdlab.github.io/crossroadhit/" target="_blank" rel="noopener" tabindex="-1">十字路口求生</a></div>
@@ -328,22 +328,104 @@ const T={zh:{
  adAria:'Smash ad: ',other:'中文',numAria:'Anything new today?',newToday:'New work today!',noneToday:'Nothing new today',lastAgo:n=>'Last one: '+n+(n===1?' day ago':' days ago'),privacy:'Privacy policy',
  types:{'遊戲':'Game','工具':'Tool','作品':'Work'},
  ads:['Bro. You still haven\'t played my games?','Download more RAM','Cat litter: buy 1, get 99 free','3 bells near you want to meet you','Limited time: free waiting','Your computer is very clean (not)','Click here to get rich','Clear all your worries in one click']
+},ja:{
+ title:'onholdlab 待合室',desc:'onholdlab 待合室：ひとりでAIを使い、アイデアを作品にしている場所。',
+ brandSub:'待合室',latestLab:'できたて',bellLab:'ベル',bellAria:'ベルを鳴らして窓を開け、最新作を見る',
+ stageAria:'広告たたきミニゲーム：広告をタップすると猫が飛んでいってたたき落とす',hint:'広告をタップすると、猫がたたき落とします',today:'今日たたいた数',newsH:'最新情報',faqH:'よくある質問',
+ q1:'onholdlabって何？',a1:'ひとりでAIを使って、アイデアを作品にしている場所です。完成前の作品も、先にここで試せます。',
+ q2:'お金はかかる？',a2:'今はすべて無料。ブラウザで開くだけで遊べて、ダウンロードも登録もいりません。',
+ q3:'一緒に何かやりたい？',a3:'上のステージには協力相手のための場所を空けてあります。コラボや掲載のご相談は、下のフォームかDMでどうぞ。',
+ askLabel:'質問や感想をどうぞ',qPh:'ここに入力…',send:'送信',qcLabel:'返信がほしい場合は連絡先を',qcPh:'返信がほしい？メールかIGを（任意）',
+ findH:'見つけてね',newsAria:'最新情報（新しい順）',older:'↓ 下に行くほど古い',artAria:'たたかれた広告が残した線',
+ empty:'たたいた広告は線になって、ここに住みつきます',cap:'たたかれた広告が残した線',clear:'消してやり直す',
+ needText:'まず何か入力してください。',thanks:'届きました、ありがとう。',thanksReply:'残してくれた方法で返信します。',sending:'送信中…',
+ orDm:'<a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">InstagramのDM</a>でもどうぞ。',
+ notConfigured:'フィードバック機能はまだつながっていません。',rateLimited:'10分以内に送りすぎです。少し時間をおいてどうぞ。',invalid:'長すぎるか形式が違います。短くしてもう一度。',network:'送れませんでした。通信の問題かもしれません。',
+ adAria:'広告をたたく：',numAria:'今日は新作ある？',newToday:'今日は新作あり！',noneToday:'今日はまだ新作なし',lastAgo:n=>'前回：'+n+'日前',privacy:'プライバシーポリシー',
+ types:{'遊戲':'ゲーム','工具':'ツール','作品':'作品'},
+ ads:['ねえ、まだ僕のゲーム遊んでないの？','RAMをもっとダウンロード','猫砂1個買うと99個おまけ','近くのベル3個があなたに会いたがっています','期間限定：無料でお待ちいただけます','あなたのPCはとてもきれいです（うそ）','ここを押してお金持ちに','ワンクリックで悩みを全部消去']
+},ko:{
+ title:'onholdlab 대기실',desc:'onholdlab 대기실: 혼자 AI로 아이디어를 작품으로 만드는 곳.',
+ brandSub:'대기실',latestLab:'방금 완성',bellLab:'벨',bellAria:'벨을 눌러 창을 열고 최신 작품 보기',
+ stageAria:'광고 때리기 미니게임: 광고를 누르면 고양이가 달려가 쳐 낸다',hint:'광고를 누르면 고양이가 쳐 내요',today:'오늘 쳐 낸 수',newsH:'최신 소식',faqH:'자주 묻는 질문',
+ q1:'onholdlab이 뭐예요?',a1:'혼자 AI로 아이디어를 작품으로 만드는 곳이에요. 아직 완성 전인 작품도 여기서 먼저 해 볼 수 있어요.',
+ q2:'돈이 드나요?',a2:'지금은 모두 무료예요. 브라우저로 열면 바로 되고, 다운로드나 가입이 필요 없어요.',
+ q3:'함께하고 싶다면?',a3:'위 무대에 협업 자리를 비워 뒀어요. 협업이나 게재 문의는 아래에 남기거나 DM 주세요.',
+ askLabel:'질문이나 의견을 남겨 주세요',qPh:'여기에 입력…',send:'보내기',qcLabel:'답장을 받으려면 연락처를 남겨 주세요',qcPh:'답장을 원하나요? 이메일이나 IG (선택)',
+ findH:'우리를 찾는 곳',newsAria:'최신 소식, 최신순',older:'↓ 아래로 갈수록 오래됨',artAria:'쳐 낸 광고가 남긴 선',
+ empty:'쳐 낸 광고는 선이 되어 여기 살아요',cap:'쳐 낸 광고가 남긴 선',clear:'지우고 다시 하기',
+ needText:'먼저 몇 글자 입력해 주세요.',thanks:'잘 받았어요, 고마워요.',thanksReply:' 남겨 준 방법으로 답장할게요.',sending:'보내는 중…',
+ orDm:' <a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">Instagram DM</a>으로도 괜찮아요.',
+ notConfigured:'피드백 기능이 아직 연결되지 않았어요.',rateLimited:'10분 안에 너무 많이 보냈어요. 잠시 후 다시 해 주세요.',invalid:'너무 길거나 형식이 맞지 않아요. 줄여서 다시 보내 주세요.',network:'보내지 못했어요. 네트워크 문제일 수 있어요.',
+ adAria:'광고 쳐 내기: ',numAria:'오늘 새 작품 있나요?',newToday:'오늘 새 작품 있어요!',noneToday:'오늘은 아직 새 작품 없음',lastAgo:n=>'지난 작품: '+n+'일 전',privacy:'개인정보 처리방침',
+ types:{'遊戲':'게임','工具':'도구','作品':'작품'},
+ ads:['형, 아직도 내 게임 안 해 봤어?','RAM 더 다운로드하기','고양이 모래 1+99','근처 벨 3개가 당신을 만나고 싶어 해요','기간 한정: 무료 대기','당신의 컴퓨터는 아주 깨끗합니다 (아님)','여기 누르면 부자 됨','클릭 한 번으로 고민 전부 삭제']
+},es:{
+ title:'onholdlab · La sala de espera',desc:'onholdlab, la sala de espera: una persona convirtiendo ideas en obras con IA.',
+ brandSub:'La sala de espera',latestLab:'Recién terminado',bellLab:'Timbre',bellAria:'Toca el timbre para abrir la ventana y ver lo último',
+ stageAria:'Minijuego de anuncios: toca un anuncio y el gato corre a tirarlo',hint:'Toca un anuncio. El gato lo tira.',today:'Tirados hoy',newsH:'Lo último',faqH:'Preguntas frecuentes',
+ q1:'¿Qué es onholdlab?',a1:'Una persona convirtiendo ideas en obras con IA. Las obras sin terminar se publican aquí primero, para que las pruebes antes.',
+ q2:'¿Cuesta algo?',a2:'Por ahora todo es gratis. Funciona en el navegador: sin descargas ni registro.',
+ q3:'¿Quieres colaborar?',a3:'El escenario de arriba tiene un hueco reservado para colaboraciones. Para colaborar o anunciarte, deja un mensaje abajo o escríbenos por DM.',
+ askLabel:'Pregúntanos o deja tu opinión',qPh:'Escribe aquí…',send:'Enviar',qcLabel:'Deja un contacto si quieres respuesta',qcPh:'¿Quieres respuesta? Deja un email o tu IG (opcional)',
+ findH:'Encuéntranos',newsAria:'Lo último, de más nuevo a más antiguo',older:'↓ Más antiguo hacia abajo',artAria:'Líneas que dejaron los anuncios tirados',
+ empty:'Los anuncios tirados se vuelven líneas y viven aquí',cap:'Lo que dejaron los anuncios tirados',clear:'Borrar y empezar de nuevo',
+ needText:'Escribe algo primero.',thanks:'Recibido, ¡gracias!',thanksReply:' Te responderemos por donde nos dejaste.',sending:'Enviando…',
+ orDm:' También puedes <a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">escribirnos por Instagram</a>.',
+ notConfigured:'Las opiniones aún no están conectadas.',rateLimited:'Demasiados mensajes en 10 minutos. Prueba más tarde.',invalid:'Demasiado largo o con formato incorrecto. Acórtalo y vuelve a intentarlo.',network:'No se envió; puede ser un problema de red.',
+ adAria:'Tirar anuncio: ',numAria:'¿Hay algo nuevo hoy?',newToday:'¡Obra nueva hoy!',noneToday:'Hoy aún no hay nada nuevo',lastAgo:n=>'La última: hace '+n+(n===1?' día':' días'),privacy:'Política de privacidad',
+ types:{'遊戲':'Juego','工具':'Herramienta','作品':'Obra'},
+ ads:['Bro, ¿en serio aún no has jugado a mis juegos?','Descarga más RAM','Arena para gatos: compra 1 y llévate 99','3 timbres cerca de ti quieren conocerte','Por tiempo limitado: espera gratis','Tu ordenador está muy limpio (no)','Haz clic aquí y hazte rico','Borra todas tus preocupaciones con un clic']
+},de:{
+ title:'onholdlab · Das Wartezimmer',desc:'onholdlab, das Wartezimmer: eine Person, die mit KI Ideen in Werke verwandelt.',
+ brandSub:'Das Wartezimmer',latestLab:'Gerade fertig',bellLab:'Klingel',bellAria:'Klingeln, um das Fenster zu öffnen und das neueste Werk zu sehen',
+ stageAria:'Werbe-Minispiel: Tippe auf eine Anzeige und die Katze haut sie weg',hint:'Tippe auf eine Anzeige. Die Katze haut sie weg.',today:'Heute weggehauen',newsH:'Neuestes',faqH:'Häufige Fragen',
+ q1:'Was ist onholdlab?',a1:'Eine Person, die mit KI Ideen in Werke verwandelt. Unfertiges landet zuerst hier, damit du es früh ausprobieren kannst.',
+ q2:'Kostet das etwas?',a2:'Alles ist im Moment kostenlos. Läuft im Browser: kein Download, keine Anmeldung.',
+ q3:'Lust auf Zusammenarbeit?',a3:'Auf der Bühne oben ist ein Platz für Partner reserviert. Für Kooperationen oder Werbung schreib unten eine Nachricht oder eine DM.',
+ askLabel:'Frag uns oder gib Feedback',qPh:'Hier tippen…',send:'Senden',qcLabel:'Hinterlass einen Kontakt, wenn du eine Antwort willst',qcPh:'Antwort gewünscht? E-Mail oder IG angeben (optional)',
+ findH:'Hier findest du uns',newsAria:'Neueste Werke, neueste zuerst',older:'↓ Weiter unten wird es älter',artAria:'Linien, die weggehauene Anzeigen hinterlassen haben',
+ empty:'Weggehauene Anzeigen werden zu Linien und wohnen hier',cap:'Was die weggehauenen Anzeigen hinterließen',clear:'Löschen und neu anfangen',
+ needText:'Schreib zuerst etwas.',thanks:'Angekommen, danke!',thanksReply:' Wir antworten auf dem Weg, den du angegeben hast.',sending:'Wird gesendet…',
+ orDm:' Du kannst uns auch <a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">auf Instagram schreiben</a>.',
+ notConfigured:'Feedback ist noch nicht angeschlossen.',rateLimited:'Zu viele Nachrichten in 10 Minuten. Versuch es später noch einmal.',invalid:'Zu lang oder falsches Format. Kürzen und noch einmal senden.',network:'Hat nicht geklappt, vielleicht ein Netzwerkproblem.',
+ adAria:'Anzeige weghauen: ',numAria:'Gibt es heute etwas Neues?',newToday:'Heute ein neues Werk!',noneToday:'Heute noch nichts Neues',lastAgo:n=>'Das letzte: vor '+n+(n===1?' Tag':' Tagen'),privacy:'Datenschutz',
+ types:{'遊戲':'Spiel','工具':'Tool','作品':'Werk'},
+ ads:['Bro. Du hast meine Spiele immer noch nicht gespielt?','Mehr RAM herunterladen','Katzenstreu: kauf 1, krieg 99 gratis','3 Klingeln in deiner Nähe wollen dich kennenlernen','Nur kurze Zeit: gratis warten','Dein Computer ist sehr sauber (nicht)','Hier klicken und reich werden','Alle Sorgen mit einem Klick löschen']
+},fr:{
+ title:'onholdlab · La salle d’attente',desc:'onholdlab, la salle d’attente : une personne qui transforme des idées en œuvres avec l’IA.',
+ brandSub:'La salle d’attente',latestLab:'Tout juste fini',bellLab:'Sonnette',bellAria:'Sonne pour ouvrir la fenêtre et voir la dernière œuvre',
+ stageAria:'Mini-jeu des pubs : touche une pub et le chat court la faire tomber',hint:'Touche une pub. Le chat la fait tomber.',today:'Tombées aujourd’hui',newsH:'Nouveautés',faqH:'Questions fréquentes',
+ q1:'C’est quoi onholdlab ?',a1:'Une personne qui transforme des idées en œuvres avec l’IA. Les œuvres pas encore finies arrivent ici en premier, pour que tu les essaies tôt.',
+ q2:'C’est payant ?',a2:'Tout est gratuit pour l’instant. Ça marche dans le navigateur : rien à télécharger, pas d’inscription.',
+ q3:'Envie de collaborer ?',a3:'La scène du dessus garde une place pour des partenaires. Pour collaborer ou faire de la pub, laisse un message ci-dessous ou écris-nous en DM.',
+ askLabel:'Pose une question ou laisse un avis',qPh:'Écris ici…',send:'Envoyer',qcLabel:'Laisse un contact si tu veux une réponse',qcPh:'Envie d’une réponse ? Laisse un e-mail ou ton IG (facultatif)',
+ findH:'Nous trouver',newsAria:'Nouveautés, de la plus récente à la plus ancienne',older:'↓ Plus ancien en descendant',artAria:'Les lignes laissées par les pubs tombées',
+ empty:'Les pubs tombées deviennent des lignes et vivent ici',cap:'Ce que les pubs tombées ont laissé',clear:'Effacer et recommencer',
+ needText:'Écris d’abord quelque chose.',thanks:'Bien reçu, merci !',thanksReply:' On te répondra par le moyen indiqué.',sending:'Envoi…',
+ orDm:' Tu peux aussi <a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">nous écrire sur Instagram</a>.',
+ notConfigured:'Les avis ne sont pas encore branchés.',rateLimited:'Trop de messages en 10 minutes. Réessaie plus tard.',invalid:'Trop long ou mauvais format. Raccourcis et réessaie.',network:'Ça n’est pas parti, peut-être un souci de réseau.',
+ adAria:'Faire tomber la pub : ',numAria:'Du nouveau aujourd’hui ?',newToday:'Nouvelle œuvre aujourd’hui !',noneToday:'Rien de nouveau aujourd’hui',lastAgo:n=>'La dernière : il y a '+n+(n===1?' jour':' jours'),privacy:'Politique de confidentialité',
+ types:{'遊戲':'Jeu','工具':'Outil','作品':'Œuvre'},
+ ads:['Sérieux, t’as toujours pas joué à mes jeux ?','Télécharge plus de RAM','Litière : 1 achetée, 99 offertes','3 sonnettes près de chez toi veulent te rencontrer','Durée limitée : attente gratuite','Ton ordi est très propre (non)','Clique ici pour devenir riche','Efface tous tes soucis en un clic']
 }};
-let lang=(()=>{const q=new URLSearchParams(location.search).get('lang');if(q==='en'||q==='zh')return q;
- const s=store.get('ohl_lang',null);if(s==='en'||s==='zh')return s;return /^zh/i.test(navigator.language||'')?'zh':'en'})();
+const LANGS=[['zh','繁體中文'],['en','English'],['ja','日本語'],['ko','한국어'],['es','Español'],['de','Deutsch'],['fr','Français']],okL=k=>LANGS.some(x=>x[0]===k);
+let lang=(()=>{const q=new URLSearchParams(location.search).get('lang');if(okL(q))return q;
+ const s=store.get('ohl_lang',null);if(okL(s))return s;const n=(navigator.language||'').toLowerCase(),m=LANGS.find(x=>n.startsWith(x[0]));return m?m[0]:'en'})();
 const t=k=>T[lang][k];
 let newsData=null,applyLangHooks=[];
 function applyLang(){const L=T[lang];
- document.documentElement.lang=lang==='zh'?'zh-Hant':'en';document.title=L.title;
+ document.documentElement.lang=lang==='zh'?'zh-Hant':lang;document.title=L.title;
  const md=document.querySelector('meta[name="description"]');if(md)md.content=L.desc;
  document.querySelectorAll('[data-i]').forEach(e=>{e.textContent=L[e.dataset.i]});
  document.querySelectorAll('[data-i-ph]').forEach(e=>{e.placeholder=L[e.dataset.iPh]});
  document.querySelectorAll('[data-i-aria]').forEach(e=>{e.setAttribute('aria-label',L[e.dataset.iAria])});
- $('privLink').href=lang==='en'?'privacy/?lang=en':'privacy/';
- const lb=$('lang');lb.textContent=L.other;lb.lang=lang==='zh'?'en':'zh-Hant';
+ $('privLink').href=lang==='zh'?'privacy/':'privacy/?lang=en';
+ $('lang').value=lang;
  applyLangHooks.forEach(f=>f())}
-$('lang').onclick=()=>{lang=lang==='zh'?'en':'zh';store.set('ohl_lang',lang);
- try{const u=new URL(location.href);u.searchParams.set('lang',lang);history.replaceState(null,'',u)}catch(e){}
+LANGS.forEach(([k,n])=>{const o=document.createElement('option');o.value=k;o.textContent=n;$('lang').append(o)});
+$('lang').onchange=e=>{lang=e.target.value;store.set('ohl_lang',lang);
+ try{const u=new URL(location.href);u.searchParams.delete('lang');history.replaceState(null,'',u)}catch(e){}
  applyLang()};
 
 /* ---------- 最新資訊 ---------- */
@@ -355,7 +437,7 @@ const NEWS=[
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 /* 英文頁:作品有英文名稱/介紹就用,沒有就顯示中文 */
 function drawNews(list){newsData=list;
- const pick=n=>lang==='en'&&n.title_en?[n.title_en,n.blurb_en||'']:[n.title,n.blurb];
+ const pick=n=>lang!=='zh'&&n.title_en?[n.title_en,n.blurb_en||'']:[n.title,n.blurb];
  $('news').innerHTML=list.map((n,i)=>{const[ti,bl]=pick(n);return `<li><a href="${esc(n.url)}" target="_blank" rel="noopener"><span class="k">${String(list.length-i).padStart(2,'0')}</span><span class="t">${esc(ti)}${bl?`<small>${esc(bl)}</small>`:''}</span><span class="ty">${esc(t('types')[n.type]||n.type)}</span></a></li>`}).join('')+`<li class="old">${esc(t('older'))}</li>`;
  if(list[0]){$('latest').textContent=pick(list[0])[0];$('latest').href=list[0].url}}
 applyLangHooks.push(()=>{if(newsData)drawNews(newsData)});
@@ -395,7 +477,7 @@ $('qform').addEventListener('submit',e=>{e.preventDefault();
  const fallback=k=>{note.innerHTML=esc(t(k))+t('orDm')};
  if(!OHLFeedback.configured()){fallback('notConfigured');return}
  btn.disabled=true;note.textContent=t('sending');
- OHLFeedback.send({source:lang==='en'?'home-en':'home',kind:'message',message:q,contact:c}).then(r=>{btn.disabled=false;
+ OHLFeedback.send({source:lang==='zh'?'home':'home-'+lang,kind:'message',message:q,contact:c}).then(r=>{btn.disabled=false;
   if(r.ok){note.textContent=t('thanks')+(c?t('thanksReply'):'');note.classList.add('ok');$('q').value='';$('qc').value='';return}
   if(r.reason==='rate_limited')fallback('rateLimited');
   else if(r.reason==='invalid')fallback('invalid');
