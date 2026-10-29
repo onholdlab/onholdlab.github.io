@@ -9,7 +9,29 @@
    "type": "遊戲",
    "url": "https://onholdlab.github.io/relay-ai-guess/",
    "repo": "relay-ai-guess",
-   "created": "2026-10-26T14:16:49Z"
+   "created": "2026-10-26T14:16:49Z",
+   "translations": {
+    "ja": {
+     "title": "8区間リレー",
+     "blurb": "AIが描いたのは何番目？"
+    },
+    "ko": {
+     "title": "8주자 릴레이",
+     "blurb": "AI가 그린 차례를 맞혀 보세요."
+    },
+    "es": {
+     "title": "Relevo de 8",
+     "blurb": "Adivina en qué turno dibujó la IA."
+    },
+    "de": {
+     "title": "8er-Staffel",
+     "blurb": "Errate, in welcher Runde die KI gezeichnet hat."
+    },
+    "fr": {
+     "title": "Relais à 8",
+     "blurb": "Devine à quel tour l’IA a dessiné."
+    }
+   }
   },
   {
    "title": "十字路口",
@@ -19,7 +41,29 @@
    "type": "遊戲",
    "url": "https://onholdlab.github.io/crossroad/",
    "repo": "crossroad",
-   "created": "2026-10-24T08:51:13Z"
+   "created": "2026-10-24T08:51:13Z",
+   "translations": {
+    "ja": {
+     "title": "交差点",
+     "blurb": "ぶつけるか、ぶつけられるか。"
+    },
+    "ko": {
+     "title": "교차로",
+     "blurb": "들이받거나, 들이받히거나."
+    },
+    "es": {
+     "title": "Cruce",
+     "blurb": "Choca con otros o deja que choquen contigo."
+    },
+    "de": {
+     "title": "Kreuzung",
+     "blurb": "Remple andere an oder lass dich anrempeln."
+    },
+    "fr": {
+     "title": "Carrefour",
+     "blurb": "Bouscule les autres ou fais-toi bousculer."
+    }
+   }
   },
   {
    "title": "閃身犬",
@@ -29,7 +73,29 @@
    "type": "遊戲",
    "url": "https://onholdlab.github.io/dodge-dog/",
    "repo": "dodge-dog",
-   "created": "2026-10-23T05:00:48Z"
+   "created": "2026-10-23T05:00:48Z",
+   "translations": {
+    "ja": {
+     "title": "ひらり犬",
+     "blurb": "犬が主役のサバイバル。群れをかわして生き残ろう。"
+    },
+    "ko": {
+     "title": "회피견",
+     "blurb": "강아지가 주인공인 서바이벌. 몰려오는 무리에서 살아남으세요."
+    },
+    "es": {
+     "title": "Perro esquivador",
+     "blurb": "Un juego de supervivencia protagonizado por un perro."
+    },
+    "de": {
+     "title": "Ausweichhund",
+     "blurb": "Ein Survival-Spiel mit einem Hund in der Hauptrolle."
+    },
+    "fr": {
+     "title": "Chien esquiveur",
+     "blurb": "Un jeu de survie avec un chien pour héros."
+    }
+   }
   },
   {
    "title": "拍手貓",
@@ -39,7 +105,29 @@
    "type": "遊戲",
    "url": "https://onholdlab.github.io/clapping-cat/",
    "repo": "clapping-cat",
-   "created": "2026-10-22T02:22:46Z"
+   "created": "2026-10-22T02:22:46Z",
+   "translations": {
+    "ja": {
+     "title": "拍手ねこ",
+     "blurb": "言葉を聞くと、ねこが拍手。"
+    },
+    "ko": {
+     "title": "박수 고양이",
+     "blurb": "당신의 말을 들으면 고양이가 박수를 쳐요."
+    },
+    "es": {
+     "title": "Gato aplaudidor",
+     "blurb": "Di tus palabras y el gato aplaude."
+    },
+    "de": {
+     "title": "Klatschkatze",
+     "blurb": "Sag deine Worte und die Katze klatscht."
+    },
+    "fr": {
+     "title": "Chat qui applaudit",
+     "blurb": "Dis tes mots et le chat applaudit."
+    }
+   }
   },
   {
    "title": "工具雙胞胎",
@@ -49,7 +137,29 @@
    "type": "工具",
    "url": "https://onholdlab.github.io/tool-twins/",
    "repo": "tool-twins",
-   "created": "2026-10-19T19:32:19Z"
+   "created": "2026-10-19T19:32:19Z",
+   "translations": {
+    "ja": {
+     "title": "ツールの双子",
+     "blurb": "ClaudeのスキルとMCPツールが同じ依頼で競合しないか確認。"
+    },
+    "ko": {
+     "title": "쌍둥이 도구",
+     "blurb": "Claude 스킬과 MCP 도구가 같은 요청에 중복으로 반응하는지 확인하세요."
+    },
+    "es": {
+     "title": "Herramientas gemelas",
+     "blurb": "Comprueba si tus skills de Claude y herramientas MCP compiten por las mismas peticiones."
+    },
+    "de": {
+     "title": "Werkzeugzwillinge",
+     "blurb": "Prüfe, ob deine Claude-Skills und MCP-Tools auf dieselben Anfragen reagieren."
+    },
+    "fr": {
+     "title": "Outils jumeaux",
+     "blurb": "Vérifie si tes skills Claude et outils MCP se déclenchent pour les mêmes demandes."
+    }
+   }
   }
  ]
 }

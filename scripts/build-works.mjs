@@ -2,7 +2,9 @@
 // 類型看 repo 的 topics：有 game → 遊戲，有 tool → 工具，都沒有 → 作品。
 // 名稱與介紹看 repo 的 description：寫成「中文名稱｜一句話介紹」；沒有｜就整段當介紹，名稱用 repo 名。
 // 要英文版就寫成「中文名稱｜中文介紹｜English name｜English blurb」，英文首頁會用後兩段。
-import { writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
+const translations = JSON.parse(readFileSync(new URL('../works-i18n.json', import.meta.url), 'utf8'));
 
 const OWNER = process.env.OWNER || 'onholdlab';
 const SELF = `${OWNER}.github.io`.toLowerCase();
@@ -32,7 +34,7 @@ export function toWork(r) {
   else if (m.length > 1) [title, blurb] = [m[0], m.slice(1).join(' ')];
   else [title, blurb] = [r.name, desc];
   const url = (r.homepage && /^https?:\/\//.test(r.homepage)) ? r.homepage : `https://${OWNER}.github.io/${r.name}/`;
-  return { title, blurb, title_en, blurb_en, type, url, repo: r.name, created: r.created_at };
+  return { title, blurb, title_en, blurb_en, type, url, repo: r.name, created: r.created_at, translations: translations[r.name] || {} };
 }
 
 export function build(repos) {
@@ -42,7 +44,7 @@ export function build(repos) {
     .sort((a, b) => b.created.localeCompare(a.created));
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const repos = (await list('orgs')) || (await list('users'));
   if (!repos) { console.error('拿不到 repo 清單'); process.exit(1); }
   const works = build(repos);
