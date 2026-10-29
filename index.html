@@ -33,8 +33,18 @@ button{font:inherit;color:inherit}
 .top{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:12px}
 .brand{font:700 15px/1.2 var(--f-num);letter-spacing:.02em;align-self:start;padding-top:6px}
 .brand small{display:block;font:500 12px/1.4 var(--f-body);color:var(--muted);letter-spacing:0}
-.lang{margin-top:6px;min-height:36px;padding:4px 12px;border:2px solid var(--line);background:var(--panel);cursor:pointer;font:700 13px/1 var(--f-num)}
-.lang:hover{background:var(--ink);color:var(--bg)}
+.language{position:relative;width:max-content;max-width:100%;margin-top:8px;z-index:10;font:500 14px/1.3 var(--f-body);letter-spacing:0}
+.lang{display:flex;align-items:center;gap:10px;min-height:44px;padding:8px 12px;border:2px solid var(--line);background:var(--panel);box-shadow:3px 3px 0 var(--line);cursor:pointer;list-style:none;font-weight:700}
+.lang::-webkit-details-marker{display:none}
+.lang::before{content:"文/A";font:700 11px/1 var(--f-num);color:var(--muted)}
+.lang::after{content:"";width:7px;height:7px;margin-left:8px;border-right:2px solid;border-bottom:2px solid;transform:translateY(-2px) rotate(45deg)}
+.language[open] .lang::after{transform:translateY(2px) rotate(225deg)}
+.lang:hover,.lang-options button:hover{background:var(--stage-bg)}
+.lang-options{position:absolute;top:calc(100% + 8px);left:0;min-width:190px;max-width:calc(100vw - 48px);max-height:min(360px,60dvh);overflow-y:auto;padding:4px;border:2px solid var(--line);background:var(--panel);box-shadow:4px 4px 0 var(--line)}
+.lang-options button{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;border:0;background:transparent;text-align:left;padding:8px 10px;cursor:pointer}
+.lang-options button::before{content:"";width:7px;height:7px;flex:none;border:1px solid var(--line);border-radius:50%}
+.lang-options button[aria-pressed="true"]{font-weight:700;background:var(--stage-bg)}
+.lang-options button[aria-pressed="true"]::before{background:var(--accent);border-color:var(--accent)}
 .winbox{display:flex;align-items:flex-end;gap:10px}
 .win{position:relative;width:180px;height:92px;overflow:hidden;border:3px solid var(--line);background:var(--panel);display:grid;place-items:center;text-align:center}
 .win .in{display:grid;gap:2px;padding:6px}
@@ -56,13 +66,15 @@ button{font:inherit;color:inherit}
 .stage{position:relative;height:420px;background:var(--stage-bg);overflow:hidden;isolation:isolate;touch-action:manipulation}
 .deco{position:absolute;inset:0;z-index:-1;pointer-events:none}
 .deco>*{display:none}
-.hud{position:absolute;right:14px;top:12px;font:800 28px/1 var(--f-num);font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:8px;z-index:3}
-.hud small{font:500 12px/1.2 var(--f-body)}
-.hint{position:absolute;left:16px;top:14px;font:500 14px/1.3 var(--f-body);color:var(--muted);z-index:3;max-width:60%}
-.ad{position:absolute;display:grid;grid-template-rows:22px 1fr;width:220px;height:118px;border:2px solid var(--ad-ink);background:var(--ad-bg);color:var(--ad-ink);padding:0;cursor:pointer;text-align:left;z-index:2;box-shadow:5px 5px 0 var(--ad-ink);transition:opacity .25s}
+.play-area{min-width:0;display:grid;gap:12px}
+.stage-info{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 20px;min-height:36px}
+.hud{margin-left:auto;font:800 28px/1 var(--f-num);font-variant-numeric:tabular-nums;display:flex;flex-wrap:wrap;align-items:center;gap:8px;color:var(--accent)}
+.hud small{font:500 12px/1.4 var(--f-body)}
+.hint{flex:1 1 240px;margin:0;font:500 14px/1.5 var(--f-body);color:var(--muted);overflow-wrap:anywhere}
+.ad{position:absolute;display:grid;grid-template-rows:22px 1fr;width:220px;min-height:118px;border:2px solid var(--ad-ink);background:var(--ad-bg);color:var(--ad-ink);padding:0;cursor:pointer;text-align:left;z-index:2;box-shadow:5px 5px 0 var(--ad-ink);transition:opacity .25s}
 .ad .bar{background:var(--ad-bar);display:flex;justify-content:flex-end;align-items:center;padding:0 6px;gap:5px}
 .ad .bar i{width:9px;height:9px;border-radius:50%;background:var(--ad-bg);display:block}
-.ad b{display:block;padding:8px 12px;font:900 18px/1.25 var(--f-disp);text-wrap:balance}
+.ad b{display:block;padding:8px 12px;font:900 18px/1.25 var(--f-disp);text-wrap:balance;overflow-wrap:anywhere}
 .ad.tgt{outline:3px dashed var(--hit);outline-offset:4px}
 .ad.pop{animation:pop .35s cubic-bezier(.2,1.4,.4,1)}
 @keyframes pop{from{transform:scale(.4);opacity:0}}
@@ -100,10 +112,10 @@ button{font:inherit;color:inherit}
 .news{grid-area:news;list-style:none;margin:0;padding:0;display:grid}
 .show{grid-area:show;margin:0;display:grid;gap:6px}
 .h3{font:700 14px/1.3 var(--f-body);color:var(--muted);margin:0}
-.news li a{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;min-height:56px;padding:8px 2px;text-decoration:none;border-bottom:1px solid var(--line)}
+.news li a{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;min-height:56px;padding:8px 2px;text-decoration:none;border-bottom:1px solid var(--line)}
 .news li a:hover .t{text-decoration:underline}
 .news .k{font:700 12px/1 var(--f-num);font-variant-numeric:tabular-nums;color:var(--muted)}
-.news .t{font:700 17px/1.3 var(--f-disp)}
+.news .t{font:700 17px/1.3 var(--f-disp);overflow-wrap:anywhere}
 .news .t small{display:block;font:400 13px/1.4 var(--f-body);color:var(--muted)}
 .news .ty{font:500 12px/1 var(--f-body);border:1px solid var(--line);padding:4px 7px}
 .news .old{font:500 12px/1.4 var(--f-body);color:var(--muted);text-align:center;padding-top:8px;border:0}
@@ -150,8 +162,6 @@ button{font:inherit;color:inherit}
   -webkit-mask:radial-gradient(circle,#000 58%,transparent 62%) 0 0/4px 4px;mask:radial-gradient(circle,#000 58%,transparent 62%) 0 0/4px 4px;text-shadow:0 0 10px #ff3b2f}
 [data-d="a"] .shutter{background:repeating-linear-gradient(#2b302e 0 2px,#4a524f 2px 10px)}
 [data-d="a"] .news-h{font-weight:900;letter-spacing:.04em}
-[data-d="a"] .hud{color:var(--accent);top:30px;right:34px}
-[data-d="a"] .hint{top:30px;left:34px}
 [data-d="a"] .shutter{display:none}
 [data-d="a"] .win.blink .num{animation:blink .18s steps(2) 4}
 @keyframes blink{50%{opacity:.15}}
@@ -159,10 +169,6 @@ button{font:inherit;color:inherit}
 [data-d="a"] .ad:nth-child(3n+2){--ad-bg:#ff7a59}
 [data-d="a"] .ad:nth-child(3n){--ad-bg:#ffffff;--ad-bar:#1f6fd6}
 
-@media (min-width:761px){
-  [data-d="a"] .hud{top:46px;right:96px}
-  [data-d="a"] .hint{top:46px;left:96px}
-}
 @media (min-width:761px) and (max-width:1023px){
   .low{grid-template-columns:1fr 1fr;grid-template-areas:"news news" "ask show"}
 }
@@ -172,7 +178,7 @@ button{font:inherit;color:inherit}
   .winbox{grid-column:1/-1;justify-self:center}
   .stage{height:330px}
   .low{grid-template-columns:1fr;grid-template-areas:"news" "show" "ask";gap:26px}
-  .ad{width:calc(50% - 20px);height:92px;grid-template-rows:18px 1fr}
+  .ad{width:calc(50% - 20px);min-height:92px;grid-template-rows:18px 1fr}
   .ad b{font-size:15px;padding:5px 8px}
   .hud{font-size:22px}
   .cat,.cat svg{width:76px;height:84px}
@@ -189,7 +195,7 @@ button{font:inherit;color:inherit}
 /* Threads / IG 內建瀏覽器:頁面最少比畫面高 2px,並保持捲到 1px 以上;
    App 就不會在頂端把往下拖當成「關閉瀏覽器面板」。正常上下捲動不受影響。 */
 html{min-height:calc(100% + 2px);overscroll-behavior-y:none}
-body{min-height:calc(100vh + 2px)}
+body{min-height:calc(100dvh + 2px)}
 </style>
 <script id="inapp-keep1-js">
 (function(){
@@ -204,7 +210,10 @@ body{min-height:calc(100vh + 2px)}
 <body>
 <div class="wrap">
  <header class="top">
-  <div class="brand">onholdlab<small data-i="brandSub">等候空間</small><select class="lang" id="lang" aria-label="Language"></select></div>
+  <div class="brand">onholdlab<small data-i="brandSub">等候空間</small><details class="language" id="language">
+   <summary class="lang" id="lang" aria-label="Language"><span id="langLabel">繁體中文</span></summary>
+   <div class="lang-options" id="langOptions" role="group" aria-label="Language"></div>
+  </details></div>
   <div class="winbox">
    <div class="win" id="win">
     <div class="in"><button class="num" id="num" type="button" data-i-aria="numAria" aria-label="今天有新作嗎?"></button><span class="lab" data-i="latestLab">最新完成</span><a id="latest" href="https://onholdlab.github.io/crossroadhit/" target="_blank" rel="noopener" tabindex="-1">十字路口求生</a></div>
@@ -216,12 +225,15 @@ body{min-height:calc(100vh + 2px)}
   </div>
  </header>
 
+ <div class="play-area">
+  <div class="stage-info">
+   <p class="hint" id="hint" data-i="hint">點廣告,貓會幫你打掉</p>
+   <div class="hud" aria-live="polite"><small data-i="today">今天打掉</small><span id="cnt">0</span></div>
+  </div>
  <section class="stage" id="stage" aria-label="打廣告小遊戲:點廣告,貓會衝過去打掉" data-i-aria="stageAria">
   <div class="deco" aria-hidden="true">
    <div class="a"></div>
      </div>
-  <p class="hint" id="hint" data-i="hint">點廣告,貓會幫你打掉</p>
-  <div class="hud" aria-live="polite"><small data-i="today">今天打掉</small><span id="cnt">0</span></div>
   <div id="ads"></div>
   <div class="cat" id="cat" aria-hidden="true"><div class="face"><div class="bob">
    <svg viewBox="0 0 100 110">
@@ -246,6 +258,7 @@ body{min-height:calc(100vh + 2px)}
    </svg></div></div></div>
   <div class="fx" id="fx"></div>
  </section>
+ </div>
 
  <h2 class="news-h" data-i="newsH">最新資訊</h2>
  <div class="low">
@@ -295,7 +308,7 @@ const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.
 
 document.documentElement.dataset.d='a';
 
-/* ---------- 中英文 ---------- */
+/* ---------- 七語介面 ---------- */
 const T={zh:{
  title:'onholdlab 等候空間',desc:'onholdlab 等候空間：一個人用 AI 把想法做成作品的地方。',
  brandSub:'等候空間',latestLab:'最新完成',bellLab:'按鈴',bellAria:'按鈴,打開窗口看最新作品',
@@ -421,12 +434,23 @@ function applyLang(){const L=T[lang];
  document.querySelectorAll('[data-i-ph]').forEach(e=>{e.placeholder=L[e.dataset.iPh]});
  document.querySelectorAll('[data-i-aria]').forEach(e=>{e.setAttribute('aria-label',L[e.dataset.iAria])});
  $('privLink').href=lang==='zh'?'privacy/':'privacy/?lang=en';
- $('lang').value=lang;
+ $('langLabel').textContent=LANGS.find(x=>x[0]===lang)[1];
+ $('lang').setAttribute('aria-label','Language: '+$('langLabel').textContent);
+ $('langOptions').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===lang)));
  applyLangHooks.forEach(f=>f())}
-LANGS.forEach(([k,n])=>{const o=document.createElement('option');o.value=k;o.textContent=n;$('lang').append(o)});
-$('lang').onchange=e=>{lang=e.target.value;store.set('ohl_lang',lang);
+const language=$('language'),langOptions=$('langOptions');
+LANGS.forEach(([k,n])=>{const b=document.createElement('button');b.type='button';b.dataset.lang=k;b.lang=k==='zh'?'zh-Hant':k;b.textContent=n;langOptions.append(b)});
+function closeLanguage(focus=false){language.open=false;if(focus)$('lang').focus()}
+langOptions.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ lang=b.dataset.lang;store.set('ohl_lang',lang);
  try{const u=new URL(location.href);u.searchParams.delete('lang');history.replaceState(null,'',u)}catch(e){}
- applyLang()};
+ applyLang();closeLanguage(true)});
+document.addEventListener('click',e=>{if(!language.contains(e.target))closeLanguage()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&language.open){e.preventDefault();closeLanguage(true)}});
+language.addEventListener('focusout',()=>{requestAnimationFrame(()=>{if(!language.contains(document.activeElement))closeLanguage()})});
+language.addEventListener('keydown',e=>{if(e.key!=='ArrowDown'&&e.key!=='ArrowUp')return;
+ e.preventDefault();language.open=true;const buttons=[...langOptions.querySelectorAll('button')],i=buttons.indexOf(document.activeElement);
+ buttons[i<0?(e.key==='ArrowDown'?0:buttons.length-1):(i+(e.key==='ArrowDown'?1:-1)+buttons.length)%buttons.length].focus()});
 
 /* ---------- 最新資訊 ---------- */
 const NEWS=[
@@ -437,7 +461,7 @@ const NEWS=[
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 /* 英文頁:作品有英文名稱/介紹就用,沒有就顯示中文 */
 function drawNews(list){newsData=list;
- const pick=n=>lang!=='zh'&&n.title_en?[n.title_en,n.blurb_en||'']:[n.title,n.blurb];
+ const pick=n=>{const tr=n.translations&&n.translations[lang];return tr?[tr.title,tr.blurb]:lang!=='zh'&&n.title_en?[n.title_en,n.blurb_en||'']:[n.title,n.blurb]};
  $('news').innerHTML=list.map((n,i)=>{const[ti,bl]=pick(n);return `<li><a href="${esc(n.url)}" target="_blank" rel="noopener"><span class="k">${String(list.length-i).padStart(2,'0')}</span><span class="t">${esc(ti)}${bl?`<small>${esc(bl)}</small>`:''}</span><span class="ty">${esc(t('types')[n.type]||n.type)}</span></a></li>`}).join('')+`<li class="old">${esc(t('older'))}</li>`;
  if(list[0]){$('latest').textContent=pick(list[0])[0];$('latest').href=list[0].url}}
 applyLangHooks.push(()=>{if(newsData)drawNews(newsData)});
@@ -490,20 +514,27 @@ let cx=40,cy=0,tx=40,ty=0,mode='idle',busy=null,flip=1,wanderT=0;
 const catSize=()=>({w:cat.offsetWidth,h:cat.offsetHeight});
 function floorY(){return stage.clientHeight-catSize().h-6}
 function layoutCat(){if(!stage)return;cy=ty=floorY()}
-function slots(){const W=stage.clientWidth,H=stage.clientHeight,aw=adsEl.firstChild?adsEl.firstChild.offsetWidth:Math.min(220,W*.56);
- const ah=W<760?92:118,top=W<760?66:74;
- const cols=W<760?2:3,rows=2,out=[];
- for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const x=cols===1?0:(W-aw-16)*c/(cols-1)+8,y=top+r*(H-top-ah-catSize().h*.5)/(rows-1||1);out.push([Math.max(8,Math.min(W-aw-8,x+(W<760?0:(r%2?(c%2?-24:24):0)))),Math.max(top,y+(W<760&&c?18:0))])}
+function slots(){const W=stage.clientWidth,mobile=matchMedia('(max-width:760px)').matches;
+ const elements=[...adsEl.children],aw=elements[0]?elements[0].offsetWidth:220;
+ const ah=Math.max(mobile?92:118,...elements.map(e=>e.offsetHeight)),top=mobile?66:74,cols=mobile?2:3,out=[];
+ // 廣告依翻譯文字自然長高，兩排保持間距，底部留給貓走動。
+ stage.style.height=Math.max(mobile?330:420,top+ah*2+26+catSize().h*.5+12)+'px';
+ const bottom=stage.clientHeight-ah-catSize().h*.5-12;
+ for(let r=0;r<2;r++)for(let c=0;c<cols;c++)out.push([8+(W-aw-16)*c/(cols-1),r?bottom:top]);
  return out}
-function spawn(){if(ads.length>=(stage.clientWidth<760?3:4))return;
+function layoutAds(){const sl=slots(),used=new Set();ads.forEach(a=>{
+ if(a.slot>=sl.length||used.has(a.slot))a.slot=sl.findIndex((_,i)=>!used.has(i));used.add(a.slot);
+ const[x,y]=sl[a.slot];a.el.style.left=x+'px';a.el.style.top=y+'px'});
+ const floor=floorY();cy=Math.max(0,Math.min(cy,floor));ty=mode==='idle'?floor:Math.max(0,Math.min(ty,floor))}
+function spawn(){if(ads.length>=(matchMedia('(max-width:760px)').matches?3:4))return;
  const used=new Set(ads.map(a=>a.slot)),sl=slots(),free=sl.map((_,i)=>i).filter(i=>!used.has(i));if(!free.length)return;
  const si=free[(Math.random()*free.length)|0],el=document.createElement('button');
  el.type='button';el.className='ad pop';const ai=adSeq++%T.zh.ads.length,txt=t('ads')[ai];
  el.innerHTML=`<span class="bar" aria-hidden="true"><i></i><i></i></span><b>${esc(txt)}</b>`;el.setAttribute('aria-label',t('adAria')+txt);
- adsEl.appendChild(el);const[x,y]=sl[si];el.style.left=x+'px';el.style.top=y+'px';
- const a={el,slot:si,born:performance.now(),txt,ai};ads.push(a);
+ adsEl.appendChild(el);
+ const a={el,slot:si,born:performance.now(),txt,ai};ads.push(a);layoutAds();
  el.addEventListener('click',()=>target(a));}
-function target(a){if(a.dead||queue.includes(a)||busy===a)return;a.el.classList.add('tgt');queue.push(a);$('hint').hidden=true}
+function target(a){if(a.dead||queue.includes(a)||busy===a)return;a.el.classList.add('tgt');queue.push(a)}
 function impact(a){a.dead=true;const r=a.el.getBoundingClientRect(),s=stage.getBoundingClientRect();
  const x=r.left-s.left+r.width/2,y=r.top-s.top+r.height/2;
  if(!RM){const ring=document.createElement('div');ring.className='ringfx';ring.style.left=x+'px';ring.style.top=y+'px';fx.appendChild(ring);
@@ -533,7 +564,7 @@ function addArt(o,fresh){const art=$('art'),NS='http://www.w3.org/2000/svg',g=do
  art.appendChild(g);$('artn').textContent=art.childNodes.length;$('empty').hidden=true;
  if(fresh&&!RM)g.animate([{opacity:0},{opacity:1}],{duration:300})}
 store.get('ohl_art',[]).forEach(o=>addArt(o,false));
-applyLangHooks.push(()=>ads.forEach(a=>{if(a.dead)return;a.txt=t('ads')[a.ai];a.el.querySelector('b').textContent=a.txt;a.el.setAttribute('aria-label',t('adAria')+a.txt)}));
+applyLangHooks.push(()=>{ads.forEach(a=>{if(a.dead)return;a.txt=t('ads')[a.ai];a.el.querySelector('b').textContent=a.txt;a.el.setAttribute('aria-label',t('adAria')+a.txt)});layoutAds()});
 $('clear').onclick=()=>{$('art').innerHTML='';$('artn').textContent=0;$('empty').hidden=false;store.set('ohl_art',[])};
 
 function tick(now){
@@ -557,7 +588,8 @@ function tick(now){
 layoutCat();cx=30;cy=floorY();
 spawn();spawn();setTimeout(spawn,300);
 setInterval(()=>{if(!document.hidden)spawn()},2800);
-addEventListener('resize',()=>{layoutCat();const sl=slots();ads.forEach(a=>{if(!a.dead){a.el.style.left=sl[a.slot%sl.length][0]+'px';a.el.style.top=sl[a.slot%sl.length][1]+'px'}})});
+addEventListener('resize',layoutAds);
+if(document.fonts)document.fonts.ready.then(layoutAds);
 applyLang();
 ready=true;requestAnimationFrame(tick);
 })();

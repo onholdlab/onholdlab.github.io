@@ -5,7 +5,7 @@ on:
   workflow_dispatch:          # 也可以在 Actions 頁面手動按 Run
   push:
     branches: [main]
-    paths: ['scripts/build-works.mjs', '.github/workflows/works.yml']
+    paths: ['scripts/build-works.mjs', 'works-i18n.json', '.github/workflows/works.yml']
 permissions:
   contents: write
 jobs:
