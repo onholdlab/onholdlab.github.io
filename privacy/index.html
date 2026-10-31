@@ -8,12 +8,12 @@
 <style>
 :root{--bg:#d7e7df;--ink:#12302a;--muted:#3d5a52;--panel:#eef5f1;--line:#12302a;--accent:#c2281d;color-scheme:light}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.75 "Noto Sans TC","Noto Sans CJK TC",system-ui,sans-serif}
-main{max-width:720px;margin:0 auto;padding:24px max(16px,env(safe-area-inset-left,0px)) 64px}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.75 "Noto Sans TC","Noto Sans JP","Noto Sans KR","Noto Sans CJK TC",system-ui,sans-serif}
+main{max-width:720px;margin:0 auto;padding:24px max(16px,env(safe-area-inset-left,0px)) 64px;overflow-wrap:anywhere}
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
 .top a{font-weight:700;text-underline-offset:4px;min-height:44px;display:inline-grid;place-items:center}
-.lang{min-height:40px;padding:4px 14px;border:2px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;font:700 14px/1 system-ui,sans-serif}
-.lang:hover{background:var(--ink);color:var(--bg)}
+.lang{min-height:44px;padding:4px 14px;border:2px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;font:700 15px/1.2 system-ui,sans-serif;border-radius:0}
+.lang:hover,.lang:focus-visible{background:var(--ink);color:var(--bg)}
 h1{font-size:28px;line-height:1.3;margin:12px 0 4px}
 .date{color:var(--muted);font-size:14px;margin:0 0 24px}
 h2{font-size:19px;margin:32px 0 6px;padding-top:12px;border-top:2px solid var(--line)}
@@ -28,48 +28,50 @@ a{color:inherit}
 </head>
 <body>
 <main>
- <div class="top"><a href="../" id="home">← onholdlab</a><button class="lang" id="lang" type="button">English</button></div>
+ <div class="top"><a href="../" id="home">← onholdlab</a>
+  <select class="lang" id="lang" aria-label="Language">
+   <option value="zh" selected>繁體中文</option>
+   <option value="en">English</option>
+   <option value="ja">日本語</option>
+   <option value="ko">한국어</option>
+   <option value="es">Español</option>
+   <option value="de">Deutsch</option>
+   <option value="fr">Français</option>
+  </select></div>
 
  <article id="zh" lang="zh-Hant">
   <h1>隱私權政策</h1>
   <p class="date">最後更新:2026 年 10 月 26 日</p>
   <p>這份說明適用於 onholdlab.github.io 底下的首頁、遊戲與工具。我們只收作品運作需要的資料,不賣資料,也不放廣告追蹤。</p>
-
   <h2>瀏覽統計(GoatCounter)</h2>
   <ul>
    <li>用 GoatCounter 計算每一頁被看了幾次,記錄的是:網址、從哪個網站連過來、瀏覽器與裝置類型、螢幕大小、大概的國家。</li>
    <li>不使用 cookie,不建立個人檔案,也不會拿來辨認你是誰。</li>
   </ul>
-
   <h2>回饋表單</h2>
   <ul>
    <li>你送出的留言、你選填的聯絡方式(email 或 IG)、送出時的網址和瀏覽器資訊。</li>
    <li>只用來看回饋和回覆你,存在 Supabase 資料庫,只有我們看得到。</li>
   </ul>
-
   <h2>遊戲排行榜</h2>
   <ul>
    <li>你輸入的暱稱、分數、上傳時間,以及一組隨機產生的裝置代碼(只用來把同一台裝置的成績算成一筆)。</li>
    <li>排行榜是公開的:所有玩家都看得到暱稱和分數。請不要用真名或私人資訊當暱稱。</li>
   </ul>
-
   <h2>存在你瀏覽器裡的資料</h2>
   <ul>
    <li>語言選擇、暱稱、最佳成績、遊戲設定、首頁的小遊戲紀錄、上面那組裝置代碼。</li>
    <li>這些只存在你自己的瀏覽器(localStorage),清除網站資料就會刪掉。</li>
   </ul>
-
   <h2>麥克風(拍手貓)</h2>
   <ul>
    <li>拍手貓要你允許麥克風,用瀏覽器內建的語音辨識聽觸發詞。我們不錄音、不存聲音。</li>
    <li>語音辨識由瀏覽器提供,例如 Chrome 會交給 Google 處理,適用瀏覽器業者的政策。</li>
   </ul>
-
   <h2>其他服務</h2>
   <ul>
    <li>網站放在 GitHub Pages;部分頁面從 Google Fonts、cdnjs 載入字型與程式;部分遊戲也上架在 itch.io。這些服務會依它們自己的政策處理連線資料(例如 IP 位址)。</li>
   </ul>
-
   <h2>想查詢或刪除你的資料</h2>
   <ul>
    <li>用<a href="../">首頁</a>的回饋表單,或私訊 <a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">Instagram @onholdlab</a>,告訴我們要刪的留言或排行榜暱稱。</li>
@@ -81,66 +83,269 @@ a{color:inherit}
   <h1>Privacy Policy</h1>
   <p class="date">Last updated: October 26, 2026</p>
   <p>This applies to the homepage, games and tools under onholdlab.github.io. We only collect what the works need to run. We don't sell data and don't use ad trackers.</p>
-
   <h2>Visit statistics (GoatCounter)</h2>
   <ul>
    <li>We use GoatCounter to count page views. It records the page address, the site you came from, browser and device type, screen size, and approximate country.</li>
    <li>It uses no cookies, builds no profiles, and isn't used to identify you.</li>
   </ul>
-
   <h2>Feedback form</h2>
   <ul>
    <li>Your message, the contact you choose to leave (email or IG), and the page address and browser info at the time you send it.</li>
    <li>Used only to read feedback and reply to you. Stored in a Supabase database that only we can read.</li>
   </ul>
-
   <h2>Game leaderboards</h2>
   <ul>
    <li>The nickname you enter, your score, upload time, and a randomly generated device code (used only to count one entry per device).</li>
    <li>Leaderboards are public: every player can see nicknames and scores. Please don't use your real name or private details as a nickname.</li>
   </ul>
-
   <h2>Data stored in your browser</h2>
   <ul>
    <li>Language choice, nickname, best scores, game settings, homepage mini-game progress, and the device code above.</li>
    <li>These stay in your own browser (localStorage) and are removed when you clear site data.</li>
   </ul>
-
   <h2>Microphone (Clapping Cat)</h2>
   <ul>
    <li>Clapping Cat asks for the microphone and uses your browser's built-in speech recognition to hear the trigger words. We don't record or store audio.</li>
    <li>Speech recognition is provided by the browser. Chrome, for example, sends it to Google, under the browser maker's policy.</li>
   </ul>
-
   <h2>Other services</h2>
   <ul>
    <li>The site is hosted on GitHub Pages. Some pages load fonts and scripts from Google Fonts and cdnjs, and some games are also on itch.io. These services handle connection data (such as IP addresses) under their own policies.</li>
   </ul>
-
   <h2>Questions or deletion</h2>
   <ul>
    <li>Use the feedback form on the <a href="../?lang=en">homepage</a> or DM <a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">@onholdlab on Instagram</a> and tell us which message or leaderboard nickname to delete.</li>
    <li>If this policy changes, we'll update this page and the date above.</li>
   </ul>
  </article>
+
+ <article id="ja" lang="ja" hidden>
+  <h1>プライバシーポリシー</h1>
+  <p class="date">最終更新：2026年10月26日</p>
+  <p>このポリシーは onholdlab.github.io 配下のトップページ、ゲーム、ツールに適用されます。作品の動作に必要な情報だけを収集します。データの販売はせず、広告トラッキングも使用しません。</p>
+  <h2>閲覧統計（GoatCounter）</h2>
+  <ul>
+   <li>GoatCounter でページごとの閲覧数を集計します。記録するのは、ページの URL、参照元のサイト、ブラウザとデバイスの種類、画面サイズ、おおよその国です。</li>
+   <li>Cookie は使用せず、プロフィールも作成せず、個人を特定するためにも使いません。</li>
+  </ul>
+  <h2>フィードバックフォーム</h2>
+  <ul>
+   <li>送信したメッセージ、任意で入力した連絡先（メールまたは IG）、送信時のページ URL とブラウザ情報。</li>
+   <li>フィードバックの確認と返信にのみ使用します。Supabase のデータベースに保存され、運営者だけが閲覧できます。</li>
+  </ul>
+  <h2>ゲームのランキング</h2>
+  <ul>
+   <li>入力したニックネーム、スコア、アップロード時刻、そしてランダムに生成されたデバイスコード（同じ端末の記録を1件にまとめるためだけに使用）。</li>
+   <li>ランキングは公開されます。すべてのプレイヤーがニックネームとスコアを見られます。本名や個人情報をニックネームにしないでください。</li>
+  </ul>
+  <h2>ブラウザに保存されるデータ</h2>
+  <ul>
+   <li>言語設定、ニックネーム、ベストスコア、ゲームの設定、トップページのミニゲームの記録、上記のデバイスコード。</li>
+   <li>これらはお使いのブラウザ内（localStorage）にのみ保存され、サイトデータを消去すると削除されます。</li>
+  </ul>
+  <h2>マイク（拍手猫）</h2>
+  <ul>
+   <li>拍手猫はマイクの許可を求め、ブラウザ内蔵の音声認識でトリガーの言葉を聞き取ります。音声は録音も保存もしません。</li>
+   <li>音声認識はブラウザが提供します。たとえば Chrome は Google に送信し、ブラウザ提供元のポリシーが適用されます。</li>
+  </ul>
+  <h2>その他のサービス</h2>
+  <ul>
+   <li>サイトは GitHub Pages でホストしています。一部のページは Google Fonts と cdnjs からフォントやスクリプトを読み込みます。一部のゲームは itch.io にも公開しています。これらのサービスは、IP アドレスなどの接続データを独自のポリシーに従って処理します。</li>
+  </ul>
+  <h2>お問い合わせ・データの削除</h2>
+  <ul>
+   <li><a href="../?lang=ja">トップページ</a>のフィードバックフォーム、または Instagram <a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">@onholdlab</a> へのDMで、削除したいメッセージやランキングのニックネームをお知らせください。</li>
+   <li>ポリシーが変更された場合は、このページと上記の日付を更新します。</li>
+  </ul>
+ </article>
+
+ <article id="ko" lang="ko" hidden>
+  <h1>개인정보 처리방침</h1>
+  <p class="date">최종 업데이트: 2026년 10월 26일</p>
+  <p>이 방침은 onholdlab.github.io의 홈페이지, 게임 및 도구에 적용됩니다. 작품 운영에 필요한 정보만 수집합니다. 데이터를 판매하지 않으며 광고 추적도 사용하지 않습니다.</p>
+  <h2>방문 통계(GoatCounter)</h2>
+  <ul>
+   <li>GoatCounter로 페이지별 조회수를 집계합니다. 기록되는 항목은 페이지 주소, 유입 사이트, 브라우저 및 기기 유형, 화면 크기, 대략적인 국가입니다.</li>
+   <li>쿠키를 사용하지 않으며, 프로필을 만들지 않고, 개인을 식별하는 데 사용하지 않습니다.</li>
+  </ul>
+  <h2>피드백 양식</h2>
+  <ul>
+   <li>보내는 메시지, 선택적으로 남긴 연락처(이메일 또는 IG), 전송 시점의 페이지 주소와 브라우저 정보.</li>
+   <li>피드백을 읽고 답변하는 용도로만 사용합니다. Supabase 데이터베이스에 저장되며 운영자만 볼 수 있습니다.</li>
+  </ul>
+  <h2>게임 순위표</h2>
+  <ul>
+   <li>입력한 닉네임, 점수, 업로드 시간, 무작위로 생성된 기기 코드(같은 기기의 기록을 한 건으로 묶는 용도로만 사용).</li>
+   <li>순위표는 공개됩니다. 모든 플레이어가 닉네임과 점수를 볼 수 있으니, 실명이나 개인 정보를 닉네임으로 쓰지 마세요.</li>
+  </ul>
+  <h2>브라우저에 저장되는 데이터</h2>
+  <ul>
+   <li>언어 설정, 닉네임, 최고 점수, 게임 설정, 홈페이지 미니게임 기록, 위의 기기 코드.</li>
+   <li>이 정보는 사용자의 브라우저(localStorage)에만 남으며, 사이트 데이터를 지우면 삭제됩니다.</li>
+  </ul>
+  <h2>마이크(박수 고양이)</h2>
+  <ul>
+   <li>박수 고양이는 마이크 사용을 요청하고, 브라우저 내장 음성 인식으로 트리거 단어를 듣습니다. 음성은 녹음하거나 저장하지 않습니다.</li>
+   <li>음성 인식은 브라우저가 제공합니다. 예를 들어 Chrome은 Google로 전송하며, 브라우저 제공업체의 정책이 적용됩니다.</li>
+  </ul>
+  <h2>기타 서비스</h2>
+  <ul>
+   <li>사이트는 GitHub Pages에 호스팅됩니다. 일부 페이지는 Google Fonts와 cdnjs에서 글꼴과 스크립트를 불러옵니다. 일부 게임은 itch.io에도 있습니다. 이 서비스들은 IP 주소 등 연결 데이터를 자체 정책에 따라 처리합니다.</li>
+  </ul>
+  <h2>문의 및 데이터 삭제</h2>
+  <ul>
+   <li><a href="../?lang=ko">홈페이지</a>의 피드백 양식이나 Instagram <a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">@onholdlab</a> DM으로, 삭제할 메시지 또는 순위표 닉네임을 알려주세요.</li>
+   <li>방침이 변경되면 이 페이지와 위의 날짜를 업데이트합니다.</li>
+  </ul>
+ </article>
+
+ <article id="es" lang="es" hidden>
+  <h1>Política de privacidad</h1>
+  <p class="date">Última actualización: 26 de octubre de 2026</p>
+  <p>Esta política se aplica a la página principal, los juegos y las herramientas de onholdlab.github.io. Solo recopilamos lo que las obras necesitan para funcionar. No vendemos datos ni usamos rastreadores publicitarios.</p>
+  <h2>Estadísticas de visitas (GoatCounter)</h2>
+  <ul>
+   <li>Usamos GoatCounter para contar las visitas a cada página. Registra la dirección de la página, el sitio desde el que llegaste, el tipo de navegador y de dispositivo, el tamaño de pantalla y el país aproximado.</li>
+   <li>No usa cookies, no crea perfiles y no sirve para identificarte.</li>
+  </ul>
+  <h2>Formulario de comentarios</h2>
+  <ul>
+   <li>Tu mensaje, el contacto que decidas dejar (correo o IG), y la dirección de la página y la información del navegador en el momento del envío.</li>
+   <li>Se usa solo para leer los comentarios y responderte. Se guarda en una base de datos de Supabase a la que solo nosotros podemos acceder.</li>
+  </ul>
+  <h2>Clasificaciones de los juegos</h2>
+  <ul>
+   <li>El apodo que introduces, tu puntuación, la hora de envío y un código de dispositivo generado al azar (solo para contar una entrada por dispositivo).</li>
+   <li>Las clasificaciones son públicas: todos los jugadores pueden ver apodos y puntuaciones. No uses tu nombre real ni datos privados como apodo.</li>
+  </ul>
+  <h2>Datos guardados en tu navegador</h2>
+  <ul>
+   <li>Idioma elegido, apodo, mejores puntuaciones, ajustes del juego, progreso de los minijuegos de la página principal y el código de dispositivo de arriba.</li>
+   <li>Se quedan en tu navegador (localStorage) y se eliminan al borrar los datos del sitio.</li>
+  </ul>
+  <h2>Micrófono (Clapping Cat)</h2>
+  <ul>
+   <li>Clapping Cat pide acceso al micrófono y usa el reconocimiento de voz integrado del navegador para escuchar las palabras que activan el juego. No grabamos ni guardamos audio.</li>
+   <li>El reconocimiento de voz lo proporciona el navegador. Chrome, por ejemplo, lo envía a Google, según la política del fabricante del navegador.</li>
+  </ul>
+  <h2>Otros servicios</h2>
+  <ul>
+   <li>El sitio está alojado en GitHub Pages. Algunas páginas cargan fuentes y scripts desde Google Fonts y cdnjs, y algunos juegos también están en itch.io. Estos servicios tratan los datos de conexión (como las direcciones IP) según sus propias políticas.</li>
+  </ul>
+  <h2>Preguntas o eliminación de datos</h2>
+  <ul>
+   <li>Usa el formulario de comentarios de la <a href="../?lang=es">página principal</a> o envía un DM a <a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">@onholdlab en Instagram</a> e indícanos qué mensaje o apodo de la clasificación quieres eliminar.</li>
+   <li>Si esta política cambia, actualizaremos esta página y la fecha de arriba.</li>
+  </ul>
+ </article>
+
+ <article id="de" lang="de" hidden>
+  <h1>Datenschutzerklärung</h1>
+  <p class="date">Zuletzt aktualisiert: 26. Oktober 2026</p>
+  <p>Diese Erklärung gilt für die Startseite, die Spiele und Werkzeuge unter onholdlab.github.io. Wir erheben nur, was die Werke zum Betrieb benötigen. Wir verkaufen keine Daten und verwenden keine Werbe-Tracker.</p>
+  <h2>Besuchsstatistik (GoatCounter)</h2>
+  <ul>
+   <li>Wir nutzen GoatCounter, um Seitenaufrufe zu zählen. Erfasst werden die Seitenadresse, die Seite, von der du kommst, Browser- und Gerätetyp, Bildschirmgröße und ungefähres Land.</li>
+   <li>Es werden keine Cookies verwendet, keine Profile erstellt und du wirst damit nicht identifiziert.</li>
+  </ul>
+  <h2>Feedback-Formular</h2>
+  <ul>
+   <li>Deine Nachricht, die optional angegebene Kontaktangabe (E-Mail oder IG) sowie Seitenadresse und Browserinformationen zum Zeitpunkt des Absendens.</li>
+   <li>Nur zum Lesen des Feedbacks und zum Antworten. Gespeichert in einer Supabase-Datenbank, auf die nur wir zugreifen können.</li>
+  </ul>
+  <h2>Spiel-Bestenlisten</h2>
+  <ul>
+   <li>Der Spitzname, den du eingibst, deine Punktzahl, der Zeitpunkt des Uploads und ein zufällig erzeugter Gerätecode (nur, um pro Gerät einen Eintrag zu zählen).</li>
+   <li>Bestenlisten sind öffentlich: Alle Spieler sehen Spitznamen und Punkte. Bitte verwende keinen echten Namen und keine privaten Angaben als Spitznamen.</li>
+  </ul>
+  <h2>Im Browser gespeicherte Daten</h2>
+  <ul>
+   <li>Sprachwahl, Spitzname, Bestleistungen, Spieleinstellungen, Fortschritt der Mini-Spiele auf der Startseite und der oben genannte Gerätecode.</li>
+   <li>Diese bleiben in deinem Browser (localStorage) und werden gelöscht, wenn du die Website-Daten entfernst.</li>
+  </ul>
+  <h2>Mikrofon (Clapping Cat)</h2>
+  <ul>
+   <li>Clapping Cat fragt nach dem Mikrofon und nutzt die eingebaute Spracherkennung des Browsers, um die Auslösewörter zu erkennen. Wir nehmen keine Audiodaten auf und speichern sie nicht.</li>
+   <li>Die Spracherkennung stellt der Browser bereit. Chrome sendet sie zum Beispiel an Google, es gilt die Richtlinie des Browser-Anbieters.</li>
+  </ul>
+  <h2>Andere Dienste</h2>
+  <ul>
+   <li>Die Website wird über GitHub Pages gehostet. Einige Seiten laden Schriften und Skripte von Google Fonts und cdnjs, einige Spiele sind außerdem auf itch.io verfügbar. Diese Dienste verarbeiten Verbindungsdaten (etwa IP-Adressen) nach ihren eigenen Richtlinien.</li>
+  </ul>
+  <h2>Fragen oder Löschung</h2>
+  <ul>
+   <li>Nutze das Feedback-Formular auf der <a href="../?lang=de">Startseite</a> oder schreib <a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">@onholdlab auf Instagram</a> eine DM und sag uns, welche Nachricht oder welcher Bestenlisten-Spitzname gelöscht werden soll.</li>
+   <li>Ändert sich diese Erklärung, aktualisieren wir diese Seite und das Datum oben.</li>
+  </ul>
+ </article>
+
+ <article id="fr" lang="fr" hidden>
+  <h1>Politique de confidentialité</h1>
+  <p class="date">Dernière mise à jour : 26 octobre 2026</p>
+  <p>Cette politique s'applique à la page d'accueil, aux jeux et aux outils de onholdlab.github.io. Nous ne collectons que ce dont les œuvres ont besoin pour fonctionner. Nous ne vendons pas de données et n'utilisons pas de traceurs publicitaires.</p>
+  <h2>Statistiques de visite (GoatCounter)</h2>
+  <ul>
+   <li>Nous utilisons GoatCounter pour compter les pages vues. Il enregistre l'adresse de la page, le site d'où vous venez, le type de navigateur et d'appareil, la taille de l'écran et le pays approximatif.</li>
+   <li>Il n'utilise aucun cookie, ne crée aucun profil et ne sert pas à vous identifier.</li>
+  </ul>
+  <h2>Formulaire de retour</h2>
+  <ul>
+   <li>Votre message, le contact que vous choisissez de laisser (e-mail ou IG), ainsi que l'adresse de la page et les informations du navigateur au moment de l'envoi.</li>
+   <li>Utilisé uniquement pour lire les retours et vous répondre. Stocké dans une base de données Supabase accessible seulement par nous.</li>
+  </ul>
+  <h2>Classements des jeux</h2>
+  <ul>
+   <li>Le pseudo que vous saisissez, votre score, l'heure d'envoi et un code d'appareil généré aléatoirement (utilisé uniquement pour compter une seule entrée par appareil).</li>
+   <li>Les classements sont publics : tous les joueurs voient les pseudos et les scores. N'utilisez pas votre vrai nom ni des informations privées comme pseudo.</li>
+  </ul>
+  <h2>Données stockées dans votre navigateur</h2>
+  <ul>
+   <li>Choix de la langue, pseudo, meilleurs scores, réglages du jeu, progression des mini-jeux de la page d'accueil et le code d'appareil ci-dessus.</li>
+   <li>Ces données restent dans votre navigateur (localStorage) et sont supprimées lorsque vous effacez les données du site.</li>
+  </ul>
+  <h2>Microphone (Clapping Cat)</h2>
+  <ul>
+   <li>Clapping Cat demande l'accès au microphone et utilise la reconnaissance vocale intégrée du navigateur pour écouter les mots déclencheurs. Nous n'enregistrons ni ne stockons aucun audio.</li>
+   <li>La reconnaissance vocale est fournie par le navigateur. Chrome, par exemple, l'envoie à Google, selon la politique de l'éditeur du navigateur.</li>
+  </ul>
+  <h2>Autres services</h2>
+  <ul>
+   <li>Le site est hébergé sur GitHub Pages. Certaines pages chargent des polices et des scripts depuis Google Fonts et cdnjs, et certains jeux sont aussi sur itch.io. Ces services traitent les données de connexion (comme les adresses IP) selon leurs propres politiques.</li>
+  </ul>
+  <h2>Questions ou suppression</h2>
+  <ul>
+   <li>Utilisez le formulaire de retour de la <a href="../?lang=fr">page d'accueil</a> ou envoyez un DM à <a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">@onholdlab sur Instagram</a> en précisant le message ou le pseudo de classement à supprimer.</li>
+   <li>Si cette politique change, nous mettrons à jour cette page et la date ci-dessus.</li>
+  </ul>
+ </article>
 </main>
 <script>
 (function(){
- var lang=null;
- try{var q=new URLSearchParams(location.search).get('lang');if(q==='en'||q==='zh')lang=q}catch(e){}
- if(!lang){try{var s=JSON.parse(localStorage.getItem('ohl_lang'));if(s==='en'||s==='zh')lang=s}catch(e){}}
- if(!lang)lang=/^zh/i.test(navigator.language||'')?'zh':'en';
- function apply(){
-  document.getElementById('zh').hidden=lang!=='zh';document.getElementById('en').hidden=lang!=='en';
-  document.documentElement.lang=lang==='en'?'en':'zh-Hant';
-  document.title=lang==='en'?'Privacy Policy · onholdlab':'隱私權政策 · onholdlab';
-  var b=document.getElementById('lang');b.textContent=lang==='en'?'中文':'English';
-  document.getElementById('home').href=lang==='en'?'../?lang=en':'../';
+ var CODES=["zh", "en", "ja", "ko", "es", "de", "fr"];
+ var TITLES={"zh": "隱私權政策 · onholdlab", "en": "Privacy Policy · onholdlab", "ja": "プライバシーポリシー · onholdlab", "ko": "개인정보 처리방침 · onholdlab", "es": "Política de privacidad · onholdlab", "de": "Datenschutzerklärung · onholdlab", "fr": "Politique de confidentialité · onholdlab"};
+ var METAS={"zh": "onholdlab 網站與作品收集哪些資料、怎麼使用、怎麼刪除。", "en": "What onholdlab collects from the website and works, how it is used, and how to delete it.", "ja": "onholdlab のウェブサイトと作品で収集する情報、その利用方法、削除方法について。", "ko": "onholdlab 웹사이트와 작품이 수집하는 정보, 이용 방법, 삭제 방법.", "es": "Qué datos recoge onholdlab en el sitio y en las obras, cómo se usan y cómo eliminarlos.", "de": "Welche Daten onholdlab auf der Website und bei den Werken erhebt, wie sie verwendet werden und wie man sie löscht.", "fr": "Les données collectées par onholdlab sur le site et les œuvres, leur utilisation et leur suppression."};
+ var lang='zh';
+ function ok(c){return CODES.indexOf(c)>=0}
+ try{var q=new URLSearchParams(location.search).get('lang');if(ok(q))lang=q;else throw 0}catch(e){
+   try{var s=localStorage.getItem('ohl_lang');try{s=JSON.parse(s)}catch(_){}if(ok(s))lang=s;else throw 0}catch(e2){
+     var n=(navigator.language||'').toLowerCase();var m=n.slice(0,2);
+     lang=n.indexOf('zh')===0?'zh':(ok(m)?m:'en');
+   }
  }
- document.getElementById('lang').onclick=function(){lang=lang==='en'?'zh':'en';
-  try{localStorage.setItem('ohl_lang',JSON.stringify(lang))}catch(e){}
-  try{var u=new URL(location.href);u.searchParams.set('lang',lang);history.replaceState(null,'',u)}catch(e){}
-  apply()};
+ function apply(){
+  CODES.forEach(function(c){var el=document.getElementById(c);if(el)el.hidden=c!==lang});
+  var sel=document.getElementById('lang');sel.value=lang;
+  document.documentElement.lang=lang==='zh'?'zh-Hant':lang;
+  document.title=TITLES[lang];
+  var md=document.querySelector('meta[name=description]');if(md)md.content=METAS[lang];
+  document.getElementById('home').href=lang==='zh'?'../':'../?lang='+lang;
+ }
+ document.getElementById('lang').onchange=function(e){
+  lang=e.target.value;
+  try{localStorage.setItem('ohl_lang',JSON.stringify(lang))}catch(_){}
+  try{var u=new URL(location.href);u.searchParams.set('lang',lang);history.replaceState(null,'',u)}catch(_){}
+  apply();
+ };
  apply();
 })();
 </script>

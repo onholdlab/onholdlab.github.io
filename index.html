@@ -434,7 +434,7 @@ function applyLang(){const L=T[lang];
  document.querySelectorAll('[data-i]').forEach(e=>{e.textContent=L[e.dataset.i]});
  document.querySelectorAll('[data-i-ph]').forEach(e=>{e.placeholder=L[e.dataset.iPh]});
  document.querySelectorAll('[data-i-aria]').forEach(e=>{e.setAttribute('aria-label',L[e.dataset.iAria])});
- $('privLink').href=lang==='zh'?'privacy/':'privacy/?lang=en';
+ $('privLink').href=lang==='zh'?'privacy/':'privacy/?lang='+lang;
  $('langLabel').textContent=LANGS.find(x=>x[0]===lang)[1];
  $('lang').setAttribute('aria-label','Language: '+$('langLabel').textContent);
  $('langOptions').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===lang)));
