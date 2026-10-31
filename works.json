@@ -1,6 +1,17 @@
 {
- "updated": "2026-10-26T19:02:56.645Z",
+ "updated": "2026-10-31T13:02:27.368Z",
  "works": [
+  {
+   "title": "期中考模擬",
+   "blurb": "被鴿子分心的期中考，戴上耳機就能專心複習",
+   "title_en": "Midterm Sim",
+   "blurb_en": "A goofy midterm classroom — put on headphones to actually study.",
+   "type": "遊戲",
+   "url": "https://onholdlab.github.io/midterm-sim/",
+   "repo": "midterm-sim",
+   "created": "2026-10-31T10:03:25Z",
+   "translations": {}
+  },
   {
    "title": "8棒接力",
    "blurb": "猜哪一棒是AI畫的",
