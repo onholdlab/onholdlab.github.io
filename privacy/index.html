@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>隱私權政策 · onholdlab</title>
-<meta name="description" content="onholdlab 網站與作品收集哪些資料、怎麼使用、怎麼刪除。">
+<title></title>
+<meta name="description" content="">
 <style>
 :root{--bg:#d7e7df;--ink:#12302a;--muted:#3d5a52;--panel:#eef5f1;--line:#12302a;--accent:#c2281d;color-scheme:light}
 *{box-sizing:border-box}
@@ -28,10 +28,10 @@ a{color:inherit}
 </head>
 <body>
 <main>
- <div class="top"><a href="../" id="home">← onholdlab</a>
-  <select class="lang" id="lang" aria-label="Language">
-   <option value="zh" selected>繁體中文</option>
-   <option value="en">English</option>
+ <div class="top"><a href="../" id="home" data-text="privacy.home"></a>
+  <select class="lang" id="lang" aria-label="" data-text-aria-label="common.language">
+   <option value="zh" selected data-text="language.traditionalChinese"></option>
+   <option value="en" data-text="language.english"></option>
    <option value="ja">日本語</option>
    <option value="ko">한국어</option>
    <option value="es">Español</option>
@@ -40,82 +40,82 @@ a{color:inherit}
   </select></div>
 
  <article id="zh" lang="zh-Hant">
-  <h1>隱私權政策</h1>
-  <p class="date">最後更新:2026 年 10 月 26 日</p>
-  <p>這份說明適用於 onholdlab.github.io 底下的首頁、遊戲與工具。我們只收作品運作需要的資料,不賣資料,也不放廣告追蹤。</p>
-  <h2>瀏覽統計(GoatCounter)</h2>
+  <h1 data-privacy="privacy.heading"></h1>
+  <p class="date" data-privacy="privacy.updatedDate"></p>
+  <p data-privacy="privacy.scope"></p>
+  <h2 data-privacy="privacy.statistics.heading"></h2>
   <ul>
-   <li>用 GoatCounter 計算每一頁被看了幾次,記錄的是:網址、從哪個網站連過來、瀏覽器與裝置類型、螢幕大小、大概的國家。</li>
-   <li>不使用 cookie,不建立個人檔案,也不會拿來辨認你是誰。</li>
+   <li data-privacy="privacy.statistics.collectedData"></li>
+   <li data-privacy="privacy.statistics.noCookies"></li>
   </ul>
-  <h2>回饋表單</h2>
+  <h2 data-privacy="privacy.feedback.heading"></h2>
   <ul>
-   <li>你送出的留言、你選填的聯絡方式(email 或 IG)、送出時的網址和瀏覽器資訊。</li>
-   <li>只用來看回饋和回覆你,存在 Supabase 資料庫,只有我們看得到。</li>
+   <li data-privacy="privacy.feedback.collectedData"></li>
+   <li data-privacy="privacy.feedback.purpose"></li>
   </ul>
-  <h2>遊戲排行榜</h2>
+  <h2 data-privacy="privacy.leaderboards.heading"></h2>
   <ul>
-   <li>你輸入的暱稱、分數、上傳時間,以及一組隨機產生的裝置代碼(只用來把同一台裝置的成績算成一筆)。</li>
-   <li>排行榜是公開的:所有玩家都看得到暱稱和分數。請不要用真名或私人資訊當暱稱。</li>
+   <li data-privacy="privacy.leaderboards.collectedData"></li>
+   <li data-privacy="privacy.leaderboards.publicNotice"></li>
   </ul>
-  <h2>存在你瀏覽器裡的資料</h2>
+  <h2 data-privacy="privacy.browserStorage.heading"></h2>
   <ul>
-   <li>語言選擇、暱稱、最佳成績、遊戲設定、首頁的小遊戲紀錄、上面那組裝置代碼。</li>
-   <li>這些只存在你自己的瀏覽器(localStorage),清除網站資料就會刪掉。</li>
+   <li data-privacy="privacy.browserStorage.collectedData"></li>
+   <li data-privacy="privacy.browserStorage.deletion"></li>
   </ul>
-  <h2>麥克風(拍手貓)</h2>
+  <h2 data-privacy="privacy.microphone.heading"></h2>
   <ul>
-   <li>拍手貓要你允許麥克風,用瀏覽器內建的語音辨識聽觸發詞。我們不錄音、不存聲音。</li>
-   <li>語音辨識由瀏覽器提供,例如 Chrome 會交給 Google 處理,適用瀏覽器業者的政策。</li>
+   <li data-privacy="privacy.microphone.browserRecognition"></li>
+   <li data-privacy="privacy.microphone.provider"></li>
   </ul>
-  <h2>其他服務</h2>
+  <h2 data-privacy="privacy.services.heading"></h2>
   <ul>
-   <li>網站放在 GitHub Pages;部分頁面從 Google Fonts、cdnjs 載入字型與程式;部分遊戲也上架在 itch.io。這些服務會依它們自己的政策處理連線資料(例如 IP 位址)。</li>
+   <li data-privacy="privacy.services.providers"></li>
   </ul>
-  <h2>想查詢或刪除你的資料</h2>
+  <h2 data-privacy="privacy.deletion.heading"></h2>
   <ul>
-   <li>用<a href="../">首頁</a>的回饋表單,或私訊 <a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">Instagram @onholdlab</a>,告訴我們要刪的留言或排行榜暱稱。</li>
-   <li>這份政策有變動時,會更新這一頁和上面的日期。</li>
+   <li data-privacy="privacy.deletion.contact"></li>
+   <li data-privacy="privacy.deletion.updates"></li>
   </ul>
  </article>
 
  <article id="en" lang="en" hidden>
-  <h1>Privacy Policy</h1>
-  <p class="date">Last updated: October 26, 2026</p>
-  <p>This applies to the homepage, games and tools under onholdlab.github.io. We only collect what the works need to run. We don't sell data and don't use ad trackers.</p>
-  <h2>Visit statistics (GoatCounter)</h2>
+  <h1 data-privacy="privacy.heading"></h1>
+  <p class="date" data-privacy="privacy.updatedDate"></p>
+  <p data-privacy="privacy.scope"></p>
+  <h2 data-privacy="privacy.statistics.heading"></h2>
   <ul>
-   <li>We use GoatCounter to count page views. It records the page address, the site you came from, browser and device type, screen size, and approximate country.</li>
-   <li>It uses no cookies, builds no profiles, and isn't used to identify you.</li>
+   <li data-privacy="privacy.statistics.collectedData"></li>
+   <li data-privacy="privacy.statistics.noCookies"></li>
   </ul>
-  <h2>Feedback form</h2>
+  <h2 data-privacy="privacy.feedback.heading"></h2>
   <ul>
-   <li>Your message, the contact you choose to leave (email or IG), and the page address and browser info at the time you send it.</li>
-   <li>Used only to read feedback and reply to you. Stored in a Supabase database that only we can read.</li>
+   <li data-privacy="privacy.feedback.collectedData"></li>
+   <li data-privacy="privacy.feedback.purpose"></li>
   </ul>
-  <h2>Game leaderboards</h2>
+  <h2 data-privacy="privacy.leaderboards.heading"></h2>
   <ul>
-   <li>The nickname you enter, your score, upload time, and a randomly generated device code (used only to count one entry per device).</li>
-   <li>Leaderboards are public: every player can see nicknames and scores. Please don't use your real name or private details as a nickname.</li>
+   <li data-privacy="privacy.leaderboards.collectedData"></li>
+   <li data-privacy="privacy.leaderboards.publicNotice"></li>
   </ul>
-  <h2>Data stored in your browser</h2>
+  <h2 data-privacy="privacy.browserStorage.heading"></h2>
   <ul>
-   <li>Language choice, nickname, best scores, game settings, homepage mini-game progress, and the device code above.</li>
-   <li>These stay in your own browser (localStorage) and are removed when you clear site data.</li>
+   <li data-privacy="privacy.browserStorage.collectedData"></li>
+   <li data-privacy="privacy.browserStorage.deletion"></li>
   </ul>
-  <h2>Microphone (Clapping Cat)</h2>
+  <h2 data-privacy="privacy.microphone.heading"></h2>
   <ul>
-   <li>Clapping Cat asks for the microphone and uses your browser's built-in speech recognition to hear the trigger words. We don't record or store audio.</li>
-   <li>Speech recognition is provided by the browser. Chrome, for example, sends it to Google, under the browser maker's policy.</li>
+   <li data-privacy="privacy.microphone.browserRecognition"></li>
+   <li data-privacy="privacy.microphone.provider"></li>
   </ul>
-  <h2>Other services</h2>
+  <h2 data-privacy="privacy.services.heading"></h2>
   <ul>
-   <li>The site is hosted on GitHub Pages. Some pages load fonts and scripts from Google Fonts and cdnjs, and some games are also on itch.io. These services handle connection data (such as IP addresses) under their own policies.</li>
+   <li data-privacy="privacy.services.providers"></li>
   </ul>
-  <h2>Questions or deletion</h2>
+  <h2 data-privacy="privacy.deletion.heading"></h2>
   <ul>
-   <li>Use the feedback form on the <a href="../?lang=en">homepage</a> or DM <a href="https://ig.me/m/onholdlab" target="_blank" rel="noopener">@onholdlab on Instagram</a> and tell us which message or leaderboard nickname to delete.</li>
-   <li>If this policy changes, we'll update this page and the date above.</li>
+   <li data-privacy="privacy.deletion.contact"></li>
+   <li data-privacy="privacy.deletion.updates"></li>
   </ul>
  </article>
 
@@ -319,20 +319,27 @@ a{color:inherit}
   </ul>
  </article>
 </main>
+<script src="../js/locale.js"></script>
 <script>
+OHLi18n.ready.then(()=>{
+
 (function(){
  var CODES=["zh", "en", "ja", "ko", "es", "de", "fr"];
- var TITLES={"zh": "隱私權政策 · onholdlab", "en": "Privacy Policy · onholdlab", "ja": "プライバシーポリシー · onholdlab", "ko": "개인정보 처리방침 · onholdlab", "es": "Política de privacidad · onholdlab", "de": "Datenschutzerklärung · onholdlab", "fr": "Politique de confidentialité · onholdlab"};
- var METAS={"zh": "onholdlab 網站與作品收集哪些資料、怎麼使用、怎麼刪除。", "en": "What onholdlab collects from the website and works, how it is used, and how to delete it.", "ja": "onholdlab のウェブサイトと作品で収集する情報、その利用方法、削除方法について。", "ko": "onholdlab 웹사이트와 작품이 수집하는 정보, 이용 방법, 삭제 방법.", "es": "Qué datos recoge onholdlab en el sitio y en las obras, cómo se usan y cómo eliminarlos.", "de": "Welche Daten onholdlab auf der Website und bei den Werken erhebt, wie sie verwendet werden und wie man sie löscht.", "fr": "Les données collectées par onholdlab sur le site et les œuvres, leur utilisation et leur suppression."};
- var lang='zh';
+ var TITLES={"zh": OHLi18n.t('privacy.title',null,'zh-Hant'), "en": OHLi18n.t('privacy.title',null,'en'), "ja": "プライバシーポリシー · onholdlab", "ko": "개인정보 처리방침 · onholdlab", "es": "Política de privacidad · onholdlab", "de": "Datenschutzerklärung · onholdlab", "fr": "Politique de confidentialité · onholdlab"};
+ var METAS={"zh": OHLi18n.t('privacy.description',null,'zh-Hant'), "en": OHLi18n.t('privacy.description',null,'en'), "ja": "onholdlab のウェブサイトと作品で収集する情報、その利用方法、削除方法について。", "ko": "onholdlab 웹사이트와 작품이 수집하는 정보, 이용 방법, 삭제 방법.", "es": "Qué datos recoge onholdlab en el sitio y en las obras, cómo se usan y cómo eliminarlos.", "de": "Welche Daten onholdlab auf der Website und bei den Werken erhebt, wie sie verwendet werden und wie man sie löscht.", "fr": "Les données collectées par onholdlab sur le site et les œuvres, leur utilisation et leur suppression."};
+ for(const code of ['zh','en'])document.getElementById(code).querySelectorAll('[data-privacy]').forEach(el=>{el.innerHTML=OHLi18n.t(el.dataset.privacy,null,code)});
+ var lang=OHLi18n.language==='zh-Hant'?'zh':OHLi18n.language;
  function ok(c){return CODES.indexOf(c)>=0}
- try{var q=new URLSearchParams(location.search).get('lang');if(ok(q))lang=q;else throw 0}catch(e){
-   try{var s=localStorage.getItem('ohl_lang');try{s=JSON.parse(s)}catch(_){}if(ok(s))lang=s;else throw 0}catch(e2){
-     var n=(navigator.language||'').toLowerCase();var m=n.slice(0,2);
-     lang=n.indexOf('zh')===0?'zh':(ok(m)?m:'en');
-   }
+ if(!ok(lang)){
+  CODES.push(lang);
+  var article=document.getElementById('en').cloneNode(true);article.id=lang;article.lang=lang;article.querySelectorAll('[data-privacy]').forEach(el=>{el.innerHTML=OHLi18n.t(el.dataset.privacy)});document.querySelector('main').append(article);
+  TITLES[lang]=OHLi18n.t('privacy.title');METAS[lang]=OHLi18n.t('privacy.description');
+  var option=document.createElement('option');option.value=lang;var name=OHLi18n.t('language.name');option.textContent=name==='language.name'?lang:name;document.getElementById('lang').append(option);
  }
  function apply(){
+OHLi18n.setLanguage(lang,false);const t=OHLi18n.t;
+document.querySelectorAll('[data-text]').forEach(el=>{el.textContent=t(el.dataset.text)});
+for(const attr of ['aria-label','placeholder','alt','title','content'])document.querySelectorAll('[data-text-'+attr+']').forEach(el=>el.setAttribute(attr,t(el.getAttribute('data-text-'+attr))));
   CODES.forEach(function(c){var el=document.getElementById(c);if(el)el.hidden=c!==lang});
   var sel=document.getElementById('lang');sel.value=lang;
   document.documentElement.lang=lang==='zh'?'zh-Hant':lang;
@@ -348,6 +355,8 @@ a{color:inherit}
  };
  apply();
 })();
+
+});
 </script>
 </body>
 </html>
