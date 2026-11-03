@@ -18,6 +18,9 @@ async function session({saved,language='en-US',denied=false,unavailable=[],parti
 }
 for(const [language,expected]of [['zh-TW','zh-Hant'],['zh-HK','zh-Hant'],['zh-CN','zh-Hant'],['en-US','en'],['ja-JP','en'],['','en']])assert.equal((await session({language})).api.language,expected);
 assert.equal((await session({saved:'en',language:'zh-TW'})).api.language,'en');
+assert.equal((await session({saved:'en',language:'zh-TW',search:'?lang=zh'})).api.language,'en');
+assert.equal((await session({saved:'zh',search:'?lang=en'})).api.language,'zh-Hant');
+assert.equal((await session({search:'?lang=zh'})).api.language,'zh-Hant');
 assert.equal((await session({saved:'zh',language:'en-US'})).api.language,'zh-Hant');
 assert.equal((await session({saved:'zh-Hant'})).api.language,'zh-Hant');
 assert.equal((await session({saved:'../bad',language:'zh-TW'})).api.language,'zh-Hant');

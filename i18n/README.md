@@ -28,7 +28,7 @@
 
 抽出 104 個 key，涵蓋首頁與隱私權頁、FAQ、回饋訊息、placeholder、無障礙標籤、頁面標題、description 與 JS 內備用作品名稱/介紹。原始頁面沒有 og 描述或 og:image，本次不新增 metadata。
 
-首頁與隱私權頁原有的明確 ?lang= URL 指定保留；這是來自連結的語言選擇，先於已儲存偏好。localStorage 沿用 ohl_lang 的 JSON 字串格式。
+首頁與隱私權頁原有的明確 ?lang= URL 指定保留；已有儲存偏好時優先使用玩家選擇，沒有有效儲存偏好才使用連結的語言。localStorage 沿用 ohl_lang 的 JSON 字串格式。
 
 隱私權文字按段落分 key，原有標籤、段落與連結逐字保留；包含連結的文字段落保留既有 HTML，只能放可信任、隨程式部署的內容。作品列表原有 works.json / works-i18n.json 已在 JSON 中，繼續使用原本資料流程，不重複搬移。
 
