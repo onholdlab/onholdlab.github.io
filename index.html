@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title data-text="home.title"></title>
-<meta name="description" content="" data-text-content="home.desc">
+<title data-text="home.title">onholdlab 等候空間</title>
+<meta name="description" content="onholdlab 等候空間：一個人用 AI 把想法做成作品的地方。" data-text-content="home.desc">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;900&family=Poppins:wght@500;600;700&display=swap">
 <style>
@@ -229,7 +229,7 @@ body{min-height:calc(100dvh + 2px)}
  <div class="play-area">
   <div class="stage-info">
    <p class="hint" id="hint" data-i="hint"></p>
-   <div class="hud" aria-live="polite"><small data-i="today"></small><span id="cnt" data-text="home.counter.initialValue"></span></div>
+   <div class="hud" aria-live="polite"><small data-i="today"></small><span id="cnt">0</span></div>
   </div>
  <section class="stage" id="stage" aria-label="" data-i-aria="stageAria">
   <div class="deco" aria-hidden="true">
@@ -291,7 +291,7 @@ body{min-height:calc(100dvh + 2px)}
   <ol class="news" id="news" aria-label="" data-i-aria="newsAria"></ol>
   <figure class="show">
    <div class="artw"><svg id="art" viewBox="0 0 300 200" role="img" aria-label="" data-i-aria="artAria"></svg><p class="empty" id="empty" data-i="empty"></p></div>
-   <figcaption><span data-i="cap"></span><b id="artn" data-text="home.counter.initialValue"></b></figcaption>
+   <figcaption><span data-i="cap"></span><b id="artn">0</b></figcaption>
    <button type="button" id="clear" data-i="clear"></button>
   </figure>
  </div>
