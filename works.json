@@ -1,6 +1,28 @@
 {
- "updated": "2026-11-04T07:32:23.570Z",
+ "updated": "2026-11-04T13:23:22.274Z",
  "works": [
+  {
+   "title": "trash-dex",
+   "blurb": "",
+   "title_en": "",
+   "blurb_en": "",
+   "type": "工具",
+   "url": "https://onholdlab.github.io/trash-dex/",
+   "repo": "trash-dex",
+   "created": "2026-11-04T11:11:22Z",
+   "translations": {}
+  },
+  {
+   "title": "mold-decor",
+   "blurb": "",
+   "title_en": "",
+   "blurb_en": "",
+   "type": "遊戲",
+   "url": "https://onholdlab.github.io/mold-decor/",
+   "repo": "mold-decor",
+   "created": "2026-11-04T11:09:43Z",
+   "translations": {}
+  },
   {
    "title": "果凍貓散步",
    "blurb": "貓咪踩到哪，地板就噗嘰陷下去",
