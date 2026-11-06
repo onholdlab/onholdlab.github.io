@@ -88,7 +88,7 @@
   "privacy.statistics.noCookies": "It uses no cookies, builds no profiles, and isn't used to identify you.",
   "privacy.feedback.heading": "Feedback form",
   "privacy.feedback.collectedData": "Your message, the contact you choose to leave (email or IG), and the page address and browser info at the time you send it.",
-  "privacy.feedback.purpose": "Used only to read feedback and reply to you. Stored in a Supabase database that only we can read.",
+  "privacy.feedback.purpose": "Used only to read feedback and reply to you. Stored in a Cloudflare database that only we can read.",
   "privacy.leaderboards.heading": "Game leaderboards",
   "privacy.leaderboards.collectedData": "The nickname you enter, your score, upload time, and a randomly generated device code (used only to count one entry per device).",
   "privacy.leaderboards.publicNotice": "Leaderboards are public: every player can see nicknames and scores. Please don't use your real name or private details as a nickname.",

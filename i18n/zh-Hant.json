@@ -88,7 +88,7 @@
   "privacy.statistics.noCookies": "不使用 cookie,不建立個人檔案,也不會拿來辨認你是誰。",
   "privacy.feedback.heading": "回饋表單",
   "privacy.feedback.collectedData": "你送出的留言、你選填的聯絡方式(email 或 IG)、送出時的網址和瀏覽器資訊。",
-  "privacy.feedback.purpose": "只用來看回饋和回覆你,存在 Supabase 資料庫,只有我們看得到。",
+  "privacy.feedback.purpose": "只用來看回饋和回覆你,存在 Cloudflare 資料庫,只有我們看得到。",
   "privacy.leaderboards.heading": "遊戲排行榜",
   "privacy.leaderboards.collectedData": "你輸入的暱稱、分數、上傳時間,以及一組隨機產生的裝置代碼(只用來把同一台裝置的成績算成一筆)。",
   "privacy.leaderboards.publicNotice": "排行榜是公開的:所有玩家都看得到暱稱和分數。請不要用真名或私人資訊當暱稱。",
