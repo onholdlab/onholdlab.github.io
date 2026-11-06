@@ -6,7 +6,7 @@
    後端是 Cloudflare Worker「ohl-api」+ D1 資料庫(程式在 onholdlab/ohl-api)。 */
 window.OHLFeedback = (function () {
   /* 只要填這一行:ohl-api 部署後的網址,例如 https://ohl-api.xxxx.workers.dev */
-  var CFG = { api: '' };
+  var CFG = { api: 'https://ohl-api.onholdlab.workers.dev' };
 
   function configured() { return !!CFG.api; }
 
