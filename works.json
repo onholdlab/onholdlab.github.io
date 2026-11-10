@@ -1,60 +1,17 @@
 {
- "updated": "2026-11-06T13:22:50.735Z",
+ "updated": "2026-10-31T13:02:27.368Z",
  "works": [
-  {
-   "title": "許願神燈",
-   "blurb": "三個願望，字面意思也算",
-   "title_en": "Wish Lamp",
-   "blurb_en": "Three wishes, taken literally.",
-   "type": "遊戲",
-   "url": "https://onholdlab.github.io/wish-lamp/",
-   "repo": "wish-lamp",
-   "created": "2026-11-06T07:55:27Z",
-   "translations": {}
-  },
-  {
-   "title": "trash-dex",
-   "blurb": "",
-   "title_en": "",
-   "blurb_en": "",
-   "type": "工具",
-   "url": "https://onholdlab.github.io/trash-dex/",
-   "repo": "trash-dex",
-   "created": "2026-11-04T11:11:22Z",
-   "translations": {}
-  },
-  {
-   "title": "mold-decor",
-   "blurb": "",
-   "title_en": "",
-   "blurb_en": "",
-   "type": "遊戲",
-   "url": "https://onholdlab.github.io/mold-decor/",
-   "repo": "mold-decor",
-   "created": "2026-11-04T11:09:43Z",
-   "translations": {}
-  },
-  {
-   "title": "果凍貓散步",
-   "blurb": "貓咪踩到哪，地板就噗嘰陷下去",
-   "title_en": "Jelly Cat Walk",
-   "blurb_en": "A cat whose steps squish into the floor like jelly.",
-   "type": "遊戲",
-   "url": "https://onholdlab.github.io/walking-cat/",
-   "repo": "walking-cat",
-   "created": "2026-11-03T15:29:23Z",
-   "translations": {}
-  },
   {
    "title": "期中考模擬",
    "blurb": "被鴿子分心的期中考，戴上耳機就能專心複習",
    "title_en": "Midterm Sim",
    "blurb_en": "A goofy midterm classroom — put on headphones to actually study.",
    "type": "遊戲",
-   "url": "https://onholdlab.github.io/midterm-sim/",
+   "url": "https://onholdlab.com/midterm-sim/",
    "repo": "midterm-sim",
    "created": "2026-10-31T10:03:25Z",
-   "translations": {}
+   "translations": {},
+   "lang_only": "zh"
   },
   {
    "title": "8棒接力",
@@ -62,7 +19,7 @@
    "title_en": "8-Leg Relay",
    "blurb_en": "Guess which leg the AI drew",
    "type": "遊戲",
-   "url": "https://onholdlab.github.io/relay-ai-guess/",
+   "url": "https://onholdlab.com/relay-ai-guess/",
    "repo": "relay-ai-guess",
    "created": "2026-10-26T14:16:49Z",
    "translations": {
@@ -94,7 +51,7 @@
    "title_en": "Crossroad",
    "blurb_en": "Bump into people, or get bumped.",
    "type": "遊戲",
-   "url": "https://onholdlab.github.io/crossroad/",
+   "url": "https://onholdlab.com/crossroad/",
    "repo": "crossroad",
    "created": "2026-10-24T08:51:13Z",
    "translations": {
@@ -126,7 +83,7 @@
    "title_en": "Dodge Dog",
    "blurb_en": "A survivors-like starring a dog.",
    "type": "遊戲",
-   "url": "https://onholdlab.github.io/dodge-dog/",
+   "url": "https://onholdlab.com/dodge-dog/",
    "repo": "dodge-dog",
    "created": "2026-10-23T05:00:48Z",
    "translations": {
@@ -158,7 +115,7 @@
    "title_en": "Clapping Cat",
    "blurb_en": "Say your words and the cat claps.",
    "type": "遊戲",
-   "url": "https://onholdlab.github.io/clapping-cat/",
+   "url": "https://onholdlab.com/clapping-cat/",
    "repo": "clapping-cat",
    "created": "2026-10-22T02:22:46Z",
    "translations": {
@@ -190,7 +147,7 @@
    "title_en": "Tool Twins",
    "blurb_en": "Check whether your Claude skills and MCP tools compete for the same requests.",
    "type": "工具",
-   "url": "https://onholdlab.github.io/tool-twins/",
+   "url": "https://onholdlab.com/tool-twins/",
    "repo": "tool-twins",
    "created": "2026-10-19T19:32:19Z",
    "translations": {

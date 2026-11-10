@@ -1,5 +1,5 @@
 /* onholdlab 玩家回饋:所有網站與遊戲共用。
-   用法:在頁面載入 https://onholdlab.github.io/js/feedback.js
+   用法:在頁面載入 https://onholdlab.com/js/feedback.js
          OHLFeedback.send({ source: 'crossroad-bump', kind: 'bug', message: '...', contact: '' })
            .then(r => r.ok ? 已收到 : 依 r.reason 顯示訊息)
    r.reason:not_configured / rate_limited / invalid / network / http_<狀態碼>

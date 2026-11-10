@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>從零造一台電腦：箭頭、組合語言、彈珠，還有一封全是算式的外星來信｜ONHOLDNEWS 2026-11-10</title>
+<meta name="description" content="ONHOLDNEWS 第 2 期：Logic Arrows、PlayASM、Number Machine: Math Factory、marblebuilds、Message From Aliens（異星來信）。把科學或技術真正放進玩法的新遊戲。">
+<link rel="canonical" href="https://onholdlab.com/weekly/2026-11-10/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="onholdlab">
+<meta property="og:title" content="從零造一台電腦：箭頭、組合語言、彈珠，還有一封全是算式的外星來信｜ONHOLDNEWS 2026-11-10">
+<meta property="og:description" content="ONHOLDNEWS 第 2 期：Logic Arrows、PlayASM、Number Machine: Math Factory、marblebuilds、Message From Aliens（異星來信）。把科學或技術真正放進玩法的新遊戲。">
+<meta property="og:url" content="https://onholdlab.com/weekly/2026-11-10/">
+<link rel="alternate" type="application/rss+xml" title="ONHOLDNEWS" href="https://onholdlab.com/weekly/feed.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&family=Noto+Sans+TC:wght@400;700;900&display=swap">
+<style>:root{--bg:#d7e7df;--ink:#12302a;--muted:#3d5a52;--panel:#eef5f1;--line:#12302a;--accent:#c2281d;--tag:#bcd8cb;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10221d;--ink:#e3efe9;--muted:#9fb8b0;--panel:#17302a;--line:#9fb8b0;--accent:#ff6b5e;--tag:#24443b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10221d;--ink:#e3efe9;--muted:#9fb8b0;--panel:#17302a;--line:#9fb8b0;--accent:#ff6b5e;--tag:#24443b;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.8 "Noto Sans TC","Noto Sans CJK TC",system-ui,sans-serif}
+main{max-width:720px;margin:0 auto;padding:20px 16px 72px;overflow-wrap:anywhere}
+a{color:inherit;text-underline-offset:4px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:700}
+.top a{min-height:44px;display:inline-grid;place-items:center}
+.series{font:700 13px/1.4 "Inter",system-ui,sans-serif;letter-spacing:.14em;color:var(--accent);margin:28px 0 6px}
+h1{font-size:30px;line-height:1.35;margin:0 0 10px;font-weight:900}
+.meta{color:var(--muted);font-size:14px;margin:0 0 20px}
+.lede{font-size:18px;margin:0 0 8px}
+.focus{background:var(--panel);padding:14px 18px;margin:24px 0}
+.focus p{margin:0}
+.focus b{display:block;font-size:14px;color:var(--muted);margin-bottom:2px}
+.toc{list-style:none;padding:0;margin:18px 0 8px;counter-reset:t}
+.toc li{counter-increment:t;padding:8px 0;border-top:1px solid var(--line);display:flex;gap:12px;align-items:baseline}
+.toc li::before{content:counter(t,decimal-leading-zero);font:800 14px "Inter",sans-serif;color:var(--accent)}
+.toc a{font-weight:700}
+.toc small{color:var(--muted);margin-left:auto;white-space:nowrap}
+article.item{margin:44px 0 0;padding-top:20px;border-top:2px solid var(--line)}
+.num{font:800 15px "Inter",sans-serif;color:var(--accent)}
+h2{font-size:24px;line-height:1.35;margin:4px 0 10px}
+.tag{display:inline-block;background:var(--tag);font-size:13px;font-weight:700;padding:2px 10px;margin-right:6px}
+.tag.closed{background:var(--accent);color:#fff}
+h3{font-size:15px;margin:22px 0 4px;color:var(--muted);letter-spacing:.04em}
+h3+p{margin-top:0}
+.src{font-size:14px;color:var(--muted);margin-top:18px}
+.src a{margin-right:12px;white-space:normal}
+.missed{margin-top:48px;padding-top:20px;border-top:2px solid var(--line)}
+.missed dl{margin:0}
+.missed dt{font-weight:700;margin-top:12px}
+.missed dd{margin:0;color:var(--muted)}
+.note{font-size:14px;color:var(--muted);margin-top:40px}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:40px;font-weight:700}
+.pager a{min-height:44px;display:inline-grid;place-items:center}
+.principles{display:grid;gap:12px;margin:22px 0}
+.principles div{background:var(--panel);padding:14px 18px}
+.principles b{display:block;margin-bottom:2px}
+.issues{list-style:none;padding:0;margin:12px 0}
+.issues li{border-top:1px solid var(--line);padding:16px 0}
+.issues a{font-weight:900;font-size:20px;line-height:1.4;display:block}
+.issues small{color:var(--muted);display:block}
+.issues .names{color:var(--muted);font-size:15px;margin-top:4px}
+footer{display:block;text-align:center;color:var(--muted);font-size:13px;margin-top:56px;padding-top:16px;border-top:1px solid var(--line)}
+</style>
+<script data-goatcounter="https://onholdlab.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<main>
+
+<nav class="top"><a href="../">← 所有期數</a><a href="/">onholdlab</a></nav>
+<p class="series">ONHOLDNEWS · 科技遊戲週報 · 第 2 期</p>
+<h1>從零造一台電腦：箭頭、組合語言、彈珠，還有一封全是算式的外星來信</h1>
+<p class="meta">2026-11-10（週二）· 收錄範圍 2026-11-01 → 2026-11-10 · 5 款</p>
+<p class="lede">這週 Steam 的「Programming」標籤一口氣進了十多款新作，真正把科技放進機制的有三款在做同一件事：從零造一台電腦，分別用箭頭、組合語言和彈珠。另外兩款，一款把算術攤成工廠生產線，一款把數學當成和外星人溝通的唯一語言。</p>
+<div class="focus"><b>這個專欄只收一種遊戲</b><p>科學或技術真正寫進規則、玩家得靠理解它才玩得下去的遊戲。只是科幻題材、只是畫面好看，不收。<a href="../#why">為什麼</a></p></div>
+<ol class="toc">
+<li><a href="#g1">Logic Arrows</a><small>數位邏輯</small></li>
+<li><a href="#g2">PlayASM</a><small>組合語言</small></li>
+<li><a href="#g3">Number Machine: Math Factory</a><small>算術</small></li>
+<li><a href="#g4">marblebuilds</a><small>2D 物理</small></li>
+<li><a href="#g5">Message From Aliens（異星來信）</a><small>數學</small></li>
+</ol>
+<article class="item" id="g1"><span class="num">01</span><h2>Logic Arrows</h2>
+<span class="tag">數位邏輯 · 電腦架構</span>
+<h3>你在做什麼</h3><p>畫面是一張無限大的格子紙。你放的每個箭頭只做一件事：把訊號往它指的方向傳一格。幾十個箭頭排好，一個 AND 閘亮了；再往上疊就是加法器、記憶體，最後是一顆能跑俄羅斯方塊的 CPU。玩家社群已經在裡面寫出自己的組譯器。</p>
+<h3>背後的科技</h3><p>數位邏輯與電腦架構。它把「邏輯閘」再往下拆一層，用箭頭的傳遞規則當唯一的最小單位，從 NOT、AND 一路堆到時脈、RAM、指令集，玩法上更接近細胞自動機。</p>
+<h3>在哪玩</h3><p>PC（Windows／SteamOS／Linux）。Steam 正式版預定 2026-11-10 上架，發稿時頁面還沒顯示價格；Steam 有免費試玩版；另有瀏覽器版 logic-arrows.io（是否免費待查）。介面有簡體中文，沒有繁體中文。</p>
+<h3>我們的評語</h3><p>想弄懂「電腦到底怎麼算 1+1」的人，這是門檻最低的一條路，因為規則只有箭頭一種。到 CPU 那段很硬，先玩免費試玩版，確定自己不會中途放棄。</p>
+<p class="src">來源：<a href="https://store.steampowered.com/app/4210250/Logic_Arrows/" target="_blank" rel="noopener">Steam 頁面</a> <a href="https://store.steampowered.com/app/5193870/Logic_Arrows_Demo/" target="_blank" rel="noopener">Steam 免費試玩版</a> <a href="https://logic-arrows.io/" target="_blank" rel="noopener">瀏覽器版 logic-arrows.io</a> <a href="https://github.com/chubrik/LogicArrows" target="_blank" rel="noopener">社群地圖庫（GitHub）</a></p></article>
+<article class="item" id="g2"><span class="num">02</span><h2>PlayASM</h2>
+<span class="tag">組合語言 · CPU 模擬</span>
+<h3>你在做什麼</h3><p>左邊是有語法上色、中斷點的程式碼編輯器，右邊是 16 個暫存器和記憶體，用十六進位、十進位、二進位顯示。你一行一行寫組合語言、按一步執行，看旗標翻、記憶體改。學會之後，同一套指令可以畫到 320×200 的畫面上、吹出 8 聲道晶片音樂，或操作一支六軸機械手臂把方塊夾上輸送帶。</p>
+<h3>背後的科技</h3><p>一台自訂的精簡 CPU 模擬器（16 個暫存器、64KB 位址空間、旗標）。70 個教學任務從位元、十六進位、位移、迴圈、堆疊一路教上去，再加上 100 多個挑戰；模組用 JSON 加 Lua 寫，可以上 Steam Workshop。</p>
+<h3>在哪玩</h3><p>PC（Steam），2026-11-05 上市，定價 US$15.99，首發 85 折到 11/19。介面有簡體中文，沒有繁體中文；沒有試玩版，發稿時還沒有玩家評價。</p>
+<h3>我們的評語</h3><p>適合修過計算機組織、卻從沒「摸到」CPU 的人；完全零基礎會卡在前幾關。組合語言解謎遊戲已經不少，這款的不同在於給你一整台機器。價格偏高又沒試玩，建議等第一批評價出來再決定。</p>
+<p class="src">來源：<a href="https://store.steampowered.com/app/5424530/PlayASM/" target="_blank" rel="noopener">Steam 頁面</a></p></article>
+<article class="item" id="g3"><span class="num">03</span><h2>Number Machine: Math Factory</h2>
+<span class="tag">算術 · 自動化</span>
+<h3>你在做什麼</h3><p>六角格地圖上滾著一顆顆寫著數字的球。你鋪輸送帶、裝推桿、雷射、磁鐵、旋轉器，讓兩顆「3」撞成一顆「6」，再把一串球排成題目要求的形狀和數值。全部自動運轉，少一格整條線就塞住。</p>
+<h3>背後的科技</h3><p>數學加自動化。球上的數字會隨機器被合併、拆分、修改，等於把算式攤成一條生產線；排行榜比的是體積和速度，就是演算法課裡的空間與時間取捨。</p>
+<h3>在哪玩</h3><p>PC（Windows／macOS／SteamOS／Linux，Steam），2026-11-06 上市，US$14.99，首發 9 折到 11/20，有免費試玩版。介面有簡體中文（含語音與字幕），沒有繁體中文。發稿時 23 則評價全數好評。</p>
+<h3>我們的評語</h3><p>玩過 Opus Magnum、Infinifactory 的人會直接上手；不愛工廠遊戲的人可能覺得是在加班算數。開發者自己說靈感來自這兩款，六角格加數字球是變體，但做得很完整。</p>
+<p class="src">來源：<a href="https://store.steampowered.com/app/2231090/Number_Machine_Math_Factory/" target="_blank" rel="noopener">Steam 頁面</a> <a href="https://gamingonlinux.com/2025/06/number-machine-is-an-open-ended-factory-and-automation-game-with-math-mechanics" target="_blank" rel="noopener">GamingOnLinux 介紹</a></p></article>
+<article class="item" id="g4"><span class="num">04</span><h2>marblebuilds</h2>
+<span class="tag">2D 物理 · 數位邏輯</span>
+<h3>你在做什麼</h3><p>在格子裡疊方塊搭彈珠軌道，按下開始，彈珠滾過加速器、反重力板、傳送門、會讓它變慢的蜂蜜區。再拉幾條線接上按鈕和感測器，彈珠滾過就觸發活門、燈或彈珠產生器；官方說不寫程式也能做出彈珠台和計算機。</p>
+<h3>背後的科技</h3><p>2D 剛體物理（Box2D）加一套類似 Minecraft 紅石的數位邏輯：線路、邏輯閘、計時器、記憶格。彈珠本身就是訊號，物理和邏輯混在同一張地圖上。</p>
+<h3>在哪玩</h3><p>PC（Windows／SteamOS／Linux，Steam），2026-11-02 上市，US$9.99，首發 75 折到 11/16。介面有繁體中文。另有免費網頁版在 itch.io，有沙盒、解謎和平台模式（邏輯方塊是否開放待查）。</p>
+<h3>我們的評語</h3><p>這週唯一有繁中、又能直接在瀏覽器玩的一款，門檻最低。想認真學邏輯電路的人會覺得它太玩具；但要「先看到電路動起來」，它最直觀。</p>
+<p class="src">來源：<a href="https://store.steampowered.com/app/4285270/marblebuilds" target="_blank" rel="noopener">Steam 頁面</a> <a href="https://grizzyyo.itch.io/marblebuilds" target="_blank" rel="noopener">itch.io 免費網頁版</a></p></article>
+<article class="item" id="g5"><span class="num">05</span><h2>Message From Aliens（異星來信）</h2>
+<span class="tag">數學 · 解密</span>
+<h3>你在做什麼</h3><p>整個畫面只有外星符號，連選單和字典都是。每個符號下面有個「？」，點開寫筆記，同一個符號出現的每個地方都會顯示你的筆記。第一章全是算式：你先靠加減乘除猜出他們的數字系統，再用已知的字去拆字典裡「用外星字解釋外星字」的條目。連「怎麼離開遊戲」都要先解出來。</p>
+<h3>背後的科技</h3><p>把數學當共通語言。1,000 多個表意符號、兩萬多字的文本，從數字和等式建立規則，後面會碰到重力、電解水這類科學概念。開發者說靈感來自《妳一生的預言》與《接觸未來》。</p>
+<h3>在哪玩</h3><p>PC（Steam），2026-11-01 上市（亞洲時間為 11/2），US$9.99，有免費試玩版。遊戲裡沒有任何人類文字，筆記用你自己的語言寫，所以中文玩家完全沒問題。發稿時 498 則評價、93% 好評，一週內評價數漲了近四倍。</p>
+<h3>我們的評語</h3><p>喜歡《Chants of Sennaar》的人必玩，而且更硬、更純。沒有美術、沒有音樂、沒有教學，怕悶的人先玩試玩版。開發者之前做過《A=B》與《Understand》。</p>
+<p class="src">來源：<a href="https://store.steampowered.com/app/1858720/Message_From_Aliens/" target="_blank" rel="noopener">Steam 頁面</a> <a href="https://www.4gamers.com.tw/news/detail/83044/message-from-aliens-steam-alien-language-puzzle-game" target="_blank" rel="noopener">4Gamers 報導（繁中）</a> <a href="https://automaton-media.com/articles/newsjp/20261103-477243/" target="_blank" rel="noopener">AUTOMATON 報導（日文）</a></p></article>
+<section class="missed"><p class="series">本週沒找到的</p><h2>搜了，但沒有合格作品的方向</h2><dl>
+<dt>VR／AR</dt><dd>11 月的 VR 新作以動作、射擊、派對為主，沒有科學機制明顯的作品。</dd>
+<dt>公民科學遊戲</dt><dd>找到的都是既有專案，7～10 天內沒有新上線的。</dd>
+<dt>桌遊</dt><dd>沒有可確認的新科學機制桌遊募資。</dd>
+<dt>AI 生成遊戲</dt><dd>只有既有平台改版，沒有把 AI 當核心機制、現在能玩的新遊戲。</dd>
+<dt>研究單位與博物館</dt><dd>沒有範圍內的新發布。</dd>
+<dt>Game jam</dt><dd>Spooky Jam 2026、iGGi Game Jam 2026 的結果中沒有可確認的科學機制得獎作品。</dd>
+<dt>差一點入選</dt><dd>幾款即將推出的太空工廠、觀察解謎、流程圖寫機器人的遊戲，頁面沒寫出真實科學機制，或科學成分太弱，沒收。</dd>
+</dl></section>
+<p class="note">有我們漏掉的科學遊戲？到 <a href="/">onholdlab 首頁</a>留言，或在 Threads、IG 找 @onholdlab。</p>
+<nav class="pager"><a href="../2026-11-03/">← 上一期</a><span></span></nav>
+<footer>ONHOLDNEWS 是 onholdlab 的每週專欄。文字皆為我們自己撰寫，不使用遊戲方的圖片；價格、評價數等數字以發稿當時打開的來源頁為準。<br>© 2026 onholdlab</footer>
+</main>
+</body>
+</html>

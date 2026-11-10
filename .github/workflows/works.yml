@@ -1,11 +1,9 @@
 name: 更新作品清單
 on:
-  schedule:
-    - cron: '17 */6 * * *'   # 每 6 小時
-  workflow_dispatch:          # 也可以在 Actions 頁面手動按 Run
-  push:
-    branches: [main]
-    paths: ['scripts/build-works.mjs', 'works-i18n.json', '.github/workflows/works.yml']
+  # 2026-11：網站搬到 onholdlab.com（Cloudflare），works.json 改成手動維護的清單，
+  # 只列已經放上 onholdlab.com 的作品。自動更新會把 github.io 上所有開 Pages 的 repo
+  # 都加回來（連結會 404），所以先關掉排程與 push 觸發，只留手動 Run。
+  workflow_dispatch:
 permissions:
   contents: write
 jobs:
