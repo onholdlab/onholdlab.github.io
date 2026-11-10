@@ -2,7 +2,8 @@ name: 更新作品清單
 on:
   # 2026-11：網站搬到 onholdlab.com（Cloudflare），works.json 改成手動維護的清單，
   # 只列已經放上 onholdlab.com 的作品。自動更新會把 github.io 上所有開 Pages 的 repo
-  # 都加回來（連結會 404），所以先關掉排程與 push 觸發，只留手動 Run。
+  # 都加回來（連結會 404），所以關掉排程與 push 觸發。手動 Run 也只更新
+  # 清單內作品的資料，保留部署網址、順序與語言限制，不新增作品。
   workflow_dispatch:
 permissions:
   contents: write
@@ -13,6 +14,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
+      - run: node --test scripts/build-works.test.mjs
       - run: node scripts/build-works.mjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,13 +1,15 @@
-// 列出 onholdlab 所有開了 GitHub Pages 的公開 repo，寫進 works.json，首頁的「最新資訊」讀這個檔。
+// 只更新 works.json 手動清單內作品的 GitHub 資料，不從 Pages 自動加入作品。
+// 清單順序、部署網址與 lang_only 等站內設定由 works.json 維護。
 // 類型看 repo 的 topics：有 game → 遊戲，有 tool → 工具，都沒有 → 作品。
 // 名稱與介紹看 repo 的 description：寫成「中文名稱｜一句話介紹」；沒有｜就整段當介紹，名稱用 repo 名。
 // 要英文版就寫成「中文名稱｜中文介紹｜English name｜English blurb」，英文首頁會用後兩段。
 import { readFileSync, writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 const translations = JSON.parse(readFileSync(new URL('../works-i18n.json', import.meta.url), 'utf8'));
+const worksFile = new URL('../works.json', import.meta.url);
+const published = JSON.parse(readFileSync(worksFile, 'utf8'));
 
 const OWNER = process.env.OWNER || 'onholdlab';
-const SELF = `${OWNER}.github.io`.toLowerCase();
 const headers = { Accept: 'application/vnd.github+json', 'User-Agent': 'onholdlab-works' };
 if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
 
@@ -37,17 +39,23 @@ export function toWork(r) {
   return { title, blurb, title_en, blurb_en, type, url, repo: r.name, created: r.created_at, translations: translations[r.name] || {} };
 }
 
-export function build(repos) {
-  return repos
-    .filter(r => r.has_pages && !r.private && !r.archived && !r.fork && r.name.toLowerCase() !== SELF)
-    .map(toWork)
-    .sort((a, b) => b.created.localeCompare(a.created));
+export function build(repos, publishedWorks = published.works) {
+  const byName = new Map(repos.map(r => [r.name, r]));
+  return publishedWorks.map(work => {
+    const repo = byName.get(work.repo);
+    return {
+      ...work,
+      ...(repo ? toWork(repo) : {}),
+      url: work.url,
+      translations: translations[work.repo] || work.translations || {}
+    };
+  });
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const repos = (await list('orgs')) || (await list('users'));
   if (!repos) { console.error('拿不到 repo 清單'); process.exit(1); }
   const works = build(repos);
-  writeFileSync('works.json', JSON.stringify({ updated: new Date().toISOString(), works }, null, 1) + '\n');
+  writeFileSync(worksFile, JSON.stringify({ ...published, updated: new Date().toISOString(), works }, null, 1) + '\n');
   console.log(`寫入 ${works.length} 件作品`);
 }
