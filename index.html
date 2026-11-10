@@ -118,6 +118,8 @@ button{font:inherit;color:inherit}
 .news .t{font:700 17px/1.3 var(--f-disp);overflow-wrap:anywhere}
 .news .t small{display:block;font:400 13px/1.4 var(--f-body);color:var(--muted)}
 .news .ty{font:500 12px/1 var(--f-body);border:1px solid var(--line);padding:4px 7px}
+.news .tys{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.news .lo{font:500 12px/1 var(--f-body);border:1px dashed var(--line);padding:4px 7px;white-space:nowrap}
 .news .old{font:500 12px/1.4 var(--f-body);color:var(--muted);text-align:center;padding-top:8px;border:0}
 .faq{display:flex;flex-wrap:wrap;gap:8px}
 .faq button{min-height:44px;padding:8px 12px;border:2px solid var(--line);background:var(--panel);cursor:pointer;font:500 14px/1.3 var(--f-body)}
@@ -139,7 +141,7 @@ button{font:inherit;color:inherit}
 .qnote.ok{color:var(--ink);font-weight:700}
 .contact{display:flex;flex-wrap:wrap;gap:6px 14px}
 .contact a{min-height:44px;display:inline-grid;place-items:center;font:700 14px/1 var(--f-num);text-underline-offset:4px}
-.show svg{width:100%;height:auto;display:block;border:2px solid var(--line);background:var(--panel);aspect-ratio:3/2;max-width:100%}
+.show svg{width:100%;height:auto;display:block;overflow:hidden;border:2px solid var(--line);background:var(--panel);aspect-ratio:3/2;max-width:100%}
 .artw{position:relative}
 .empty{position:absolute;inset:0;display:grid;place-items:center;margin:0;padding:16px;text-align:center;font:500 14px/1.5 var(--f-body);color:var(--muted);pointer-events:none}
 .show figcaption{font:400 13px/1.4 var(--f-body);color:var(--muted);display:flex;justify-content:space-between;gap:8px}
@@ -207,6 +209,13 @@ body{min-height:calc(100dvh + 2px)}
 })();
 </script>
 <meta name="google-site-verification" content="-Pa9b5WdT8bJL8NWc6bR-rUI1BDDIZuzSGZKhUPUlN4" />
+<style id="onholdnews-css">
+.onn{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:0 0 14px;padding:12px 16px;background:var(--panel);border:0;color:var(--ink);text-decoration:none;font-family:var(--f-body)}
+.onn b{font:800 15px/1.3 var(--f-num);letter-spacing:.08em;color:var(--accent)}
+.onn span{font-weight:700}
+.onn small{flex-basis:100%;color:var(--muted);font-size:13px;line-height:1.5}
+.onn:hover span,.onn:focus-visible span{text-decoration:underline;text-underline-offset:4px}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -217,7 +226,7 @@ body{min-height:calc(100dvh + 2px)}
   </details></div>
   <div class="winbox">
    <div class="win" id="win">
-    <div class="in"><button class="num" id="num" type="button" data-i-aria="numAria" aria-label=""></button><span class="lab" data-i="latestLab"></span><a id="latest" href="https://onholdlab.github.io/crossroadhit/" target="_blank" rel="noopener" tabindex="-1" data-text="home.latest.initialTitle"></a></div>
+    <div class="in"><button class="num" id="num" type="button" data-i-aria="numAria" aria-label=""></button><span class="lab" data-i="latestLab"></span><a id="latest" href="https://onholdlab.com/midterm-sim/" target="_blank" rel="noopener" tabindex="-1" data-text="home.latest.initialTitle"></a></div>
     <div class="shutter" aria-hidden="true"><span class="sh-l" data-i="bellLab"></span></div>
    </div>
    <button class="bell" id="bell" type="button" aria-label="" data-i-aria="bellAria" aria-expanded="false" aria-controls="win">
@@ -262,6 +271,7 @@ body{min-height:calc(100dvh + 2px)}
  </div>
 
  <h2 class="news-h" data-i="newsH"></h2>
+ <!-- onholdnews --><a class="onn" href="weekly/"><b>ONHOLDNEWS</b><span>科技遊戲週報 →</span><small>每週二，整理把科學真正寫進玩法的新遊戲 · Weekly: new games where real science runs the mechanics</small></a>
  <div class="low">
   <div class="ask">
    <p class="h3" data-i="faqH"></p>
@@ -295,7 +305,7 @@ body{min-height:calc(100dvh + 2px)}
    <button type="button" id="clear" data-i="clear"></button>
   </figure>
  </div>
- <footer class="foot"><a href="privacy/" id="privLink" data-i="privacy"></a><span data-text="home.copyright"></span></footer>
+ <footer class="foot"><a href="weekly/" class="onn-foot">ONHOLDNEWS</a><a href="privacy/" id="privLink" data-i="privacy"></a><span data-text="home.copyright"></span></footer>
 </div>
 
 <script src="js/feedback.js"></script>
@@ -480,15 +490,18 @@ language.addEventListener('keydown',e=>{if(e.key!=='ArrowDown'&&e.key!=='ArrowUp
 
 /* ---------- 最新資訊 ---------- */
 const NEWS=[
- {title:OHLi18n.t('works.crossroad.title',null,'zh-Hant'),blurb:OHLi18n.t('works.crossroad.blurb',null,'zh-Hant'),title_en:OHLi18n.t('works.crossroad.title',null,'en'),blurb_en:OHLi18n.t('works.crossroad.blurb',null,'en'),type:'遊戲',url:'https://onholdlab.github.io/crossroad/'},
- {title:OHLi18n.t('works.dodge_dog.title',null,'zh-Hant'),blurb:OHLi18n.t('works.dodge_dog.blurb',null,'zh-Hant'),title_en:OHLi18n.t('works.dodge_dog.title',null,'en'),blurb_en:OHLi18n.t('works.dodge_dog.blurb',null,'en'),type:'遊戲',url:'https://onholdlab.github.io/dodge-dog/'},
- {title:OHLi18n.t('works.clapping_cat.title',null,'zh-Hant'),blurb:OHLi18n.t('works.clapping_cat.blurb',null,'zh-Hant'),title_en:OHLi18n.t('works.clapping_cat.title',null,'en'),blurb_en:OHLi18n.t('works.clapping_cat.blurb',null,'en'),type:'遊戲',url:'https://onholdlab.github.io/clapping-cat/'},
- {title:OHLi18n.t('works.tool_twins.title',null,'zh-Hant'),blurb:OHLi18n.t('works.tool_twins.blurb',null,'zh-Hant'),title_en:OHLi18n.t('works.tool_twins.title',null,'en'),blurb_en:OHLi18n.t('works.tool_twins.blurb',null,'en'),type:'工具',url:'https://onholdlab.github.io/tool-twins/'}];
+ {title:OHLi18n.t('works.midterm_sim.title',null,'zh-Hant'),blurb:OHLi18n.t('works.midterm_sim.blurb',null,'zh-Hant'),title_en:OHLi18n.t('works.midterm_sim.title',null,'en'),blurb_en:OHLi18n.t('works.midterm_sim.blurb',null,'en'),type:'遊戲',url:'https://onholdlab.com/midterm-sim/',lang_only:'zh'},
+ {title:OHLi18n.t('works.relay_ai_guess.title',null,'zh-Hant'),blurb:OHLi18n.t('works.relay_ai_guess.blurb',null,'zh-Hant'),title_en:OHLi18n.t('works.relay_ai_guess.title',null,'en'),blurb_en:OHLi18n.t('works.relay_ai_guess.blurb',null,'en'),type:'遊戲',url:'https://onholdlab.com/relay-ai-guess/'},
+ {title:OHLi18n.t('works.crossroad.title',null,'zh-Hant'),blurb:OHLi18n.t('works.crossroad.blurb',null,'zh-Hant'),title_en:OHLi18n.t('works.crossroad.title',null,'en'),blurb_en:OHLi18n.t('works.crossroad.blurb',null,'en'),type:'遊戲',url:'https://onholdlab.com/crossroad/'},
+ {title:OHLi18n.t('works.dodge_dog.title',null,'zh-Hant'),blurb:OHLi18n.t('works.dodge_dog.blurb',null,'zh-Hant'),title_en:OHLi18n.t('works.dodge_dog.title',null,'en'),blurb_en:OHLi18n.t('works.dodge_dog.blurb',null,'en'),type:'遊戲',url:'https://onholdlab.com/dodge-dog/'},
+ {title:OHLi18n.t('works.clapping_cat.title',null,'zh-Hant'),blurb:OHLi18n.t('works.clapping_cat.blurb',null,'zh-Hant'),title_en:OHLi18n.t('works.clapping_cat.title',null,'en'),blurb_en:OHLi18n.t('works.clapping_cat.blurb',null,'en'),type:'遊戲',url:'https://onholdlab.com/clapping-cat/'},
+ {title:OHLi18n.t('works.tool_twins.title',null,'zh-Hant'),blurb:OHLi18n.t('works.tool_twins.blurb',null,'zh-Hant'),title_en:OHLi18n.t('works.tool_twins.title',null,'en'),blurb_en:OHLi18n.t('works.tool_twins.blurb',null,'en'),type:'工具',url:'https://onholdlab.com/tool-twins/'}];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 /* 英文頁:作品有英文名稱/介紹就用,沒有就顯示中文 */
+const LO={zh:'中文限定',en:'Chinese only',ja:'中国語のみ',ko:'중국어 전용',es:'Solo en chino',de:'Nur Chinesisch',fr:'Chinois uniquement'};
 function drawNews(list){newsData=list;
  const pick=n=>{const tr=n.translations&&n.translations[lang];return tr?[tr.title,tr.blurb]:lang!=='zh'&&n.title_en?[n.title_en,n.blurb_en||'']:[n.title,n.blurb]};
- $('news').innerHTML=list.map((n,i)=>{const[ti,bl]=pick(n);return `<li><a href="${esc(n.url)}" target="_blank" rel="noopener"><span class="k">${String(list.length-i).padStart(2,'0')}</span><span class="t">${esc(ti)}${bl?`<small>${esc(bl)}</small>`:''}</span><span class="ty">${esc(t('types')[n.type]||n.type)}</span></a></li>`}).join('')+`<li class="old">${esc(t('older'))}</li>`;
+ $('news').innerHTML=list.map((n,i)=>{const[ti,bl]=pick(n);return `<li><a href="${esc(n.url)}" target="_blank" rel="noopener"><span class="k">${String(list.length-i).padStart(2,'0')}</span><span class="t">${esc(ti)}${bl?`<small>${esc(bl)}</small>`:''}</span><span class="tys">${n.lang_only==='zh'?`<span class="lo">${esc(LO[lang]||LO.en)}</span>`:''}<span class="ty">${esc(t('types')[n.type]||n.type)}</span></span></a></li>`}).join('')+`<li class="old">${esc(t('older'))}</li>`;
  if(list[0]){$('latest').textContent=pick(list[0])[0];$('latest').href=list[0].url}}
 applyLangHooks.push(()=>{if(newsData)drawNews(newsData)});
 drawNews(NEWS);
@@ -571,24 +584,24 @@ function impact(a){a.dead=true;const r=a.el.getBoundingClientRect(),s=stage.getB
  a.el.classList.add('hit');a.el.classList.remove('tgt');
  count++;$('cnt').textContent=count;
  setTimeout(()=>toLines(a,r),RM?0:380)}
-/* 廣告只剩線條,飛進右邊的展示框,成為一筆線條作品 */
-function toLines(a,r){const art=$('art'),ar=art.getBoundingClientRect(),wr=document.querySelector('.wrap').getBoundingClientRect();
- const k=ar.width/300,w=40+Math.random()*50,hh=w*.54,px=10+Math.random()*(280-w),py=10+Math.random()*(180-hh),rot=(Math.random()-.5)*40;
+/* 廣告只剩線條,從展示框頂端掉下來落定(全程在框內,框外會被裁掉) */
+function toLines(a,r){
+ const w=40+Math.random()*50,hh=w*.54,px=10+Math.random()*(280-w),py=10+Math.random()*(180-hh),rot=(Math.random()-.5)*40;
  const rec={x:+px.toFixed(1),y:+py.toFixed(1),w:+w.toFixed(1),h:+hh.toFixed(1),r:+rot.toFixed(1),t:a.txt.length};
- const done=()=>{a.el.remove();ads=ads.filter(z=>z!==a);addArt(rec,true);const L=store.get('ohl_art',[]);L.push(rec);store.set('ohl_art',L.slice(-80))};
- if(RM||!ar.width){done();return}
- const g=document.createElement('div');g.className='ghost';document.querySelector('.wrap').appendChild(g);
- g.style.left=(r.left-wr.left)+'px';g.style.top=(r.top-wr.top)+'px';g.style.width=r.width+'px';g.style.height=r.height+'px';
- a.el.style.opacity=0;
- const tx=ar.left-wr.left+(px+w/2)*k-r.width/2,ty2=ar.top-wr.top+(py+hh/2)*k-r.height/2,sc=w*k/r.width;
- g.animate([{transform:'translate(0,0) rotate(0) scale(1)'},{transform:`translate(${(tx-(r.left-wr.left))*.5}px,${(ty2-(r.top-wr.top))*.5-60}px) rotate(${rot/2}deg) scale(${(1+sc)/2})`,offset:.5},{transform:`translate(${tx-(r.left-wr.left)}px,${ty2-(r.top-wr.top)}px) rotate(${rot}deg) scale(${sc})`}],{duration:900,easing:'cubic-bezier(.5,0,.3,1)'}).onfinish=()=>{g.remove();done()}}
+ a.el.style.opacity=0;a.el.remove();ads=ads.filter(z=>z!==a);addArt(rec,true);const L=store.get('ohl_art',[]);L.push(rec);store.set('ohl_art',L.slice(-80))}
 function addArt(o,fresh){const art=$('art'),NS='http://www.w3.org/2000/svg',g=document.createElementNS(NS,'g');
  g.setAttribute('transform',`rotate(${o.r} ${o.x+o.w/2} ${o.y+o.h/2})`);g.setAttribute('fill','none');g.setAttribute('stroke','var(--art)');g.setAttribute('stroke-width','1.4');
  const ln=(x1,y1,x2,y2)=>{const l=document.createElementNS(NS,'line');l.setAttribute('x1',x1);l.setAttribute('y1',y1);l.setAttribute('x2',x2);l.setAttribute('y2',y2);g.appendChild(l)};
  const{x,y,w,h}=o,bar=h*.19;ln(x,y,x+w,y);ln(x+w,y,x+w,y+h);ln(x+w,y+h,x,y+h);ln(x,y+h,x,y);ln(x,y+bar,x+w,y+bar);
  const lines=1+(o.t>8?1:0);for(let i=0;i<lines;i++)ln(x+w*.12,y+bar+h*(.3+i*.25),x+w*(.5+((o.t*7+i*13)%40)/100),y+bar+h*(.3+i*.25));
- art.appendChild(g);$('artn').textContent=art.childNodes.length;$('empty').hidden=true;
- if(fresh&&!RM)g.animate([{opacity:0},{opacity:1}],{duration:300})}
+ let node=g;
+ if(fresh&&!RM){node=document.createElementNS(NS,'g');node.appendChild(g);node.style.transformBox='fill-box';node.style.transformOrigin='center';
+  const d=o.y+o.h*1.6+16,sw=(Math.random()-.5)*50;
+  node.animate([{transform:`translateY(${-d}px) rotate(${sw}deg)`,easing:'cubic-bezier(.5,0,1,.6)'},
+   {transform:'translateY(0) rotate(0deg)',offset:.62,easing:'ease-out'},
+   {transform:`translateY(-7px) rotate(${-sw*.15}deg)`,offset:.8,easing:'ease-in'},
+   {transform:'translateY(0) rotate(0deg)'}],{duration:760})}
+ art.appendChild(node);$('artn').textContent=art.childNodes.length;$('empty').hidden=true}
 store.get('ohl_art',[]).forEach(o=>addArt(o,false));
 applyLangHooks.push(()=>{ads.forEach(a=>{if(a.dead)return;a.txt=t('ads')[a.ai];a.el.querySelector('b').textContent=a.txt;a.el.setAttribute('aria-label',t('adAria')+a.txt)});layoutAds()});
 $('clear').onclick=()=>{$('art').innerHTML='';$('artn').textContent=0;$('empty').hidden=false;store.set('ohl_art',[])};
