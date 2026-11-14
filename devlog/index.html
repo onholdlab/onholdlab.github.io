@@ -45,10 +45,13 @@ details{font-size:15px;color:var(--muted)}
 summary{cursor:pointer;min-height:44px;line-height:44px;width:max-content}
 details p{margin:0 0 8px;color:var(--ink)}
 details p.e{color:var(--muted)}
-.rx{background:var(--panel);margin:4px 0 14px;padding:14px 16px 12px;border-radius:6px;animation:in .25s ease-out}
-@keyframes in{from{opacity:0;transform:translateY(-6px)}}
-@media (prefers-reduced-motion:reduce){.rx{animation:none}.ph{transition:none}}
-.rx+.rx{margin-top:-6px}
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:5;max-height:56vh;overflow-y:auto;overscroll-behavior:contain;background:var(--panel);border-radius:14px 14px 0 0;box-shadow:0 -6px 28px rgba(0,0,0,.2);padding:6px 16px calc(10px + env(safe-area-inset-bottom));transform:translateY(105%);visibility:hidden;transition:transform .22s ease-out,visibility 0s .22s}
+#sheet.open{transform:none;visibility:visible;transition:transform .22s ease-out}
+#sheet .in{max-width:688px;margin:0 auto;position:relative}
+#shut{position:sticky;top:0;float:right;width:44px;height:44px;margin:0 -10px 0 8px;border:0;background:var(--panel);color:var(--ink);font:800 20px/1 "Inter",sans-serif;cursor:pointer;border-radius:50%}
+.rx{padding:10px 0 2px}
+.rx+.rx{margin-top:10px;padding-top:18px;box-shadow:0 -1px 0 color-mix(in srgb,var(--muted) 30%,transparent)}
+@media (prefers-reduced-motion:reduce){#sheet,#sheet.open{transition:none}.ph{transition:none}}
 .pair{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;line-height:0}
 .crop{position:relative;overflow:hidden;border-radius:3px;flex:none;max-width:100%}
 .crop img{position:absolute;max-width:none}
@@ -93,6 +96,7 @@ footer{margin-top:72px;color:var(--muted);font-size:14px}
 <a class="play" href="/relay-ai-guess/">去畫一棒 → Play</a>
 </article>
 
+<div id="sheet" role="region" aria-label="反應 Reactions" aria-live="polite"><div class="in"><button id="shut" type="button" aria-label="收起 Close">×</button><div id="rxs"></div></div></div>
 <noscript><p>開啟 JavaScript 後，可以點筆記上有顏色的字，看句子之間的反應。</p></noscript>
 <footer>© 2026 onholdlab</footer>
 </main>
@@ -131,30 +135,32 @@ const REACTIONS=[
    d.style.width=34*ratio+'px';d.style.aspectRatio=ratio;
    const im=new Image();im.src=img.currentSrc||img.src;im.alt='';im.style.cssText=`width:${10000/w}%;height:${10000/h}%;left:${-100*x/w}%;top:${-100*y/h}%`;
    d.appendChild(im);frag.appendChild(d);});return frag;}
- function clear(){document.querySelectorAll('.rx').forEach(e=>e.remove());
+ const sheet=document.getElementById('sheet'),rxs=document.getElementById('rxs');
+ function clear(){rxs.textContent='';sheet.classList.remove('open');document.body.style.paddingBottom='';
   document.querySelectorAll('.ph').forEach(b=>{b.classList.remove('on','lit','clash');b.setAttribute('aria-expanded','false');});
   Object.values(notes).forEach(f=>f.classList.remove('busy'));open=null;}
  function toggle(id){const was=open;clear();if(was===id)return;open=id;
-  const f=notes[PHRASES[id].note];let after=f,first=null;
   Object.values(notes).forEach(n=>n.classList.add('busy'));
   document.querySelectorAll(`.ph[data-id="${id}"]`).forEach(b=>{b.classList.add('on');b.setAttribute('aria-expanded','true');});
   partners(id).forEach(x=>{const other=x.a===id?x.b:x.a;
    document.querySelectorAll(`.ph[data-id="${other}"]`).forEach(b=>{b.classList.add('lit');if(x.kind==='clash')b.classList.add('clash');});
    if(x.kind==='clash')document.querySelectorAll(`.ph[data-id="${id}"]`).forEach(b=>b.classList.add('clash'));
-   const box=document.createElement('div');box.className='rx';box.setAttribute('role','region');box.setAttribute('aria-live','polite');
+   const box=document.createElement('div');box.className='rx';
    const pair=document.createElement('div');pair.className='pair';pair.appendChild(crop(id));
    const xx=document.createElement('span');xx.className='x';xx.textContent='×';xx.setAttribute('aria-hidden','true');pair.appendChild(xx);pair.appendChild(crop(other));
    box.appendChild(pair);
    box.insertAdjacentHTML('beforeend',`<p class="k"></p><p class="t"></p><p class="e"></p>`);
    box.querySelector('.k').textContent=KIND[x.kind];box.querySelector('.t').textContent=x.zh;box.querySelector('.e').textContent=x.en;
    if(PHRASES[other].note!==PHRASES[id].note){const go=document.createElement('a');go.className='go';go.href='#';go.textContent='去看另一句 · See the other line';
-    go.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(`.ph[data-id="${other}"]`);t.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'center'});t.focus({preventScroll:true});});box.appendChild(go);}
-   after.after(box);after=box;first=first||box;});
-  if(first){const r=first.getBoundingClientRect();if(r.bottom>innerHeight||r.top<0)first.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'nearest'});}
+    go.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(`.ph[data-id="${other}"]`),free=innerHeight-sheet.offsetHeight;
+     scrollTo({top:scrollY+t.getBoundingClientRect().top-Math.max(16,free/2-t.offsetHeight/2),behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});});box.appendChild(go);}
+   rxs.appendChild(box);});
+  sheet.scrollTop=0;sheet.classList.add('open');document.body.style.paddingBottom=sheet.offsetHeight+'px';
   if(window.goatcounter&&goatcounter.count)goatcounter.count({path:'devlog-reaction-'+id,title:PHRASES[id].label,event:true});}
+ document.getElementById('shut').addEventListener('click',()=>{const t=open&&document.querySelector(`.ph[data-id="${open}"]`);clear();if(t)t.focus({preventScroll:true});});
  document.addEventListener('keydown',e=>{
   if(e.key!=='Escape'||!open)return;
-  const trigger=document.activeElement.closest('.rx')?document.querySelector(`.ph[data-id="${open}"]`):null;
+  const trigger=document.activeElement.closest('#sheet')?document.querySelector(`.ph[data-id="${open}"]`):null;
   clear();
   if(trigger)trigger.focus();
  });
