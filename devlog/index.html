@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>開發日誌｜onholdlab</title>
+<meta name="description" content="onholdlab 做遊戲過程中的手寫筆記、草稿與決定。Handwritten notes, sketches and decisions from making games at onholdlab.">
+<link rel="canonical" href="https://onholdlab.com/devlog/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="onholdlab">
+<meta property="og:title" content="開發日誌｜onholdlab">
+<meta property="og:description" content="做遊戲過程中的手寫筆記、草稿與決定。">
+<meta property="og:url" content="https://onholdlab.com/devlog/">
+<meta property="og:image" content="https://onholdlab.com/devlog/img/standard.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&family=Noto+Sans+TC:wght@400;700;900&display=swap">
+<style>:root{--bg:#d7e7df;--ink:#12302a;--muted:#3d5a52;--panel:#eef5f1;--accent:#c2281d;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10221d;--ink:#e3efe9;--muted:#9fb8b0;--panel:#17302a;--accent:#ff6b5e;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10221d;--ink:#e3efe9;--muted:#9fb8b0;--panel:#17302a;--accent:#ff6b5e;color-scheme:dark}
+*{box-sizing:border-box}
+html{overscroll-behavior-y:none}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.8 "Noto Sans TC","Noto Sans CJK TC",system-ui,sans-serif;overscroll-behavior-y:none}
+main{max-width:720px;margin:0 auto;padding:20px 16px 72px;overflow-wrap:anywhere}
+a{color:inherit;text-underline-offset:4px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:700}
+.top a{min-height:44px;display:inline-grid;place-items:center}
+.series{font:700 13px/1.4 "Inter",system-ui,sans-serif;letter-spacing:.14em;color:var(--accent);margin:28px 0 6px}
+h1{font-size:30px;line-height:1.35;margin:0 0 8px;font-weight:900}
+.lede{color:var(--muted);margin:0}
+.en{color:var(--muted);font-size:15px;line-height:1.7}
+article{margin:56px 0 0}
+.date{font:800 14px "Inter",sans-serif;color:var(--accent);letter-spacing:.06em}
+h2{font-size:24px;line-height:1.35;margin:2px 0 14px}
+figure{margin:0 0 14px}
+figure img{display:block;width:100%;height:auto;border-radius:6px}
+figcaption{font-size:14px;color:var(--muted);margin-top:6px}
+.say{font-size:19px;line-height:1.9;margin:0 0 6px}
+.play{display:inline-block;margin-top:10px;font-weight:700;color:var(--accent);min-height:44px;line-height:44px}
+footer{margin-top:72px;color:var(--muted);font-size:14px}
+</style>
+<script data-goatcounter="https://onholdlab.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<main>
+<nav class="top"><a href="/">← onholdlab</a><a href="/weekly/">ONHOLDNEWS</a></nav>
+
+<p class="series">DEVLOG</p>
+<h1>開發日誌</h1>
+<p class="lede">做遊戲時的手寫筆記、草稿和決定。</p>
+<p class="en">Handwritten notes, sketches and decisions from making games.</p>
+
+<article id="standard">
+<h2>我做遊戲的標準？</h2>
+<figure><img src="img/standard.webp" width="1200" height="394" alt="手寫筆記：我做遊戲的標準？好像沒有。我想做的就是把當時的喜好保存下來，不管未來的我喜不喜歡，做出現在的我喜歡的，擔憂就留給未來！"></figure>
+<p class="say">好像沒有。我想做的，就是把當時的喜好保存下來。不管未來的我喜不喜歡，做出現在的我喜歡的，擔憂就留給未來！</p>
+<p class="en">My standard for making games? I don't think I have one. I just want to save what I love right now. Whether or not future me likes it, I make what present me likes, and leave the worrying to the future.</p>
+</article>
+
+<article id="relay-ai-guess">
+<p class="date">2026-10-28</p>
+<h2>8棒接力：為什麼沒有時間限制</h2>
+<figure><img src="img/relay-why.webp" width="1104" height="795" loading="lazy" alt="手寫筆記：我突然覺得印象中的畫畫遊戲都有一定的時間限制，於是我想做一個能讓每個畫家像是自己在畫布創作的方式來呈現遊戲性的遊戲。而我小時候看過一些不同畫師接力的影片，我認為可以試試用這個玩法，於是有了這個小遊戲囉。"></figure>
+<p class="say">我突然覺得，印象中的畫畫遊戲都有一定的時間限制，於是我想做一個能讓每個畫家像是在自己的畫布上創作的遊戲。我小時候看過一些不同畫師接力的影片，覺得可以試試這個玩法，於是有了這個小遊戲囉 ☺</p>
+<p class="en">Every drawing game I remember has a timer. I wanted one where each painter can create as if on their own canvas. As a kid I watched videos of artists drawing in relay, so I tried that as the gameplay, and this little game was born.</p>
+<figure><img src="img/relay-sketch.webp" width="961" height="1387" loading="lazy" alt="手繪的首頁草稿：上方是 AI 畫師「8號」，中間是畫布、色盤與筆刷，左邊寫著 24 小時內提交，下方是一整卷畫卷分成 1 到 8 格，可以投票猜哪一號是 AI。"><figcaption>同一天畫的首頁草稿 · Homepage sketch, same day</figcaption></figure>
+<a class="play" href="/relay-ai-guess/">去畫一棒 → Play</a>
+</article>
+
+<footer>© 2026 onholdlab</footer>
+</main>
+</body>
+</html>
