@@ -50,7 +50,7 @@ details p.e{color:var(--muted)}
 @media (prefers-reduced-motion:reduce){.rx{animation:none}.ph{transition:none}}
 .rx+.rx{margin-top:-6px}
 .pair{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;line-height:0}
-.crop{position:relative;overflow:hidden;border-radius:3px;flex:none}
+.crop{position:relative;overflow:hidden;border-radius:3px;flex:none;max-width:100%}
 .crop img{position:absolute;max-width:none}
 .x{font:800 20px/1 "Inter",sans-serif;color:var(--accent)}
 .rx .k{font:800 12px/1 "Inter","Noto Sans TC",sans-serif;letter-spacing:.12em;color:var(--accent);margin:12px 0 4px}
@@ -126,33 +126,38 @@ const REACTIONS=[
    b.style.cssText=`left:${r[0]}%;top:${r[1]}%;width:${r[2]}%;height:${r[3]}%`;
    b.setAttribute('aria-label',p.label);b.setAttribute('aria-expanded','false');if(i)b.tabIndex=-1;
    b.addEventListener('click',()=>toggle(id));f.appendChild(b);});}
- function crop(id,maxW){const p=PHRASES[id],img=notes[p.note].querySelector('img'),W=img.width,H=img.height,frag=document.createDocumentFragment();
-  p.r.forEach(r=>{const s=Math.min(34/(r[3]/100*H),maxW/(r[2]/100*W)),d=document.createElement('span');d.className='crop';
-   d.style.width=r[2]/100*W*s+'px';d.style.height=r[3]/100*H*s+'px';
-   const im=new Image();im.src=img.currentSrc||img.src;im.alt='';im.style.cssText=`width:${W*s}px;height:${H*s}px;left:${-r[0]/100*W*s}px;top:${-r[1]/100*H*s}px`;
+ function crop(id){const p=PHRASES[id],img=notes[p.note].querySelector('img'),frag=document.createDocumentFragment();
+  p.r.forEach(([x,y,w,h])=>{const ratio=w*Number(img.getAttribute('width'))/(h*Number(img.getAttribute('height'))),d=document.createElement('span');d.className='crop';
+   d.style.width=34*ratio+'px';d.style.aspectRatio=ratio;
+   const im=new Image();im.src=img.currentSrc||img.src;im.alt='';im.style.cssText=`width:${10000/w}%;height:${10000/h}%;left:${-100*x/w}%;top:${-100*y/h}%`;
    d.appendChild(im);frag.appendChild(d);});return frag;}
  function clear(){document.querySelectorAll('.rx').forEach(e=>e.remove());
   document.querySelectorAll('.ph').forEach(b=>{b.classList.remove('on','lit','clash');b.setAttribute('aria-expanded','false');});
   Object.values(notes).forEach(f=>f.classList.remove('busy'));open=null;}
  function toggle(id){const was=open;clear();if(was===id)return;open=id;
-  const f=notes[PHRASES[id].note],maxW=Math.min(f.clientWidth-32,560);let after=f,first=null;
+  const f=notes[PHRASES[id].note];let after=f,first=null;
   Object.values(notes).forEach(n=>n.classList.add('busy'));
   document.querySelectorAll(`.ph[data-id="${id}"]`).forEach(b=>{b.classList.add('on');b.setAttribute('aria-expanded','true');});
   partners(id).forEach(x=>{const other=x.a===id?x.b:x.a;
    document.querySelectorAll(`.ph[data-id="${other}"]`).forEach(b=>{b.classList.add('lit');if(x.kind==='clash')b.classList.add('clash');});
    if(x.kind==='clash')document.querySelectorAll(`.ph[data-id="${id}"]`).forEach(b=>b.classList.add('clash'));
    const box=document.createElement('div');box.className='rx';box.setAttribute('role','region');box.setAttribute('aria-live','polite');
-   const pair=document.createElement('div');pair.className='pair';pair.appendChild(crop(id,maxW));
-   const xx=document.createElement('span');xx.className='x';xx.textContent='×';xx.setAttribute('aria-hidden','true');pair.appendChild(xx);pair.appendChild(crop(other,maxW));
+   const pair=document.createElement('div');pair.className='pair';pair.appendChild(crop(id));
+   const xx=document.createElement('span');xx.className='x';xx.textContent='×';xx.setAttribute('aria-hidden','true');pair.appendChild(xx);pair.appendChild(crop(other));
    box.appendChild(pair);
    box.insertAdjacentHTML('beforeend',`<p class="k"></p><p class="t"></p><p class="e"></p>`);
    box.querySelector('.k').textContent=KIND[x.kind];box.querySelector('.t').textContent=x.zh;box.querySelector('.e').textContent=x.en;
    if(PHRASES[other].note!==PHRASES[id].note){const go=document.createElement('a');go.className='go';go.href='#';go.textContent='去看另一句 · See the other line';
     go.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(`.ph[data-id="${other}"]`);t.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'center'});t.focus({preventScroll:true});});box.appendChild(go);}
    after.after(box);after=box;first=first||box;});
-  if(first){const r=first.getBoundingClientRect();if(r.bottom>innerHeight||r.top<0)first.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  if(first){const r=first.getBoundingClientRect();if(r.bottom>innerHeight||r.top<0)first.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'nearest'});}
   if(window.goatcounter&&goatcounter.count)goatcounter.count({path:'devlog-reaction-'+id,title:PHRASES[id].label,event:true});}
- document.addEventListener('keydown',e=>{if(e.key==='Escape')clear();});
+ document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape'||!open)return;
+  const trigger=document.activeElement.closest('.rx')?document.querySelector(`.ph[data-id="${open}"]`):null;
+  clear();
+  if(trigger)trigger.focus();
+ });
 })();
 </script>
 </body>
