@@ -2,12 +2,34 @@
 const http = require('http'), fs = require('fs'), path = require('path');
 const ROOT = path.join(__dirname, '..');
 const TYPES = { '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.html': 'text/html; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2', '.mp3': 'audio/mpeg', '.ogg': 'audio/ogg', '.wav': 'audio/wav', '.glb': 'model/gltf-binary' };
-http.createServer((req, res) => {
-  let p = decodeURIComponent(req.url.split('?')[0]);
-  if (p.endsWith('/')) p += 'index.html';
-  let f = path.join(ROOT, p);
-  if (f.startsWith(ROOT) && fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html');
-  if (!f.startsWith(ROOT) || !fs.existsSync(f)) { res.writeHead(404); return res.end('404'); }
-  res.writeHead(200, { 'Content-Type': TYPES[path.extname(f)] || 'application/octet-stream' });
-  fs.createReadStream(f).pipe(res);
+const root = fs.realpathSync(ROOT);
+const withinRoot = file => {
+  const relative = path.relative(root, file);
+  return relative !== '..' && !relative.startsWith('..' + path.sep) && !path.isAbsolute(relative);
+};
+http.createServer(async (req, res) => {
+  const reply = status => { res.writeHead(status); res.end(String(status)); };
+  let pathname;
+  try {
+    pathname = decodeURIComponent(req.url.split('?')[0]);
+  } catch {
+    return reply(400);
+  }
+  if (!pathname.startsWith('/') || pathname.includes('\0')) return reply(400);
+
+  let file = path.join(root, pathname);
+  if (!withinRoot(file)) return reply(404);
+  try {
+    if (pathname.endsWith('/') || (await fs.promises.stat(file)).isDirectory()) {
+      file = path.join(file, 'index.html');
+    }
+    file = await fs.promises.realpath(file);
+    if (!withinRoot(file) || !(await fs.promises.stat(file)).isFile()) return reply(404);
+  } catch {
+    return reply(404);
+  }
+  const stream = fs.createReadStream(file);
+  stream.on('error', () => res.headersSent ? res.destroy() : reply(404));
+  res.setHeader('Content-Type', TYPES[path.extname(file)] || 'application/octet-stream');
+  stream.pipe(res);
 }).listen(4174, '127.0.0.1');
