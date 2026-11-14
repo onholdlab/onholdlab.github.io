@@ -23,6 +23,7 @@
   "site": {
     "pages": [
       "index.html",
+      "devlog/index.html",
       "privacy/index.html",
       "weekly/index.html",
       "weekly/2026-11-10/index.html",
