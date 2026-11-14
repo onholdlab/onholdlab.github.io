@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const site = JSON.parse(readFileSync(join(root, '.claude/hooks/config.json'), 'utf8')).site || {};
 const pages = site.pages || ['index.html'];
+const mountedRoutes = new Set(site.mountedRoutes || []);
 
 const read = p => readFileSync(join(root, p), 'utf8');
 // 頁面裡引用的本機檔案（src / href），略過外部網址、錨點、data: 等
@@ -20,6 +21,8 @@ function localRefs(page, html) {
     if (!raw || /^(?:[a-z][a-z0-9+.-]*:|\/\/|#|\$\{|\{\{)/i.test(raw)) continue;
     const clean = decodeURI(raw.split(/[?#]/)[0]);
     if (!clean) continue;
+    // Cloudflare 上由其他 repo 提供的頁面不在本機 checkout。
+    if (/^\s*href\s*=/i.test(m[0]) && mountedRoutes.has(clean)) continue;
     let path = clean.startsWith('/') ? join(root, clean) : join(root, dirname(page), clean);
     if (clean.endsWith('/') || (existsSync(path) && statSync(path).isDirectory())) path = join(path, 'index.html');
     refs.push({ raw, path });
