@@ -4,38 +4,63 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>開發日誌｜onholdlab</title>
-<meta name="description" content="onholdlab 做遊戲過程中的手寫筆記、草稿與決定。Handwritten notes, sketches and decisions from making games at onholdlab.">
+<meta name="description" content="onholdlab 做遊戲時的手寫筆記。點有顏色的字，看兩句話碰在一起的反應。Handwritten notes from making games; tap the highlighted words to see them react.">
 <link rel="canonical" href="https://onholdlab.com/devlog/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="onholdlab">
 <meta property="og:title" content="開發日誌｜onholdlab">
-<meta property="og:description" content="做遊戲過程中的手寫筆記、草稿與決定。">
+<meta property="og:description" content="手寫筆記，和筆記之間的反應。">
 <meta property="og:url" content="https://onholdlab.com/devlog/">
 <meta property="og:image" content="https://onholdlab.com/devlog/img/standard.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&family=Noto+Sans+TC:wght@400;700;900&display=swap">
-<style>:root{--bg:#d7e7df;--ink:#12302a;--muted:#3d5a52;--panel:#eef5f1;--accent:#c2281d;color-scheme:light}
+<style>:root{--bg:#d7e7df;--ink:#12302a;--muted:#3d5a52;--panel:#eef5f1;--accent:#c2281d;--mk:#ffd23f;--mk2:#ff7a6b;color-scheme:light}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10221d;--ink:#e3efe9;--muted:#9fb8b0;--panel:#17302a;--accent:#ff6b5e;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#10221d;--ink:#e3efe9;--muted:#9fb8b0;--panel:#17302a;--accent:#ff6b5e;color-scheme:dark}
 *{box-sizing:border-box}
-html{overscroll-behavior-y:none}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.8 "Noto Sans TC","Noto Sans CJK TC",system-ui,sans-serif;overscroll-behavior-y:none}
+html,body{overscroll-behavior-y:none}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.8 "Noto Sans TC","Noto Sans CJK TC",system-ui,sans-serif}
 main{max-width:720px;margin:0 auto;padding:20px 16px 72px;overflow-wrap:anywhere}
 a{color:inherit;text-underline-offset:4px}
-:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:700}
 .top a{min-height:44px;display:inline-grid;place-items:center}
 .series{font:700 13px/1.4 "Inter",system-ui,sans-serif;letter-spacing:.14em;color:var(--accent);margin:28px 0 6px}
 h1{font-size:30px;line-height:1.35;margin:0 0 8px;font-weight:900}
-.lede{color:var(--muted);margin:0}
-.en{color:var(--muted);font-size:15px;line-height:1.7}
+.lede{margin:0}
+.lede mark{background:linear-gradient(transparent 55%,var(--mk) 55%);color:inherit;padding:0 2px}
+.en{color:var(--muted);font-size:15px;line-height:1.7;margin:4px 0 0}
 article{margin:56px 0 0}
-.date{font:800 14px "Inter",sans-serif;color:var(--accent);letter-spacing:.06em}
+.date{font:800 14px "Inter",sans-serif;color:var(--accent);letter-spacing:.06em;margin:0}
 h2{font-size:24px;line-height:1.35;margin:2px 0 14px}
-figure{margin:0 0 14px}
-figure img{display:block;width:100%;height:auto;border-radius:6px}
-figcaption{font-size:14px;color:var(--muted);margin-top:6px}
-.say{font-size:19px;line-height:1.9;margin:0 0 6px}
-.play{display:inline-block;margin-top:10px;font-weight:700;color:var(--accent);min-height:44px;line-height:44px}
+.note{position:relative;margin:0 0 10px;border-radius:6px;overflow:hidden;line-height:0}
+.note img{display:block;width:100%;height:auto}
+.ph{position:absolute;margin:0;padding:0;border:0;border-radius:3px;background:var(--mk);opacity:.38;mix-blend-mode:multiply;cursor:pointer;transition:opacity .2s,background .2s;-webkit-tap-highlight-color:transparent}
+.ph:hover{opacity:.55}
+.note.busy .ph{opacity:.12}
+.note.busy .ph.on{opacity:.75}
+.note.busy .ph.lit{opacity:.6}
+.ph.clash.on,.ph.clash.lit{background:var(--mk2)}
+figcaption{font-size:14px;line-height:1.6;color:var(--muted);margin:-4px 0 10px}
+details{font-size:15px;color:var(--muted)}
+summary{cursor:pointer;min-height:44px;line-height:44px;width:max-content}
+details p{margin:0 0 8px;color:var(--ink)}
+details p.e{color:var(--muted)}
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:5;max-height:56vh;overflow-y:auto;overscroll-behavior:contain;background:var(--panel);border-radius:14px 14px 0 0;box-shadow:0 -6px 28px rgba(0,0,0,.2);padding:6px 16px calc(10px + env(safe-area-inset-bottom));transform:translateY(105%);visibility:hidden;transition:transform .22s ease-out,visibility 0s .22s}
+#sheet.open{transform:none;visibility:visible;transition:transform .22s ease-out}
+#sheet .in{max-width:688px;margin:0 auto;position:relative}
+#shut{position:sticky;top:0;float:right;width:44px;height:44px;margin:0 -10px 0 8px;border:0;background:var(--panel);color:var(--ink);font:800 20px/1 "Inter",sans-serif;cursor:pointer;border-radius:50%}
+.rx{padding:10px 0 2px}
+.rx+.rx{margin-top:10px;padding-top:18px;box-shadow:0 -1px 0 color-mix(in srgb,var(--muted) 30%,transparent)}
+@media (prefers-reduced-motion:reduce){#sheet,#sheet.open{transition:none}.ph{transition:none}}
+.pair{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;line-height:0}
+.crop{position:relative;overflow:hidden;border-radius:3px;flex:none;max-width:100%}
+.crop img{position:absolute;max-width:none}
+.x{font:800 20px/1 "Inter",sans-serif;color:var(--accent)}
+.rx .k{font:800 12px/1 "Inter","Noto Sans TC",sans-serif;letter-spacing:.12em;color:var(--accent);margin:12px 0 4px}
+.rx .t{margin:0;font-weight:700;line-height:1.7}
+.rx .e{margin:2px 0 0;color:var(--muted);font-size:15px;line-height:1.6}
+.rx .go{display:inline-block;min-height:44px;line-height:44px;font-size:15px;font-weight:700}
+.play{display:inline-block;margin-top:6px;font-weight:700;color:var(--accent);min-height:44px;line-height:44px}
 footer{margin-top:72px;color:var(--muted);font-size:14px}
 </style>
 <script data-goatcounter="https://onholdlab.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
@@ -46,27 +71,100 @@ footer{margin-top:72px;color:var(--muted);font-size:14px}
 
 <p class="series">DEVLOG</p>
 <h1>開發日誌</h1>
-<p class="lede">做遊戲時的手寫筆記、草稿和決定。</p>
-<p class="en">Handwritten notes, sketches and decisions from making games.</p>
+<p class="lede">做遊戲時的手寫筆記。<mark>有顏色的字</mark>可以點：兩句話碰在一起，會有反應。</p>
+<p class="en">Handwritten notes from making games. Tap the highlighted words: when two lines meet, they react.</p>
 
 <article id="standard">
 <h2>我做遊戲的標準？</h2>
-<figure><img src="img/standard.webp" width="1200" height="394" alt="手寫筆記：我做遊戲的標準？好像沒有。我想做的就是把當時的喜好保存下來，不管未來的我喜不喜歡，做出現在的我喜歡的，擔憂就留給未來！"></figure>
-<p class="say">好像沒有。我想做的，就是把當時的喜好保存下來。不管未來的我喜不喜歡，做出現在的我喜歡的，擔憂就留給未來！</p>
-<p class="en">My standard for making games? I don't think I have one. I just want to save what I love right now. Whether or not future me likes it, I make what present me likes, and leave the worrying to the future.</p>
+<figure class="note" data-note="standard"><img src="img/standard.webp" width="1200" height="394" alt="手寫筆記：我做遊戲的標準？好像沒有。我想做的就是把當時的喜好保存下來，不管未來的我喜不喜歡，做出現在的我喜歡的，擔憂就留給未來！"></figure>
+<details><summary>打字版 · English</summary>
+<p>我做遊戲的標準？好像沒有。我想做的，就是把當時的喜好保存下來。不管未來的我喜不喜歡，做出現在的我喜歡的，擔憂就留給未來！</p>
+<p class="e">My standard for making games? I don't think I have one. I just want to save what I love right now. Whether or not future me likes it, I make what present me likes, and leave the worrying to the future.</p>
+</details>
 </article>
 
 <article id="relay-ai-guess">
 <p class="date">2026-10-28</p>
 <h2>8棒接力：為什麼沒有時間限制</h2>
-<figure><img src="img/relay-why.webp" width="1104" height="795" loading="lazy" alt="手寫筆記：我突然覺得印象中的畫畫遊戲都有一定的時間限制，於是我想做一個能讓每個畫家像是自己在畫布創作的方式來呈現遊戲性的遊戲。而我小時候看過一些不同畫師接力的影片，我認為可以試試用這個玩法，於是有了這個小遊戲囉。"></figure>
-<p class="say">我突然覺得，印象中的畫畫遊戲都有一定的時間限制，於是我想做一個能讓每個畫家像是在自己的畫布上創作的遊戲。我小時候看過一些不同畫師接力的影片，覺得可以試試這個玩法，於是有了這個小遊戲囉 ☺</p>
-<p class="en">Every drawing game I remember has a timer. I wanted one where each painter can create as if on their own canvas. As a kid I watched videos of artists drawing in relay, so I tried that as the gameplay, and this little game was born.</p>
-<figure><img src="img/relay-sketch.webp" width="961" height="1387" loading="lazy" alt="手繪的首頁草稿：上方是 AI 畫師「8號」，中間是畫布、色盤與筆刷，左邊寫著 24 小時內提交，下方是一整卷畫卷分成 1 到 8 格，可以投票猜哪一號是 AI。"><figcaption>同一天畫的首頁草稿 · Homepage sketch, same day</figcaption></figure>
+<figure class="note" data-note="why"><img src="img/relay-why.webp" width="1104" height="795" loading="lazy" alt="手寫筆記：我突然覺得印象中的畫畫遊戲都有一定的時間限制，於是我想做一個能讓每個畫家像是自己在畫布創作的方式來呈現遊戲性的遊戲。而我小時候看過一些不同畫師接力的影片，我認為可以試試用這個玩法，於是有了這個小遊戲囉。"></figure>
+<details><summary>打字版 · English</summary>
+<p>我突然覺得，印象中的畫畫遊戲都有一定的時間限制，於是我想做一個能讓每個畫家像是在自己的畫布上創作的遊戲。我小時候看過一些不同畫師接力的影片，覺得可以試試這個玩法，於是有了這個小遊戲囉 ☺</p>
+<p class="e">Every drawing game I remember has a timer. I wanted one where each painter can create as if on their own canvas. As a kid I watched videos of artists drawing in relay, so I tried that as the gameplay, and this little game was born.</p>
+</details>
+<figure class="note" data-note="sketch"><img src="img/relay-sketch.webp" width="961" height="1387" loading="lazy" alt="手繪的首頁草稿：上方是 AI 畫師「8號」，中間是畫布、色盤與筆刷，左邊寫著 24 小時內提交，下方是一整卷畫卷分成 1 到 8 格，可以投票猜哪一號是 AI。"></figure>
+<p class="figcap" style="font-size:14px;color:var(--muted);margin:0">同一天畫的首頁草稿 · Homepage sketch, same day</p>
 <a class="play" href="/relay-ai-guess/">去畫一棒 → Play</a>
 </article>
 
+<div id="sheet" role="region" aria-label="反應 Reactions" aria-live="polite"><div class="in"><button id="shut" type="button" aria-label="收起 Close">×</button><div id="rxs"></div></div></div>
+<noscript><p>開啟 JavaScript 後，可以點筆記上有顏色的字，看句子之間的反應。</p></noscript>
 <footer>© 2026 onholdlab</footer>
 </main>
+<script>
+/* 筆記上的句子：r = 在圖上的位置 [x, y, 寬, 高]，單位是圖片的百分比；一句跨兩行就放兩個框。
+   反應：a、b 是兩句的代號；kind 是 react（反應）或 clash（矛盾）。新增方法見 devlog/README.md。 */
+const PHRASES={
+ keep:{note:'standard',label:'把當時的喜好保存下來',r:[[65.5,21,31,24],[2.5,49,24,24]]},
+ future:{note:'standard',label:'不管未來的我喜不喜歡',r:[[31,47,59,23]]},
+ worry:{note:'standard',label:'擔憂就留給未來',r:[[61,70,36.5,23]]},
+ timer:{note:'why',label:'畫畫遊戲都有一定的時間限制',r:[[32,14.5,61,12.5],[4,27,21.5,12]]},
+ video:{note:'why',label:'不同畫師接力的影片',r:[[44,57.5,50,13]]},
+ h24:{note:'sketch',label:'24小時內提交',r:[[5.5,30,25,4.8]]},
+ tail:{note:'sketch',label:'上一棒尾巴，右邊接著畫',r:[[34,62.5,45.5,5.5]]},
+ scroll:{note:'sketch',label:'看歷史畫卷',r:[[33,69.5,27,5.5]]}
+};
+const REACTIONS=[
+ {a:'worry',b:'timer',kind:'react',zh:'計時器，就是現在就送到的擔憂。兩張筆記做的是同一件事：把壓力從當下拿走。',en:'A timer is worry delivered right now. Both notes do the same thing: take the pressure out of the present.'},
+ {a:'keep',b:'scroll',kind:'react',zh:'畫卷對每個畫家做的，就是我對自己做的事：每一棒都是當時的喜好，存下來就不回頭改。',en:'The scroll does for every painter what I do for myself: each baton is what someone loved in that moment, saved and never revised.'},
+ {a:'future',b:'tail',kind:'react',zh:'接力裡，下一棒就是那個「未來的我」。喜不喜歡，都只能接著畫。',en:'In a relay, the next painter is that "future me". Like it or not, they can only draw on from where it ends.'},
+ {a:'keep',b:'video',kind:'react',zh:'小時候看的影片，隔了這麼多年還是變成了遊戲。當時的喜好，原來本來就留得住。',en:'Videos I watched as a kid became a game years later. What I loved back then was never going to disappear anyway.'},
+ {a:'timer',b:'h24',kind:'clash',zh:'說好沒有時間限制，草稿上卻寫著 24 小時。限制沒有消失，只是從「畫」搬到了「交棒」。',en:'No time limit, yet the sketch says 24 hours. The limit never left. It moved from drawing to handing over.'}
+];
+(function(){
+ const notes={};document.querySelectorAll('.note').forEach(f=>notes[f.dataset.note]=f);
+ const KIND={react:'反應 REACTION',clash:'矛盾 CLASH'};
+ let open=null;
+ const partners=id=>REACTIONS.filter(x=>x.a===id||x.b===id);
+ for(const id in PHRASES){const p=PHRASES[id],f=notes[p.note];
+  p.r.forEach((r,i)=>{const b=document.createElement('button');b.type='button';b.className='ph';b.dataset.id=id;
+   b.style.cssText=`left:${r[0]}%;top:${r[1]}%;width:${r[2]}%;height:${r[3]}%`;
+   b.setAttribute('aria-label',p.label);b.setAttribute('aria-expanded','false');if(i)b.tabIndex=-1;
+   b.addEventListener('click',()=>toggle(id));f.appendChild(b);});}
+ function crop(id){const p=PHRASES[id],img=notes[p.note].querySelector('img'),frag=document.createDocumentFragment();
+  p.r.forEach(([x,y,w,h])=>{const ratio=w*Number(img.getAttribute('width'))/(h*Number(img.getAttribute('height'))),d=document.createElement('span');d.className='crop';
+   d.style.width=34*ratio+'px';d.style.aspectRatio=ratio;
+   const im=new Image();im.src=img.currentSrc||img.src;im.alt='';im.style.cssText=`width:${10000/w}%;height:${10000/h}%;left:${-100*x/w}%;top:${-100*y/h}%`;
+   d.appendChild(im);frag.appendChild(d);});return frag;}
+ const sheet=document.getElementById('sheet'),rxs=document.getElementById('rxs');
+ function clear(){rxs.textContent='';sheet.classList.remove('open');document.body.style.paddingBottom='';
+  document.querySelectorAll('.ph').forEach(b=>{b.classList.remove('on','lit','clash');b.setAttribute('aria-expanded','false');});
+  Object.values(notes).forEach(f=>f.classList.remove('busy'));open=null;}
+ function toggle(id){const was=open;clear();if(was===id)return;open=id;
+  Object.values(notes).forEach(n=>n.classList.add('busy'));
+  document.querySelectorAll(`.ph[data-id="${id}"]`).forEach(b=>{b.classList.add('on');b.setAttribute('aria-expanded','true');});
+  partners(id).forEach(x=>{const other=x.a===id?x.b:x.a;
+   document.querySelectorAll(`.ph[data-id="${other}"]`).forEach(b=>{b.classList.add('lit');if(x.kind==='clash')b.classList.add('clash');});
+   if(x.kind==='clash')document.querySelectorAll(`.ph[data-id="${id}"]`).forEach(b=>b.classList.add('clash'));
+   const box=document.createElement('div');box.className='rx';
+   const pair=document.createElement('div');pair.className='pair';pair.appendChild(crop(id));
+   const xx=document.createElement('span');xx.className='x';xx.textContent='×';xx.setAttribute('aria-hidden','true');pair.appendChild(xx);pair.appendChild(crop(other));
+   box.appendChild(pair);
+   box.insertAdjacentHTML('beforeend',`<p class="k"></p><p class="t"></p><p class="e"></p>`);
+   box.querySelector('.k').textContent=KIND[x.kind];box.querySelector('.t').textContent=x.zh;box.querySelector('.e').textContent=x.en;
+   if(PHRASES[other].note!==PHRASES[id].note){const go=document.createElement('a');go.className='go';go.href='#';go.textContent='去看另一句 · See the other line';
+    go.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(`.ph[data-id="${other}"]`),free=innerHeight-sheet.offsetHeight;
+     scrollTo({top:scrollY+t.getBoundingClientRect().top-Math.max(16,free/2-t.offsetHeight/2),behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});});box.appendChild(go);}
+   rxs.appendChild(box);});
+  sheet.scrollTop=0;sheet.classList.add('open');document.body.style.paddingBottom=sheet.offsetHeight+'px';
+  if(window.goatcounter&&goatcounter.count)goatcounter.count({path:'devlog-reaction-'+id,title:PHRASES[id].label,event:true});}
+ document.getElementById('shut').addEventListener('click',()=>{const t=open&&document.querySelector(`.ph[data-id="${open}"]`);clear();if(t)t.focus({preventScroll:true});});
+ document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape'||!open)return;
+  const trigger=document.activeElement.closest('#sheet')?document.querySelector(`.ph[data-id="${open}"]`):null;
+  clear();
+  if(trigger)trigger.focus();
+ });
+})();
+</script>
 </body>
 </html>
