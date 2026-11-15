@@ -2,6 +2,17 @@
  "updated": "2026-10-31T13:02:27.368Z",
  "works": [
   {
+   "title": "許願神燈",
+   "blurb": "三個願望，字面意思也算",
+   "title_en": "Wish Lamp",
+   "blurb_en": "Three wishes, taken literally.",
+   "type": "遊戲",
+   "url": "https://onholdlab.com/wish-lamp/",
+   "repo": "wish-lamp",
+   "created": "2026-11-06T07:55:27Z",
+   "translations": {}
+  },
+  {
    "title": "期中考模擬",
    "blurb": "被鴿子分心的期中考，戴上耳機就能專心複習",
    "title_en": "Midterm Sim",

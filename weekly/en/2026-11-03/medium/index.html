@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Minesweeper by code, an 1890 punch card, and an AI world that drifts</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://onholdlab.com/weekly/en/2026-11-03/">
+<meta property="og:title" content="Minesweeper by code, an 1890 punch card, and an AI world that drifts">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://onholdlab.com/weekly/en/2026-11-03/">
+<meta property="og:image" content="https://onholdlab.com/weekly/en/2026-11-03/medium/cover.png">
+<style>body{max-width:700px;margin:40px auto;padding:0 16px;font:18px/1.7 Georgia,serif;color:#16201D;background:#fff}img{max-width:100%}a{color:#c2281d;text-decoration:none}a:focus-visible{outline:none;color:#16201D}</style>
+</head><body><article>
+<h1>Minesweeper by code, an 1890 punch card, and an AI world that drifts</h1>
+<figure><img src="https://onholdlab.com/weekly/en/2026-11-03/medium/cover.png" alt="ONHOLDNEWS No.01 cover"></figure>
+<h4>One game makes you write code so a drone clears a minefield by itself. Another sends you to 1890 to run the US census on punch cards.</h4>
+<p>Two of this week&#x27;s five games prove the same point: a science mechanic does not need spectacle, one rule can grow its own difficulty. One turns the code you write into your controls; one shrinks an 1890 census machine into a single line of weighted arithmetic. We also picked a Morse code rhythm game, a ten-year-old citizen science game about Alzheimer&#x27;s, and an AI world model you cannot play yet but should know about.</p>
+<p><em>ONHOLDNEWS No.01 · Nov 3, 2026 · 5 games where real science runs the mechanics</em></p>
+<h2>01 The Miner Was Replaced</h2><p><em>Computer science · programming</em></p>
+<h3>What you do</h3><p>You can&#x27;t click a Minesweeper cell yourself. You write code that sends a drone to do it, in a language that looks like simplified Python. Get it wrong and the drone blows up. Other levels have you dig up ruins without breaking them, or sort mushrooms by color.</p>
+<figure><img src="https://onholdlab.com/weekly/en/2026-11-03/medium/fig-01.png" alt="The Miner Was Replaced mechanic diagram"><figcaption>Diagram drawn by onholdlab to explain the mechanic, not a game screenshot.</figcaption></figure>
+<h3>The tech behind it</h3><p><strong>Code is the interface</strong>: the drone does only what your program says, so every run is reproducible. Solving Minesweeper with code is a classic algorithms exercise.</p>
+<h3>Where to play</h3><p>Platform: PC (Windows / macOS); included in the mobile base game<br>Price: Steam DLC, needs The Farmer Was Replaced (price to be checked)<br>Status: Out Nov 2, 2026</p><p><em>The base game launched on iOS / Android the same day, with the mining content included.</em></p>
+<h3>Our take</h3><p>Best for people who code a little and want to watch their logic run. Code-the-robot games already exist (Bitburner, 7 Billion Humans); what is new here is the puzzles, such as writing a Minesweeper solver, not the framework.</p>
+<p>Sources: <a href="https://store.steampowered.com/app/4521700">Steam store page</a> · <a href="https://steamdb.info/patchnotes/26379745/">Developer update, Nov 2 (SteamDB)</a></p>
+<h2>02 HOLLERITH</h2><p><em>History of computing · data processing</em></p>
+<h3>What you do</h3><p>You&#x27;re a new operator on the 1890 census. Each card has 8 hole positions: the left half is weighted 4-3-2-1, the right half 1-2-3-4. Add up the weights of the punched holes on each side, compare, and sort the card left or right; ties and blank cards go back. Three jams and your shift is over. Later days add double holes, blanks and speed, up to 120 cards a shift.</p>
+<figure><img src="https://onholdlab.com/weekly/en/2026-11-03/medium/fig-02.png" alt="HOLLERITH mechanic diagram"><figcaption>Diagram drawn by onholdlab to explain the mechanic, not a game screenshot.</figcaption></figure>
+<h3>The tech behind it</h3><p>Based on Hollerith&#x27;s tabulating machine for the 1890 US census, where <strong>metal pins passing through holes closed a circuit</strong> to count. The hole → value → sort chain matches the real machine; the weighting rule is the game&#x27;s own abstraction to create mental math, not history.</p>
+<h3>Where to play</h3><p>Platform: Browser, Windows / macOS<br>Price: To be checked<br>Status: 48-hour Ludum Dare 60 entry</p><p><em>Every visual is drawn by code with no image files; the sound is synthesized live.</em></p>
+<h3>Our take</h3><p>Great if you like quick mental math or computing history. Jam comments mostly say the later days get too hard; the first two days show you the whole loop. One arithmetic rule carrying a whole game is the most elegant design this week.</p>
+<p>Sources: <a href="https://ldj.am/60/hollerith">Ludum Dare entry</a> · <a href="https://ldj.am/60">Ludum Dare 60</a></p>
+<h2>03 The Telegraphist</h2><p><em>Communication · Morse code · rhythm</em></p>
+<h3>What you do</h3><p>You&#x27;re a telegraph operator. Tap for a dot, hold for a dash, and keep to the beat of incoming messages. Messages get longer and you learn new letters along the way; miss a beat and the whole message can be lost.</p>
+<figure><img src="https://onholdlab.com/weekly/en/2026-11-03/medium/fig-03.png" alt="The Telegraphist mechanic diagram"><figcaption>Diagram drawn by onholdlab to explain the mechanic, not a game screenshot.</figcaption></figure>
+<h3>The tech behind it</h3><p>Morse code is a timing structure: <strong>the ratio of short to long signals defines each letter</strong>, which makes it a natural one-button rhythm input. The game uses the real dot-dash code.</p>
+<h3>Where to play</h3><p>Platform: To be checked (no browser build stated)<br>Price: To be checked<br>Status: 48-hour Ludum Dare 60 entry, code made with AI help</p>
+<h3>Our take</h3><p>Calm, almost meditative, and good if you want to pick up Morse along the way. There are already a few Morse rhythm games; this one wins on mood rather than novelty. Players mention the text is small on desktop.</p>
+<p>Sources: <a href="https://ldj.am/60/the-telegraphist">Ludum Dare entry</a></p>
+<h2>04 Stall Catchers 10th-anniversary Catchathon</h2><p><em>Neuroscience · citizen science</em></p>
+<h3>What you do</h3><p>Watch a short clip of blood vessels in a mouse brain and decide whether the marked capillary is flowing or stalled. Score points and climb the team leaderboard. All of October was a global team event for the tenth anniversary.</p>
+<figure><img src="https://onholdlab.com/weekly/en/2026-11-03/medium/fig-04.png" alt="Stall Catchers 10th-anniversary Catchathon mechanic diagram"><figcaption>Diagram drawn by onholdlab to explain the mechanic, not a game screenshot.</figcaption></figure>
+<h3>The tech behind it</h3><p>Cornell researchers found that in mice with Alzheimer&#x27;s, white blood cells get stuck in brain capillaries and lower overall blood flow. Computers struggle to judge these stalls; human eyes do it well. <strong>Every answer is labeled data for the research</strong>, already used in several peer-reviewed papers.</p>
+<h3>Where to play</h3><p>Platform: Web, mobile<br>Price: ✓ Free<br>Status: Game stays open; the anniversary event ended Oct 30</p>
+<h3>Our take</h3><p>The lowest-friction way to turn play time into research time: one yes/no call. Ten years running with hundreds of thousands of players, it is the only pick this week with long-term retention behind it.</p>
+<p>Sources: <a href="https://blog.hcinst.org/stall-catchers-turns-10-global-catchathon-kickoff/">Human Computation Institute: 10th-anniversary Catchathon</a> · <a href="https://blog.hcinst.org/">Human Computation Institute blog</a></p>
+<h2>05 Genie 4</h2><p><em>AI · world models</em></p>
+<h3>What you do</h3><p>Generate a world from a line of text, then walk into it. Partway through you can type “make it rain”, add a person or change the camera, and the world changes on the spot. Ambient sound, music and character dialogue are generated live too.</p>
+<figure><img src="https://onholdlab.com/weekly/en/2026-11-03/medium/fig-05.png" alt="Genie 4 mechanic diagram"><figcaption>Diagram drawn by onholdlab to explain the mechanic, not a game screenshot.</figcaption></figure>
+<h3>The tech behind it</h3><p>Google DeepMind&#x27;s <strong>real-time interactive world model</strong>, with a “director” layer that breaks your goal into steps, checks the frame, and replans when interrupted. DeepMind lists its own limits: objects drift over long walks, and complex physics and readable text are still research problems.</p>
+<h3>Where to play</h3><p>Platform: —<br>Price: —<br>Status: ✗ Research preview for trusted testers only; waitlist open</p>
+<h3>Our take</h3><p>For now it is closer to a dream you can walk into than a game engine with stable rules. We include it because it shows another path: rules generated by a model instead of written by people. We&#x27;ll come back when it opens.</p>
+<p>Sources: <a href="https://deepmind.google/blog/genie-4-a-new-generation-of-world-simulation/">Google DeepMind blog</a> · <a href="https://techcrunch.com/2026/10/27/googles-genie-4-world-model-adds-audio-more-realistic-worlds-and-real-time-steering/">TechCrunch</a></p>
+<hr>
+<p>ONHOLDNEWS is a weekly column by onholdlab, out every Tuesday. Full issue with all diagrams: <a href="https://onholdlab.com/weekly/en/2026-11-03/?utm_campaign=onholdnews&utm_source=medium">onholdlab.com/weekly</a></p>
+<p><em>Originally published at <a href="https://onholdlab.com/weekly/en/2026-11-03/?utm_campaign=onholdnews&utm_source=medium">onholdlab.com</a>.</em></p>
+</article></body></html>

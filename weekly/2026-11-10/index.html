@@ -3,117 +3,60 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>從零造一台電腦：箭頭、組合語言、彈珠，還有一封全是算式的外星來信｜ONHOLDNEWS 2026-11-10</title>
+<title>只用箭頭，也能做出一台電腦？這週 5 款把科學變成玩法的遊戲｜ONHOLDNEWS 2026-11-10</title>
 <meta name="description" content="ONHOLDNEWS 第 2 期：Logic Arrows、PlayASM、Number Machine: Math Factory、marblebuilds、Message From Aliens（異星來信）。把科學或技術真正放進玩法的新遊戲。">
 <link rel="canonical" href="https://onholdlab.com/weekly/2026-11-10/">
+<link rel="alternate" hreflang="zh-Hant" href="https://onholdlab.com/weekly/2026-11-10/">
+<link rel="alternate" hreflang="en" href="https://onholdlab.com/weekly/en/2026-11-10/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="onholdlab">
-<meta property="og:title" content="從零造一台電腦：箭頭、組合語言、彈珠，還有一封全是算式的外星來信｜ONHOLDNEWS 2026-11-10">
+<meta property="og:title" content="只用箭頭，也能做出一台電腦？這週 5 款把科學變成玩法的遊戲｜ONHOLDNEWS 2026-11-10">
 <meta property="og:description" content="ONHOLDNEWS 第 2 期：Logic Arrows、PlayASM、Number Machine: Math Factory、marblebuilds、Message From Aliens（異星來信）。把科學或技術真正放進玩法的新遊戲。">
 <meta property="og:url" content="https://onholdlab.com/weekly/2026-11-10/">
-<link rel="alternate" type="application/rss+xml" title="ONHOLDNEWS" href="https://onholdlab.com/weekly/feed.xml">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&family=Noto+Sans+TC:wght@400;700;900&display=swap">
-<style>:root{--bg:#d7e7df;--ink:#12302a;--muted:#3d5a52;--panel:#eef5f1;--line:#12302a;--accent:#c2281d;--tag:#bcd8cb;color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10221d;--ink:#e3efe9;--muted:#9fb8b0;--panel:#17302a;--line:#9fb8b0;--accent:#ff6b5e;--tag:#24443b;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#10221d;--ink:#e3efe9;--muted:#9fb8b0;--panel:#17302a;--line:#9fb8b0;--accent:#ff6b5e;--tag:#24443b;color-scheme:dark}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.8 "Noto Sans TC","Noto Sans CJK TC",system-ui,sans-serif}
-main{max-width:720px;margin:0 auto;padding:20px 16px 72px;overflow-wrap:anywhere}
-a{ color:var(--accent);text-decoration:none }
-:focus-visible{ outline:none;color:var(--accent) }
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:700}
-.top a{color:inherit;min-height:44px;display:inline-grid;place-items:center}
-.series{font:700 13px/1.4 "Inter",system-ui,sans-serif;letter-spacing:.14em;color:var(--accent);margin:28px 0 6px}
-h1{font-size:30px;line-height:1.35;margin:0 0 10px;font-weight:900}
-.meta{color:var(--muted);font-size:14px;margin:0 0 20px}
-.lede{font-size:18px;margin:0 0 8px}
-.focus{ color:var(--accent);padding:14px 18px;margin:24px 0 }
-.focus p{margin:0}
-.focus b{display:block;font-size:14px;color:var(--muted);margin-bottom:2px}
-.toc{list-style:none;padding:0;margin:18px 0 8px;counter-reset:t}
-.toc li{ counter-increment:t;padding:8px 0;display:flex;gap:12px;align-items:baseline }
-.toc li::before{content:counter(t,decimal-leading-zero);font:800 14px "Inter",sans-serif;color:var(--accent)}
-.toc a{color:inherit;font-weight:700}
-.toc small{color:var(--muted);margin-left:auto;white-space:nowrap}
-article.item{ margin:44px 0 0;padding-top:20px }
-.num{font:800 15px "Inter",sans-serif;color:var(--accent)}
-h2{font-size:24px;line-height:1.35;margin:4px 0 10px}
-.tag{display:inline-block;color:var(--muted);font-size:13px;font-weight:700;margin-right:10px}
-.tag.closed{ color:var(--accent) }
-h3{font-size:15px;margin:22px 0 4px;color:var(--muted);letter-spacing:.04em}
-h3+p{margin-top:0}
-.src{font-size:14px;color:var(--muted);margin-top:18px}
-.src a{margin-right:12px;white-space:normal}
-.missed{ margin-top:48px;padding-top:20px }
-.missed dl{margin:0}
-.missed dt{font-weight:700;margin-top:12px}
-.missed dd{margin:0;color:var(--muted)}
-.note{font-size:14px;color:var(--muted);margin-top:40px}
-.pager{display:flex;justify-content:space-between;gap:12px;margin-top:40px;font-weight:700}
-.pager a{min-height:44px;display:inline-grid;place-items:center}
-.principles{display:grid;gap:12px;margin:22px 0}
-.principles div{ padding:14px 18px }
-.principles b{display:block;margin-bottom:2px}
-.issues{list-style:none;padding:0;margin:12px 0}
-.issues li{ padding:16px 0 }
-.issues a{color:inherit;font-weight:900;font-size:20px;line-height:1.4;display:block}
-.issues small{color:var(--muted);display:block}
-.issues .names{color:var(--muted);font-size:15px;margin-top:4px}
-footer{ display:block;text-align:center;color:var(--muted);font-size:13px;margin-top:56px;padding-top:16px }
-</style>
+<link rel="alternate" type="application/rss+xml" title="ONHOLDNEWS 科技遊戲週報" href="https://onholdlab.com/weekly/feed.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Noto+Sans+TC:wght@400;700;900&display=swap">
+<link rel="stylesheet" href="/weekly/news.css?v=20261111g">
+<link rel="stylesheet" href="/weekly/editorial.css?v=20261111g">
 <script data-goatcounter="https://onholdlab.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
-<body>
+<body class="news-issue">
 <main>
 
-<nav class="top"><a href="../">← 所有期數</a><a href="/">onholdlab</a></nav>
-<p class="series">ONHOLDNEWS · 科技遊戲週報 · 第 2 期</p>
-<h1>從零造一台電腦：箭頭、組合語言、彈珠，還有一封全是算式的外星來信</h1>
-<p class="meta">2026-11-10（週二）· 收錄範圍 2026-11-01 → 2026-11-10 · 5 款</p>
+<script>(function(){try{var C='zh',A='/weekly/en/2026-11-10/',q=new URLSearchParams(location.search).get('lang');document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a.lang');if(a)try{localStorage.setItem('ohl_lang',JSON.stringify(C=='zh'?'en':'zh'))}catch(x){}},true);if(q==='zh'||q==='en')return;var s=JSON.parse(localStorage.getItem('ohl_lang')||'null');if(s&&((s==='zh')?'zh':'en')!==C)location.replace(A)}catch(e){}})();</script>
+<nav class="top"><a href="/weekly/">← 所有期數</a><span><a class="lang" href="/weekly/en/2026-11-10/" hreflang="en" lang="en">English</a></span></nav>
+<header class="issue-heading"><p class="series">ONHOLDNEWS</p><div class="issue-stamp"><strong>No.02</strong><time datetime="2026-11-10">NOV 10</time></div>
+<h1>只用箭頭，也能做出一台電腦？這週 5 款把科學變成玩法的遊戲</h1>
+<p class="meta">收錄範圍 2026-11-01 → 2026-11-10 · 5 款</p>
 <p class="lede">這週 Steam 的「Programming」標籤一口氣進了十多款新作，真正把科技放進機制的有三款在做同一件事：從零造一台電腦，分別用箭頭、組合語言和彈珠。另外兩款，一款把算術攤成工廠生產線，一款把數學當成和外星人溝通的唯一語言。</p>
-<div class="focus"><b>這個專欄只收一種遊戲</b><p>科學或技術真正寫進規則、玩家得靠理解它才玩得下去的遊戲。只是科幻題材、只是畫面好看，不收。<a href="../#why">為什麼</a></p></div>
-<ol class="toc">
+
+<p class="editor-note">科學寫進規則，才是我們關心的遊戲。<a href="/weekly/#motivation">為什麼？</a></p></header><div class="reading-layout"><nav class="issue-nav" aria-label="本期目錄"><details open><summary>本期目錄</summary><ol class="toc">
 <li><a href="#g1">Logic Arrows</a><small>數位邏輯</small></li>
 <li><a href="#g2">PlayASM</a><small>組合語言</small></li>
 <li><a href="#g3">Number Machine: Math Factory</a><small>算術</small></li>
 <li><a href="#g4">marblebuilds</a><small>2D 物理</small></li>
 <li><a href="#g5">Message From Aliens（異星來信）</a><small>數學</small></li>
-</ol>
-<article class="item" id="g1"><span class="num">01</span><h2>Logic Arrows</h2>
-<span class="tag">數位邏輯 · 電腦架構</span>
-<h3>你在做什麼</h3><p>畫面是一張無限大的格子紙。你放的每個箭頭只做一件事：把訊號往它指的方向傳一格。幾十個箭頭排好，一個 AND 閘亮了；再往上疊就是加法器、記憶體，最後是一顆能跑俄羅斯方塊的 CPU。玩家社群已經在裡面寫出自己的組譯器。</p>
-<h3>背後的科技</h3><p>數位邏輯與電腦架構。它把「邏輯閘」再往下拆一層，用箭頭的傳遞規則當唯一的最小單位，從 NOT、AND 一路堆到時脈、RAM、指令集，玩法上更接近細胞自動機。</p>
-<h3>在哪玩</h3><p>PC（Windows／SteamOS／Linux）。Steam 正式版預定 2026-11-10 上架，發稿時頁面還沒顯示價格；Steam 有免費試玩版；另有瀏覽器版 logic-arrows.io（是否免費待查）。介面有簡體中文，沒有繁體中文。</p>
-<h3>我們的評語</h3><p>想弄懂「電腦到底怎麼算 1+1」的人，這是門檻最低的一條路，因為規則只有箭頭一種。到 CPU 那段很硬，先玩免費試玩版，確定自己不會中途放棄。</p>
-<p class="src">來源：<a href="https://store.steampowered.com/app/4210250/Logic_Arrows/" target="_blank" rel="noopener">Steam 頁面</a> <a href="https://store.steampowered.com/app/5193870/Logic_Arrows_Demo/" target="_blank" rel="noopener">Steam 免費試玩版</a> <a href="https://logic-arrows.io/" target="_blank" rel="noopener">瀏覽器版 logic-arrows.io</a> <a href="https://github.com/chubrik/LogicArrows" target="_blank" rel="noopener">社群地圖庫（GitHub）</a></p></article>
-<article class="item" id="g2"><span class="num">02</span><h2>PlayASM</h2>
-<span class="tag">組合語言 · CPU 模擬</span>
-<h3>你在做什麼</h3><p>左邊是有語法上色、中斷點的程式碼編輯器，右邊是 16 個暫存器和記憶體，用十六進位、十進位、二進位顯示。你一行一行寫組合語言、按一步執行，看旗標翻、記憶體改。學會之後，同一套指令可以畫到 320×200 的畫面上、吹出 8 聲道晶片音樂，或操作一支六軸機械手臂把方塊夾上輸送帶。</p>
-<h3>背後的科技</h3><p>一台自訂的精簡 CPU 模擬器（16 個暫存器、64KB 位址空間、旗標）。70 個教學任務從位元、十六進位、位移、迴圈、堆疊一路教上去，再加上 100 多個挑戰；模組用 JSON 加 Lua 寫，可以上 Steam Workshop。</p>
-<h3>在哪玩</h3><p>PC（Steam），2026-11-05 上市，定價 US$15.99，首發 85 折到 11/19。介面有簡體中文，沒有繁體中文；沒有試玩版，發稿時還沒有玩家評價。</p>
-<h3>我們的評語</h3><p>適合修過計算機組織、卻從沒「摸到」CPU 的人；完全零基礎會卡在前幾關。組合語言解謎遊戲已經不少，這款的不同在於給你一整台機器。價格偏高又沒試玩，建議等第一批評價出來再決定。</p>
-<p class="src">來源：<a href="https://store.steampowered.com/app/5424530/PlayASM/" target="_blank" rel="noopener">Steam 頁面</a></p></article>
-<article class="item" id="g3"><span class="num">03</span><h2>Number Machine: Math Factory</h2>
-<span class="tag">算術 · 自動化</span>
-<h3>你在做什麼</h3><p>六角格地圖上滾著一顆顆寫著數字的球。你鋪輸送帶、裝推桿、雷射、磁鐵、旋轉器，讓兩顆「3」撞成一顆「6」，再把一串球排成題目要求的形狀和數值。全部自動運轉，少一格整條線就塞住。</p>
-<h3>背後的科技</h3><p>數學加自動化。球上的數字會隨機器被合併、拆分、修改，等於把算式攤成一條生產線；排行榜比的是體積和速度，就是演算法課裡的空間與時間取捨。</p>
-<h3>在哪玩</h3><p>PC（Windows／macOS／SteamOS／Linux，Steam），2026-11-06 上市，US$14.99，首發 9 折到 11/20，有免費試玩版。介面有簡體中文（含語音與字幕），沒有繁體中文。發稿時 23 則評價全數好評。</p>
-<h3>我們的評語</h3><p>玩過 Opus Magnum、Infinifactory 的人會直接上手；不愛工廠遊戲的人可能覺得是在加班算數。開發者自己說靈感來自這兩款，六角格加數字球是變體，但做得很完整。</p>
-<p class="src">來源：<a href="https://store.steampowered.com/app/2231090/Number_Machine_Math_Factory/" target="_blank" rel="noopener">Steam 頁面</a> <a href="https://gamingonlinux.com/2025/06/number-machine-is-an-open-ended-factory-and-automation-game-with-math-mechanics" target="_blank" rel="noopener">GamingOnLinux 介紹</a></p></article>
-<article class="item" id="g4"><span class="num">04</span><h2>marblebuilds</h2>
-<span class="tag">2D 物理 · 數位邏輯</span>
-<h3>你在做什麼</h3><p>在格子裡疊方塊搭彈珠軌道，按下開始，彈珠滾過加速器、反重力板、傳送門、會讓它變慢的蜂蜜區。再拉幾條線接上按鈕和感測器，彈珠滾過就觸發活門、燈或彈珠產生器；官方說不寫程式也能做出彈珠台和計算機。</p>
-<h3>背後的科技</h3><p>2D 剛體物理（Box2D）加一套類似 Minecraft 紅石的數位邏輯：線路、邏輯閘、計時器、記憶格。彈珠本身就是訊號，物理和邏輯混在同一張地圖上。</p>
-<h3>在哪玩</h3><p>PC（Windows／SteamOS／Linux，Steam），2026-11-02 上市，US$9.99，首發 75 折到 11/16。介面有繁體中文。另有免費網頁版在 itch.io，有沙盒、解謎和平台模式（邏輯方塊是否開放待查）。</p>
-<h3>我們的評語</h3><p>這週唯一有繁中、又能直接在瀏覽器玩的一款，門檻最低。想認真學邏輯電路的人會覺得它太玩具；但要「先看到電路動起來」，它最直觀。</p>
-<p class="src">來源：<a href="https://store.steampowered.com/app/4285270/marblebuilds" target="_blank" rel="noopener">Steam 頁面</a> <a href="https://grizzyyo.itch.io/marblebuilds" target="_blank" rel="noopener">itch.io 免費網頁版</a></p></article>
-<article class="item" id="g5"><span class="num">05</span><h2>Message From Aliens（異星來信）</h2>
-<span class="tag">數學 · 解密</span>
-<h3>你在做什麼</h3><p>整個畫面只有外星符號，連選單和字典都是。每個符號下面有個「？」，點開寫筆記，同一個符號出現的每個地方都會顯示你的筆記。第一章全是算式：你先靠加減乘除猜出他們的數字系統，再用已知的字去拆字典裡「用外星字解釋外星字」的條目。連「怎麼離開遊戲」都要先解出來。</p>
-<h3>背後的科技</h3><p>把數學當共通語言。1,000 多個表意符號、兩萬多字的文本，從數字和等式建立規則，後面會碰到重力、電解水這類科學概念。開發者說靈感來自《妳一生的預言》與《接觸未來》。</p>
-<h3>在哪玩</h3><p>PC（Steam），2026-11-01 上市（亞洲時間為 11/2），US$9.99，有免費試玩版。遊戲裡沒有任何人類文字，筆記用你自己的語言寫，所以中文玩家完全沒問題。發稿時 498 則評價、93% 好評，一週內評價數漲了近四倍。</p>
-<h3>我們的評語</h3><p>喜歡《Chants of Sennaar》的人必玩，而且更硬、更純。沒有美術、沒有音樂、沒有教學，怕悶的人先玩試玩版。開發者之前做過《A=B》與《Understand》。</p>
-<p class="src">來源：<a href="https://store.steampowered.com/app/1858720/Message_From_Aliens/" target="_blank" rel="noopener">Steam 頁面</a> <a href="https://www.4gamers.com.tw/news/detail/83044/message-from-aliens-steam-alien-language-puzzle-game" target="_blank" rel="noopener">4Gamers 報導（繁中）</a> <a href="https://automaton-media.com/articles/newsjp/20261103-477243/" target="_blank" rel="noopener">AUTOMATON 報導（日文）</a></p></article>
+</ol></details></nav><div class="reading-content">
+
+<article class="item" id="g1"><header class="game-heading"><span class="num">01</span><h2>Logic Arrows</h2><div class="game-tags"><span class="tag">數位邏輯 · 電腦架構</span>
+</div></header><div class="mechanic-flow"><h3>你在做什麼</h3><p>畫面是一張無限大的格子紙。你放的每個箭頭只做一件事：把訊號往它指的方向傳一格。幾十個箭頭排好，一個 AND 閘亮了；再往上疊就是加法器、記憶體，最後是一顆能跑俄羅斯方塊的 CPU。玩家社群已經在裡面寫出自己的組譯器。</p><figure class="fig"><svg viewBox="0 0 640 240" role="img" aria-label="箭頭一格一格傳訊號組成 AND 閘 / arrows pass a signal into an AND gate" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ar數位邏輯與電腦架構" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="am" d="M0 0 L10 5 L0 10 z"/></marker></defs><rect class="s g" x="40" y="20" width="62" height="52"/><rect class="s g" x="102" y="20" width="62" height="52"/><rect class="s g" x="164" y="20" width="62" height="52"/><rect class="s g" x="226" y="20" width="62" height="52"/><rect class="s g" x="288" y="20" width="62" height="52"/><rect class="s g" x="350" y="20" width="62" height="52"/><rect class="s g" x="412" y="20" width="62" height="52"/><rect class="s g" x="474" y="20" width="62" height="52"/><rect class="s g" x="536" y="20" width="62" height="52"/><rect class="s g" x="40" y="72" width="62" height="52"/><rect class="s g" x="102" y="72" width="62" height="52"/><rect class="s g" x="164" y="72" width="62" height="52"/><rect class="s g" x="226" y="72" width="62" height="52"/><rect class="s g" x="288" y="72" width="62" height="52"/><rect class="s g" x="350" y="72" width="62" height="52"/><rect class="s g" x="412" y="72" width="62" height="52"/><rect class="s g" x="474" y="72" width="62" height="52"/><rect class="s g" x="536" y="72" width="62" height="52"/><rect class="s g" x="40" y="124" width="62" height="52"/><rect class="s g" x="102" y="124" width="62" height="52"/><rect class="s g" x="164" y="124" width="62" height="52"/><rect class="s g" x="226" y="124" width="62" height="52"/><rect class="s g" x="288" y="124" width="62" height="52"/><rect class="s g" x="350" y="124" width="62" height="52"/><rect class="s g" x="412" y="124" width="62" height="52"/><rect class="s g" x="474" y="124" width="62" height="52"/><rect class="s g" x="536" y="124" width="62" height="52"/><rect class="s g" x="40" y="176" width="62" height="52"/><rect class="s g" x="102" y="176" width="62" height="52"/><rect class="s g" x="164" y="176" width="62" height="52"/><rect class="s g" x="226" y="176" width="62" height="52"/><rect class="s g" x="288" y="176" width="62" height="52"/><rect class="s g" x="350" y="176" width="62" height="52"/><rect class="s g" x="412" y="176" width="62" height="52"/><rect class="s g" x="474" y="176" width="62" height="52"/><rect class="s g" x="536" y="176" width="62" height="52"/><g transform="translate(71,46) rotate(0)"><path class="sa" d="M-16 0 L14 0" marker-end="url(#ar數位邏輯與電腦架構)"/></g><g transform="translate(133,46) rotate(0)"><path class="sa" d="M-16 0 L14 0" marker-end="url(#ar數位邏輯與電腦架構)"/></g><g transform="translate(195,46) rotate(0)"><path class="sa" d="M-16 0 L14 0" marker-end="url(#ar數位邏輯與電腦架構)"/></g><g transform="translate(257,46) rotate(0)"><path class="sa" d="M-16 0 L14 0" marker-end="url(#ar數位邏輯與電腦架構)"/></g><g transform="translate(319,46) rotate(90)"><path class="sa" d="M-16 0 L14 0" marker-end="url(#ar數位邏輯與電腦架構)"/></g><g transform="translate(71,150) rotate(0)"><path class="sa" d="M-16 0 L14 0" marker-end="url(#ar數位邏輯與電腦架構)"/></g><g transform="translate(133,150) rotate(0)"><path class="sa" d="M-16 0 L14 0" marker-end="url(#ar數位邏輯與電腦架構)"/></g><g transform="translate(195,150) rotate(0)"><path class="sa" d="M-16 0 L14 0" marker-end="url(#ar數位邏輯與電腦架構)"/></g><g transform="translate(257,150) rotate(0)"><path class="sa" d="M-16 0 L14 0" marker-end="url(#ar數位邏輯與電腦架構)"/></g><g transform="translate(319,150) rotate(270)"><path class="sa" d="M-16 0 L14 0" marker-end="url(#ar數位邏輯與電腦架構)"/></g><rect class="a" x="301" y="80" width="36" height="36" rx="4"/><text class="tinv" x="319" y="104" text-anchor="middle">&amp;</text><g transform="translate(381,98) rotate(0)"><path class="sa" d="M-16 0 L14 0" marker-end="url(#ar數位邏輯與電腦架構)"/></g><g transform="translate(443,98) rotate(0)"><path class="sa" d="M-16 0 L14 0" marker-end="url(#ar數位邏輯與電腦架構)"/></g><g transform="translate(505,98) rotate(0)"><path class="sa" d="M-16 0 L14 0" marker-end="url(#ar數位邏輯與電腦架構)"/></g><g transform="translate(567,98) rotate(0)"><path class="sa" d="M-16 0 L14 0" marker-end="url(#ar數位邏輯與電腦架構)"/></g><text class="t" x="20" y="52" text-anchor="middle">1</text><text class="t" x="20" y="156" text-anchor="middle">1</text><text class="ta" x="620" y="104">1</text></svg></figure><h3>背後的科技</h3><p><b class="key">數位邏輯與電腦架構</b>。它把「邏輯閘」再往下拆一層，用箭頭的傳遞規則當唯一的最小單位，從 NOT、AND 一路堆到時脈、RAM、指令集，玩法上更接近細胞自動機。</p><div class="closing-notes"><section class="availability"><h3>在哪玩</h3><dl class="spec"><dt>平台</dt><dd>PC（Windows／SteamOS／Linux）、瀏覽器版</dd><dt>價格</dt><dd>發稿時未標價（瀏覽器版是否免費待查）</dd><dt>試玩</dt><dd class="yes">Steam 免費試玩</dd><dt>中文</dt><dd>簡中，沒有繁中</dd><dt>狀態</dt><dd>Steam 正式版預定 11/10 上架</dd></dl>
+</section><section class="our-take"><h3>我們的評語</h3><p>想弄懂「電腦到底怎麼算 1+1」的人，這是門檻最低的一條路，因為規則只有箭頭一種。到 CPU 那段很硬，先玩免費試玩版，確定自己不會中途放棄。</p></section></div></div><p class="src">來源：<a href="https://store.steampowered.com/app/4210250/Logic_Arrows/" target="_blank" rel="noopener">Steam 頁面</a> <a href="https://store.steampowered.com/app/5193870/Logic_Arrows_Demo/" target="_blank" rel="noopener">Steam 免費試玩版</a> <a href="https://logic-arrows.io/" target="_blank" rel="noopener">瀏覽器版 logic-arrows.io</a> <a href="https://github.com/chubrik/LogicArrows" target="_blank" rel="noopener">社群地圖庫（GitHub）</a></p></article>
+
+<article class="item" id="g2"><header class="game-heading"><span class="num">02</span><h2>PlayASM</h2><div class="game-tags"><span class="tag">組合語言 · CPU 模擬</span>
+</div></header><div class="mechanic-flow"><h3>你在做什麼</h3><p>左邊是有語法上色、中斷點的程式碼編輯器，右邊是 16 個暫存器和記憶體，用十六進位、十進位、二進位顯示。你一行一行寫組合語言、按一步執行，看旗標翻、記憶體改。學會之後，同一套指令可以畫到 320×200 的畫面上、吹出 8 聲道晶片音樂，或操作一支六軸機械手臂把方塊夾上輸送帶。</p><figure class="fig"><svg viewBox="0 0 640 240" role="img" aria-label="一步步執行組合語言看暫存器變化 / step assembly and watch the registers" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ar自訂的精簡 CPU 模擬器" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="am" d="M0 0 L10 5 L0 10 z"/></marker></defs><rect class="s" x="20" y="20" width="300" height="200" rx="6"/><text class="t mono" x="40" y="56">loop:</text><text class="t mono" x="40" y="90">  MOV R0, 0x0A</text><text class="t mono" x="40" y="124">  ADD R0, R1</text><text class="t mono" x="40" y="158">  DEC R2</text><text class="t mono" x="40" y="192">  JNZ loop</text><rect class="a" x="24" y="100" width="6" height="26"/><text class="tm mono" x="352" y="52">R0</text><rect class="s f" x="396" y="26" width="224" height="38" rx="4"/><text class="ta mono" x="410" y="52">0x0D</text><text class="tm mono" x="352" y="100">R1</text><rect class="s" x="396" y="74" width="224" height="38" rx="4"/><text class="t mono" x="410" y="100">0x03</text><text class="tm mono" x="352" y="148">R2</text><rect class="s" x="396" y="122" width="224" height="38" rx="4"/><text class="t mono" x="410" y="148">0x04</text><text class="tm mono" x="352" y="196">Z</text><rect class="s" x="396" y="170" width="224" height="38" rx="4"/><text class="t mono" x="410" y="196">0</text></svg></figure><h3>背後的科技</h3><p>一台<b class="key">自訂的精簡 CPU 模擬器</b>（16 個暫存器、64KB 位址空間、旗標）。70 個教學任務從位元、十六進位、位移、迴圈、堆疊一路教上去，再加上 100 多個挑戰；模組用 JSON 加 Lua 寫，可以上 Steam Workshop。</p><div class="closing-notes"><section class="availability"><h3>在哪玩</h3><dl class="spec"><dt>平台</dt><dd>PC（Steam）</dd><dt>價格</dt><dd>US$15.99，首發 85 折到 11/19</dd><dt>試玩</dt><dd class="no">沒有</dd><dt>中文</dt><dd>簡中，沒有繁中</dd><dt>狀態</dt><dd>11/5 上市，發稿時還沒有評價</dd></dl>
+</section><section class="our-take"><h3>我們的評語</h3><p>適合修過計算機組織、卻從沒「摸到」CPU 的人；完全零基礎會卡在前幾關。組合語言解謎遊戲已經不少，這款的不同在於給你一整台機器。價格偏高又沒試玩，建議等第一批評價出來再決定。</p></section></div></div><p class="src">來源：<a href="https://store.steampowered.com/app/5424530/PlayASM/" target="_blank" rel="noopener">Steam 頁面</a></p></article>
+
+<article class="item" id="g3"><header class="game-heading"><span class="num">03</span><h2>Number Machine: Math Factory</h2><div class="game-tags"><span class="tag">算術 · 自動化</span>
+</div></header><div class="mechanic-flow"><h3>你在做什麼</h3><p>六角格地圖上滾著一顆顆寫著數字的球。你鋪輸送帶、裝推桿、雷射、磁鐵、旋轉器，讓兩顆「3」撞成一顆「6」，再把一串球排成題目要求的形狀和數值。全部自動運轉，少一格整條線就塞住。</p><figure class="fig"><svg viewBox="0 0 640 240" role="img" aria-label="數字球在輸送帶上合併 / number balls merge on a conveyor" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ar把算式攤成一條生產線" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="am" d="M0 0 L10 5 L0 10 z"/></marker></defs><polygon class="s" points="86.0,145.0 60.0,160.0 34.0,145.0 34.0,115.0 60.0,100.0 86.0,115.0"/><polygon class="s" points="158.0,145.0 132.0,160.0 106.0,145.0 106.0,115.0 132.0,100.0 158.0,115.0"/><polygon class="s" points="230.0,145.0 204.0,160.0 178.0,145.0 178.0,115.0 204.0,100.0 230.0,115.0"/><polygon class="s f" points="302.0,145.0 276.0,160.0 250.0,145.0 250.0,115.0 276.0,100.0 302.0,115.0"/><polygon class="s f" points="374.0,145.0 348.0,160.0 322.0,145.0 322.0,115.0 348.0,100.0 374.0,115.0"/><circle class="s" cx="60" cy="130" r="18"/><text class="t" x="60" y="137" text-anchor="middle">3</text><circle class="s" cx="132" cy="130" r="18"/><text class="t" x="132" y="137" text-anchor="middle">3</text><path class="sa" d="M160 130 L250 130" marker-end="url(#ar把算式攤成一條生產線)"/><text class="tm" x="312" y="88" text-anchor="middle">合併</text><circle class="a" cx="348" cy="130" r="22"/><text class="tinv" x="348" y="138" text-anchor="middle">6</text><path class="sa" d="M384 130 L476 130" marker-end="url(#ar把算式攤成一條生產線)"/><rect class="s" x="490" y="96" width="120" height="68" rx="6"/><text class="tm" x="550" y="124" text-anchor="middle">目標</text><text class="t" x="550" y="150" text-anchor="middle">6 6 12</text></svg></figure><h3>背後的科技</h3><p>數學加自動化。球上的數字會隨機器被合併、拆分、修改，等於<b class="key">把算式攤成一條生產線</b>；排行榜比的是體積和速度，就是演算法課裡的空間與時間取捨。</p><div class="closing-notes"><section class="availability"><h3>在哪玩</h3><dl class="spec"><dt>平台</dt><dd>PC（Windows／macOS／SteamOS／Linux）</dd><dt>價格</dt><dd>US$14.99，首發 9 折到 11/20</dd><dt>試玩</dt><dd class="yes">免費試玩</dd><dt>中文</dt><dd>簡中（含語音與字幕），沒有繁中</dd><dt>狀態</dt><dd>11/6 上市，發稿時 23 則評價全數好評</dd></dl>
+</section><section class="our-take"><h3>我們的評語</h3><p>玩過 Opus Magnum、Infinifactory 的人會直接上手；不愛工廠遊戲的人可能覺得是在加班算數。開發者自己說靈感來自這兩款，六角格加數字球是變體，但做得很完整。</p></section></div></div><p class="src">來源：<a href="https://store.steampowered.com/app/2231090/Number_Machine_Math_Factory/" target="_blank" rel="noopener">Steam 頁面</a> <a href="https://gamingonlinux.com/2025/06/number-machine-is-an-open-ended-factory-and-automation-game-with-math-mechanics" target="_blank" rel="noopener">GamingOnLinux 介紹</a></p></article>
+
+<article class="item" id="g4"><header class="game-heading"><span class="num">04</span><h2>marblebuilds</h2><div class="game-tags"><span class="tag">2D 物理 · 數位邏輯</span>
+</div></header><div class="mechanic-flow"><h3>你在做什麼</h3><p>在格子裡疊方塊搭彈珠軌道，按下開始，彈珠滾過加速器、反重力板、傳送門、會讓它變慢的蜂蜜區。再拉幾條線接上按鈕和感測器，彈珠滾過就觸發活門、燈或彈珠產生器；官方說不寫程式也能做出彈珠台和計算機。</p><figure class="fig"><svg viewBox="0 0 640 240" role="img" aria-label="彈珠滾過感測器觸發機關 / a marble rolls over a sensor and triggers a door" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ar彈珠本身就是訊號" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="am" d="M0 0 L10 5 L0 10 z"/></marker></defs><path class="s w" d="M40 40 L260 120"/><path class="s w" d="M240 170 L470 110"/><circle class="a" cx="90" cy="46" r="12"/><path class="sa" d="M110 70 C200 110 230 140 260 150" stroke-dasharray="5 6"/><rect class="s f" x="300" y="136" width="70" height="14" rx="3"/><text class="tm" x="335" y="118" text-anchor="middle">感測器</text><path class="sa" d="M335 150 L335 210 L560 210 L560 180"/><rect class="s" x="530" y="60" width="60" height="120" rx="4"/><rect class="a" x="536" y="66" width="48" height="40" rx="3"/><text class="tm" x="560" y="40" text-anchor="middle">門打開</text></svg></figure><h3>背後的科技</h3><p>2D 剛體物理（Box2D）加一套類似 Minecraft 紅石的數位邏輯：線路、邏輯閘、計時器、記憶格。<b class="key">彈珠本身就是訊號</b>，物理和邏輯混在同一張地圖上。</p><div class="closing-notes"><section class="availability"><h3>在哪玩</h3><dl class="spec"><dt>平台</dt><dd>PC（Windows／SteamOS／Linux）、網頁版（itch.io）</dd><dt>價格</dt><dd>US$9.99，首發 75 折到 11/16；網頁版免費</dd><dt>試玩</dt><dd class="yes">網頁版免費</dd><dt>中文</dt><dd class="yes">繁體中文</dd><dt>狀態</dt><dd>11/2 上市</dd></dl><p class="spec-note">網頁版有沙盒、解謎和平台模式（邏輯方塊是否開放待查）。</p>
+</section><section class="our-take"><h3>我們的評語</h3><p>這週唯一有繁中、又能直接在瀏覽器玩的一款，門檻最低。想認真學邏輯電路的人會覺得它太玩具；但要「先看到電路動起來」，它最直觀。</p></section></div></div><p class="src">來源：<a href="https://store.steampowered.com/app/4285270/marblebuilds" target="_blank" rel="noopener">Steam 頁面</a> <a href="https://grizzyyo.itch.io/marblebuilds" target="_blank" rel="noopener">itch.io 免費網頁版</a></p></article>
+
+<article class="item" id="g5"><header class="game-heading"><span class="num">05</span><h2>Message From Aliens（異星來信）</h2><div class="game-tags"><span class="tag">數學 · 解密</span>
+</div></header><div class="mechanic-flow"><h3>你在做什麼</h3><p>整個畫面只有外星符號，連選單和字典都是。每個符號下面有個「？」，點開寫筆記，同一個符號出現的每個地方都會顯示你的筆記。第一章全是算式：你先靠加減乘除猜出他們的數字系統，再用已知的字去拆字典裡「用外星字解釋外星字」的條目。連「怎麼離開遊戲」都要先解出來。</p><figure class="fig"><svg viewBox="0 0 640 240" role="img" aria-label="從外星符號算式推出數字系統 / work out the number system from alien equations" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ar把數學當共通語言" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="am" d="M0 0 L10 5 L0 10 z"/></marker></defs><g transform="translate(60,70)"><path class="s" d="M0 -14 L12 0 L0 14 L-12 0 Z"/></g><g transform="translate(120,70)"><g><circle class="s" r="12"/><line class="s" x1="-12" y1="0" x2="12" y2="0"/><line class="s" x1="0" y1="-12" x2="0" y2="12"/></g></g><g transform="translate(180,70)"><path class="s" d="M0 -14 L12 0 L0 14 L-12 0 Z"/></g><g transform="translate(240,70)"><path class="s" d="M-12 6 L0 -12 L12 6 M-6 12 L6 12"/></g><g transform="translate(300,70)"><g><rect class="s" x="-12" y="-12" width="24" height="24"/><line class="s" x1="-12" y1="0" x2="12" y2="0"/></g></g><g transform="translate(60,150)"><g><rect class="s" x="-12" y="-12" width="24" height="24"/><line class="s" x1="-12" y1="0" x2="12" y2="0"/></g></g><g transform="translate(120,150)"><g><circle class="s" r="12"/><line class="s" x1="-12" y1="0" x2="12" y2="0"/><line class="s" x1="0" y1="-12" x2="0" y2="12"/></g></g><g transform="translate(180,150)"><path class="s" d="M0 -14 L12 0 L0 14 L-12 0 Z"/></g><g transform="translate(240,150)"><path class="s" d="M-12 6 L0 -12 L12 6 M-6 12 L6 12"/></g><g transform="translate(300,150)"><path class="s" d="M0 -14 L12 0 L0 14 L-12 0 Z"/></g><g transform="translate(340,150)"><path class="s" d="M0 -14 L12 0 L0 14 L-12 0 Z"/></g><g transform="translate(380,150)"><path class="s" d="M0 -14 L12 0 L0 14 L-12 0 Z"/></g><rect class="sa" x="400" y="40" width="210" height="60" rx="6"/><text class="ta" x="505" y="78" text-anchor="middle">◇ = 1 ?   ⊞ = 2 ?</text><text class="tm" x="220" y="215" text-anchor="middle">筆記寫在每個符號下面</text></svg></figure><h3>背後的科技</h3><p><b class="key">把數學當共通語言</b>。1,000 多個表意符號、兩萬多字的文本，從數字和等式建立規則，後面會碰到重力、電解水這類科學概念。開發者說靈感來自《妳一生的預言》與《接觸未來》。</p><div class="closing-notes"><section class="availability"><h3>在哪玩</h3><dl class="spec"><dt>平台</dt><dd>PC（Steam）</dd><dt>價格</dt><dd>US$9.99</dd><dt>試玩</dt><dd class="yes">免費試玩</dd><dt>中文</dt><dd class="yes">遊戲裡沒有人類文字，不需要中文</dd><dt>狀態</dt><dd>11/1 上市（亞洲 11/2），發稿時 498 則評價、93% 好評</dd></dl><p class="spec-note">筆記用你自己的語言寫；一週內評價數漲了近四倍。</p>
+</section><section class="our-take"><h3>我們的評語</h3><p>喜歡《Chants of Sennaar》的人必玩，而且更硬、更純。沒有美術、沒有音樂、沒有教學，怕悶的人先玩試玩版。開發者之前做過《A=B》與《Understand》。</p></section></div></div><p class="src">來源：<a href="https://store.steampowered.com/app/1858720/Message_From_Aliens/" target="_blank" rel="noopener">Steam 頁面</a> <a href="https://www.4gamers.com.tw/news/detail/83044/message-from-aliens-steam-alien-language-puzzle-game" target="_blank" rel="noopener">4Gamers 報導（繁中）</a> <a href="https://automaton-media.com/articles/newsjp/20261103-477243/" target="_blank" rel="noopener">AUTOMATON 報導（日文）</a></p></article>
+
 <section class="missed"><p class="series">本週沒找到的</p><h2>搜了，但沒有合格作品的方向</h2><dl>
 <dt>VR／AR</dt><dd>11 月的 VR 新作以動作、射擊、派對為主，沒有科學機制明顯的作品。</dd>
 <dt>公民科學遊戲</dt><dd>找到的都是既有專案，7～10 天內沒有新上線的。</dd>
@@ -123,9 +66,10 @@ footer{ display:block;text-align:center;color:var(--muted);font-size:13px;margin
 <dt>Game jam</dt><dd>Spooky Jam 2026、iGGi Game Jam 2026 的結果中沒有可確認的科學機制得獎作品。</dd>
 <dt>差一點入選</dt><dd>幾款即將推出的太空工廠、觀察解謎、流程圖寫機器人的遊戲，頁面沒寫出真實科學機制，或科學成分太弱，沒收。</dd>
 </dl></section>
-<p class="note">有我們漏掉的科學遊戲？到 <a href="/">onholdlab 首頁</a>留言，或在 Threads、IG 找 @onholdlab。</p>
-<nav class="pager"><a href="../2026-11-03/">← 上一期</a><span></span></nav>
-<footer>ONHOLDNEWS 是 onholdlab 的每週專欄。文字皆為我們自己撰寫，不使用遊戲方的圖片；價格、評價數等數字以發稿當時打開的來源頁為準。<br>© 2026 onholdlab</footer>
+
+
+<section class="reader-note"><h2>這期，還少了哪一款？</h2><p>有我們漏掉的科學遊戲？到 <a href="/#qform">onholdlab 首頁</a>留言，或在 Threads、IG 找 @onholdlab。</p></section><nav class="next-reading" aria-label="上一期"><a href="/weekly/2026-11-03/"><small>← 上一期 · No.01</small><span>程式、打孔卡與 AI 世界</span></a></nav></div></div><footer><p>ONHOLDNEWS 是 onholdlab 的每週專欄。</p><p class="diagram-note">本期示意圖皆由我們繪製，用來解釋玩法機制，並非遊戲畫面。</p>價格、開放狀態與評價數以發稿時的來源資料為準。<br>© 2026 onholdlab</footer>
 </main>
+<script src="/weekly/news.js?v=20261111g" defer></script>
 </body>
 </html>
