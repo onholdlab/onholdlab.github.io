@@ -27,42 +27,38 @@ a{color:inherit;text-underline-offset:4px}
 .series{font:700 13px/1.4 "Inter",system-ui,sans-serif;letter-spacing:.14em;color:var(--accent);margin:28px 0 6px}
 h1{font-size:30px;line-height:1.35;margin:0 0 8px;font-weight:900}
 .lede{margin:0}
-.lede mark{background:linear-gradient(transparent 55%,var(--mk) 55%);color:inherit;padding:0 2px}
+.lede mark{background:none;color:var(--accent);padding:0}
 .en{color:var(--muted);font-size:15px;line-height:1.7;margin:4px 0 0}
 article{margin:56px 0 0}
 .date{font:800 14px "Inter",sans-serif;color:var(--accent);letter-spacing:.06em;margin:0}
 h2{font-size:24px;line-height:1.35;margin:2px 0 14px}
-.note{position:relative;margin:0 0 10px;border-radius:6px;overflow:hidden;line-height:0}
+.note{margin:0 0 10px;line-height:0}
 .note img{display:block;width:100%;height:auto}
-.ph{position:absolute;margin:0;padding:0;border:0;border-radius:3px;background:var(--mk);opacity:.38;mix-blend-mode:multiply;cursor:pointer;transition:opacity .2s,background .2s;-webkit-tap-highlight-color:transparent}
-.ph:hover{opacity:.55}
-.note.busy .ph{opacity:.12}
-.note.busy .ph.on{opacity:.75}
-.note.busy .ph.lit{opacity:.6}
-.ph.clash.on,.ph.clash.lit{background:var(--mk2)}
-.note.text{line-height:1.95;overflow:visible;border-radius:0;font-size:19px;margin:0 0 6px}
+.note.text{line-height:1.95;font-size:19px;margin:0 0 6px}
 .note.text p{margin:0}
-.ph.tx{position:static;display:inline;-webkit-box-decoration-break:clone;box-decoration-break:clone;opacity:1;mix-blend-mode:normal;border-radius:0;padding:0 1px;color:inherit;font:inherit;line-height:inherit;text-align:inherit;background:linear-gradient(transparent 55%,var(--mk) 55%)}
-.ph.tx:hover{opacity:.8}
-.note.busy .ph.tx{opacity:.45}
-.note.busy .ph.tx.on,.note.busy .ph.tx.lit{opacity:1}
-.ph.tx.clash.on,.ph.tx.clash.lit{background:linear-gradient(transparent 55%,var(--mk2) 55%)}
-.quote{font:700 17px/1.6 "Noto Sans TC",system-ui,sans-serif;background:linear-gradient(transparent 55%,var(--mk) 55%);padding:0 2px}
+.ph{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ph.tx{display:inline;background:none;color:var(--accent);font:inherit;line-height:inherit;padding:0;transition:opacity .2s}
+.ph.tx:hover{opacity:.75}
+main.busy .ph.tx{opacity:.4}
+main.busy .ph.tx.on,main.busy .ph.tx.lit{opacity:1;font-weight:700}
+.sk{margin:6px 0 0;font-size:16px;line-height:1.9;color:var(--muted)}
+.quote{font-weight:700;color:var(--accent)}
 figcaption{font-size:14px;line-height:1.6;color:var(--muted);margin:-4px 0 10px}
 details{font-size:15px;color:var(--muted)}
 summary{cursor:pointer;min-height:44px;line-height:44px;width:max-content}
 details p{margin:0 0 8px;color:var(--ink)}
 details p.e{color:var(--muted)}
-#sheet{position:fixed;left:0;right:0;bottom:0;z-index:5;max-height:56vh;overflow-y:auto;overscroll-behavior:contain;background:var(--panel);border-radius:14px 14px 0 0;box-shadow:0 -6px 28px rgba(0,0,0,.2);padding:6px 16px calc(10px + env(safe-area-inset-bottom));transform:translateY(105%);visibility:hidden;transition:transform .22s ease-out,visibility 0s .22s}
-#sheet.open{transform:none;visibility:visible;transition:transform .22s ease-out}
-#sheet .in{max-width:688px;margin:0 auto;position:relative}
-#shut{position:sticky;top:0;float:right;width:44px;height:44px;margin:0 -10px 0 8px;border:0;background:var(--panel);color:var(--ink);font:800 20px/1 "Inter",sans-serif;cursor:pointer;border-radius:50%}
-.rx{padding:10px 0 2px}
-.rx+.rx{margin-top:10px;padding-top:18px;box-shadow:0 -1px 0 color-mix(in srgb,var(--muted) 30%,transparent)}
-@media (prefers-reduced-motion:reduce){#sheet,#sheet.open{transition:none}.ph{transition:none}}
-.pair{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;line-height:0}
+#sheet{margin:14px 0 6px}
+#sheet[hidden]{display:none}
+#sheet .in{position:relative}
+#shut{all:unset;float:right;min-height:44px;padding-left:12px;color:var(--muted);font:700 15px/44px "Noto Sans TC",system-ui,sans-serif;cursor:pointer}
+.ph.tx:focus-visible,#shut:focus-visible{outline:none;text-decoration:underline 2px;text-underline-offset:5px}
+.rx{padding:6px 0}
+.rx+.rx{margin-top:14px}
+@media (prefers-reduced-motion:reduce){.ph{transition:none}}
+.pair{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;line-height:1.6}
 .sketch-quote{display:inline-flex;flex-wrap:wrap;gap:6px;max-width:100%}
-.crop{position:relative;overflow:hidden;border-radius:3px;flex:none;max-width:100%}
+.crop{position:relative;overflow:hidden;flex:none;max-width:100%}
 .crop img{position:absolute;max-width:none}
 .x{font:800 20px/1 "Inter",sans-serif;color:var(--accent)}
 .rx .k{font:800 12px/1 "Inter","Noto Sans TC",sans-serif;letter-spacing:.12em;color:var(--accent);margin:12px 0 4px}
@@ -99,17 +95,18 @@ footer{margin-top:72px;color:var(--muted);font-size:14px}
 <p class="e">Every drawing game I remember has a timer. I wanted one where each painter can create as if on their own canvas. As a kid I watched videos of artists drawing in relay, so I tried that as the gameplay, and this little game was born.</p>
 </details>
 <figure class="note" data-note="sketch"><img src="img/relay-sketch.webp" width="961" height="1387" loading="lazy" alt="手繪的首頁草稿：上方是 AI 畫師「8號」，中間是畫布、色盤與筆刷，左邊寫著 24 小時內提交，下方是一整卷畫卷分成 1 到 8 格，可以投票猜哪一號是 AI。"></figure>
+<p class="sk">草稿上的字 · On the sketch：<mark class="ph tx" role="button" tabindex="0" data-id="h24">24小時內提交</mark>、<mark class="ph tx" role="button" tabindex="0" data-id="tail">上一棒尾巴，右邊接著畫</mark>、<mark class="ph tx" role="button" tabindex="0" data-id="scroll">看歷史畫卷</mark></p>
 <p class="figcap" style="font-size:14px;color:var(--muted);margin:0">同一天畫的首頁草稿 · Homepage sketch, same day</p>
 <a class="play" href="/relay-ai-guess/">去畫一棒 → Play</a>
 </article>
 
-<div id="sheet" role="region" aria-label="反應 Reactions" aria-live="polite"><div class="in"><button id="shut" type="button" aria-label="收起 Close">×</button><div id="rxs"></div></div></div>
+<div id="sheet" role="region" aria-label="反應 Reactions" aria-live="polite" hidden><div class="in"><button id="shut" type="button" aria-label="收起 Close">收起</button><div id="rxs"></div></div></div>
 <noscript><p>開啟 JavaScript 後，可以點筆記上有顏色的字，看句子之間的反應。</p></noscript>
 <footer>© 2026 onholdlab</footer>
 </main>
 <script>
 /* 筆記上的句子：打字筆記的句子直接寫在 HTML 的 <mark class="ph tx" data-id> 裡，這裡不放 r。
-   手寫圖（草稿）的句子用 r = 在圖上的位置 [x, y, 寬, 高]，單位是圖片的百分比；一句跨兩行就放兩個框。
+   手寫圖（草稿）的句子也寫在圖下方的 <mark class="ph tx"> 裡；r = 句子在圖上的位置 [x, y, 寬, 高]，單位是圖片的百分比，只用來在反應裡剪出手寫字，不會畫在圖上。
    反應：a、b 是兩句的代號；kind 是 react（反應）或 clash（矛盾）。新增方法見 devlog/README.md。 */
 const PHRASES={
  keep:{note:'standard',label:'把當時的喜好保存下來'},
@@ -143,14 +140,6 @@ const REACTIONS=[
    if(!event.repeat)toggle(button.dataset.id);
   });
  });
- for(const id in PHRASES){const p=PHRASES[id],f=notes[p.note];if(!p.r)continue;
-  p.r.forEach((r,i)=>{const b=document.createElement('button');b.type='button';b.className='ph';b.dataset.id=id;
-   b.style.cssText=`left:${r[0]}%;top:${r[1]}%;width:${r[2]}%;height:${r[3]}%`;
-   b.setAttribute('aria-label',p.label);b.setAttribute('aria-expanded','false');b.setAttribute('aria-controls','sheet');if(i)b.tabIndex=-1;
-   b.addEventListener('keydown',event=>{
-    if(event.key==='Enter'&&event.repeat)event.preventDefault();
-   });
-   b.addEventListener('click',()=>toggle(id));f.appendChild(b);});}
  function crop(id){const p=PHRASES[id];if(!p.r){const q=document.createElement('span');q.className='quote';q.textContent=p.label;return q;}const img=notes[p.note].querySelector('img'),quote=document.createElement('span');
   quote.className='sketch-quote';
   quote.setAttribute('role','img');
@@ -160,11 +149,13 @@ const REACTIONS=[
    const im=new Image();im.src=img.currentSrc||img.src;im.alt='';im.style.cssText=`width:${10000/w}%;height:${10000/h}%;left:${-100*x/w}%;top:${-100*y/h}%`;
    d.appendChild(im);quote.appendChild(d);});return quote;}
  const sheet=document.getElementById('sheet'),rxs=document.getElementById('rxs');
- function clear(){rxs.textContent='';sheet.classList.remove('open');document.body.style.paddingBottom='';
+ const main=document.querySelector('main');
+ function clear(){rxs.textContent='';sheet.hidden=true;
   document.querySelectorAll('.ph').forEach(b=>{b.classList.remove('on','lit','clash');b.setAttribute('aria-expanded','false');});
-  Object.values(notes).forEach(f=>f.classList.remove('busy'));open=null;}
+  main.classList.remove('busy');open=null;}
  function toggle(id){const was=open;clear();if(was===id)return;open=id;
-  Object.values(notes).forEach(n=>n.classList.add('busy'));
+  main.classList.add('busy');
+  document.querySelector(`.ph[data-id="${id}"]`).closest('.note,.sk').after(sheet);
   document.querySelectorAll(`.ph[data-id="${id}"]`).forEach(b=>{b.classList.add('on');b.setAttribute('aria-expanded','true');});
   partners(id).forEach(x=>{const other=x.a===id?x.b:x.a;
    document.querySelectorAll(`.ph[data-id="${other}"]`).forEach(b=>{b.classList.add('lit');if(x.kind==='clash')b.classList.add('clash');});
@@ -180,23 +171,22 @@ const REACTIONS=[
      event.preventDefault();
      const target=document.querySelector(`.ph[data-id="${other}"]`);
      const firstLine=target.getClientRects()[0];
-     const visibleHeight=innerHeight-sheet.offsetHeight;
      target.focus({preventScroll:true});
      scrollTo({
-      top:scrollY+firstLine.top-Math.max(0,(visibleHeight-firstLine.height)/2),
+      top:scrollY+firstLine.top-innerHeight*0.3,
       behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'
      });
     });
     box.appendChild(go);}
    rxs.appendChild(box);});
-  sheet.scrollTop=0;sheet.classList.add('open');document.body.style.paddingBottom=sheet.offsetHeight+'px';
+  sheet.hidden=false;
   if(window.goatcounter&&goatcounter.count)goatcounter.count({path:'devlog-reaction-'+id,title:PHRASES[id].label,event:true});}
  function closeSheet(){
   if(!open)return;
   const trigger=document.querySelector(`.ph[data-id="${open}"]`);
   clear();
   trigger.focus({preventScroll:true});
-  trigger.scrollIntoView({block:'nearest'});
+  trigger.scrollIntoView({block:'center'});
  }
  document.getElementById('shut').addEventListener('click',closeSheet);
  document.addEventListener('keydown',event=>{
