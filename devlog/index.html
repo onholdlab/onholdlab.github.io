@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>開發日誌｜onholdlab</title>
-<meta name="description" content="onholdlab 做遊戲時的筆記和手繪草稿。點有顏色的字，看兩句話碰在一起的反應。Notes and sketches from making games; tap the highlighted words to see them react.">
+<meta name="description" content="onholdlab 做遊戲時的筆記和手繪草稿。Notes and hand-drawn sketches from making games.">
 <link rel="canonical" href="https://onholdlab.com/devlog/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="onholdlab">
 <meta property="og:title" content="開發日誌｜onholdlab">
-<meta property="og:description" content="做遊戲時的筆記和草稿，和句子之間的反應。">
+<meta property="og:description" content="做遊戲時的筆記和手繪草稿。">
 <meta property="og:url" content="https://onholdlab.com/devlog/">
 <meta property="og:image" content="https://onholdlab.com/devlog/img/standard.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&family=Noto+Sans+TC:wght@400;700;900&display=swap">
@@ -20,14 +20,14 @@
 html,body{overscroll-behavior-y:none}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.8 "Noto Sans TC","Noto Sans CJK TC",system-ui,sans-serif}
 main{max-width:720px;margin:0 auto;padding:20px 16px 72px;overflow-wrap:anywhere}
-a{color:inherit;text-underline-offset:4px}
-:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:none;color:var(--accent)}
+.play:focus-visible{color:var(--ink)}
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:700}
 .top a{min-height:44px;display:inline-grid;place-items:center}
 .series{font:700 13px/1.4 "Inter",system-ui,sans-serif;letter-spacing:.14em;color:var(--accent);margin:28px 0 6px}
 h1{font-size:30px;line-height:1.35;margin:0 0 8px;font-weight:900}
 .lede{margin:0}
-.lede mark{background:none;color:var(--accent);padding:0}
 .en{color:var(--muted);font-size:15px;line-height:1.7;margin:4px 0 0}
 article{margin:56px 0 0}
 .date{font:800 14px "Inter",sans-serif;color:var(--accent);letter-spacing:.06em;margin:0}
@@ -36,35 +36,11 @@ h2{font-size:24px;line-height:1.35;margin:2px 0 14px}
 .note img{display:block;width:100%;height:auto}
 .note.text{line-height:1.95;font-size:19px;margin:0 0 6px}
 .note.text p{margin:0}
-.ph{cursor:pointer;-webkit-tap-highlight-color:transparent}
-.ph.tx{display:inline;background:none;color:var(--accent);font:inherit;line-height:inherit;padding:0;transition:opacity .2s}
-.ph.tx:hover{opacity:.75}
-main.busy .ph.tx{opacity:.4}
-main.busy .ph.tx.on,main.busy .ph.tx.lit{opacity:1;font-weight:700}
-.sk{margin:6px 0 0;font-size:16px;line-height:1.9;color:var(--muted)}
-.quote{font-weight:700;color:var(--accent)}
 figcaption{font-size:14px;line-height:1.6;color:var(--muted);margin:-4px 0 10px}
 details{font-size:15px;color:var(--muted)}
 summary{cursor:pointer;min-height:44px;line-height:44px;width:max-content}
 details p{margin:0 0 8px;color:var(--ink)}
 details p.e{color:var(--muted)}
-#sheet{margin:14px 0 6px}
-#sheet[hidden]{display:none}
-#sheet .in{position:relative}
-#shut{all:unset;float:right;min-height:44px;padding-left:12px;color:var(--muted);font:700 15px/44px "Noto Sans TC",system-ui,sans-serif;cursor:pointer}
-.ph.tx:focus-visible,#shut:focus-visible{outline:none;text-decoration:underline 2px;text-underline-offset:5px}
-.rx{padding:6px 0}
-.rx+.rx{margin-top:14px}
-@media (prefers-reduced-motion:reduce){.ph{transition:none}}
-.pair{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;line-height:1.6}
-.sketch-quote{display:inline-flex;flex-wrap:wrap;gap:6px;max-width:100%}
-.crop{position:relative;overflow:hidden;flex:none;max-width:100%}
-.crop img{position:absolute;max-width:none}
-.x{font:800 20px/1 "Inter",sans-serif;color:var(--accent)}
-.rx .k{font:800 12px/1 "Inter","Noto Sans TC",sans-serif;letter-spacing:.12em;color:var(--accent);margin:12px 0 4px}
-.rx .t{margin:0;font-weight:700;line-height:1.7}
-.rx .e{margin:2px 0 0;color:var(--muted);font-size:15px;line-height:1.6}
-.rx .go{display:inline-block;min-height:44px;line-height:44px;font-size:15px;font-weight:700}
 .play{display:inline-block;margin-top:6px;font-weight:700;color:var(--accent);min-height:44px;line-height:44px}
 footer{margin-top:72px;color:var(--muted);font-size:14px}
 </style>
@@ -76,12 +52,12 @@ footer{margin-top:72px;color:var(--muted);font-size:14px}
 
 <p class="series">DEVLOG</p>
 <h1>開發日誌</h1>
-<p class="lede">做遊戲時的筆記和手繪草稿。<mark>有顏色的字</mark>可以點：兩句話碰在一起，會有反應。</p>
-<p class="en">Notes and hand-drawn sketches from making games. Tap the highlighted words: when two lines meet, they react.</p>
+<p class="lede">做遊戲時的筆記和手繪草稿。</p>
+<p class="en">Notes and hand-drawn sketches from making games.</p>
 
 <article id="standard">
 <h2>我做遊戲的標準？</h2>
-<div class="note text" data-note="standard"><p>好像沒有。我想做的就是<mark class="ph tx" role="button" tabindex="0" data-id="keep">把當時的喜好保存下來</mark>，<mark class="ph tx" role="button" tabindex="0" data-id="future">不管未來的我喜不喜歡</mark>，做出現在的我喜歡的，<mark class="ph tx" role="button" tabindex="0" data-id="worry">擔憂就留給未來</mark>！</p></div>
+<div class="note text" data-note="standard"><p>好像沒有。我想做的就是把當時的喜好保存下來，不管未來的我喜不喜歡，做出現在的我喜歡的，擔憂就留給未來！</p></div>
 <details><summary>English</summary>
 <p class="e">My standard for making games? I don't think I have one. I just want to save what I love right now. Whether or not future me likes it, I make what present me likes, and leave the worrying to the future.</p>
 </details>
@@ -90,109 +66,16 @@ footer{margin-top:72px;color:var(--muted);font-size:14px}
 <article id="relay-ai-guess">
 <p class="date">2026-10-28</p>
 <h2>8棒接力：為什麼沒有時間限制</h2>
-<div class="note text" data-note="why"><p>我突然覺得，印象中的<mark class="ph tx" role="button" tabindex="0" data-id="timer">畫畫遊戲都有一定的時間限制</mark>，於是我想做一個能讓每個畫家像是自己在畫布創作的方式來呈現遊戲性的遊戲。而我小時候看過一些<mark class="ph tx" role="button" tabindex="0" data-id="video">不同畫師接力的影片</mark>，我認為可以試試用這個玩法，於是有了這個小遊戲囉 ☺</p></div>
+<div class="note text" data-note="why"><p>我突然覺得，印象中的畫畫遊戲都有一定的時間限制，於是我想做一個能讓每個畫家像是自己在畫布創作的方式來呈現遊戲性的遊戲。而我小時候看過一些不同畫師接力的影片，我認為可以試試用這個玩法，於是有了這個小遊戲囉 ☺</p></div>
 <details><summary>English</summary>
 <p class="e">Every drawing game I remember has a timer. I wanted one where each painter can create as if on their own canvas. As a kid I watched videos of artists drawing in relay, so I tried that as the gameplay, and this little game was born.</p>
 </details>
 <figure class="note" data-note="sketch"><img src="img/relay-sketch.webp" width="961" height="1387" loading="lazy" alt="手繪的首頁草稿：上方是 AI 畫師「8號」，中間是畫布、色盤與筆刷，左邊寫著 24 小時內提交，下方是一整卷畫卷分成 1 到 8 格，可以投票猜哪一號是 AI。"></figure>
-<p class="sk">草稿上的字 · On the sketch：<mark class="ph tx" role="button" tabindex="0" data-id="h24">24小時內提交</mark>、<mark class="ph tx" role="button" tabindex="0" data-id="tail">上一棒尾巴，右邊接著畫</mark>、<mark class="ph tx" role="button" tabindex="0" data-id="scroll">看歷史畫卷</mark></p>
 <p class="figcap" style="font-size:14px;color:var(--muted);margin:0">同一天畫的首頁草稿 · Homepage sketch, same day</p>
 <a class="play" href="/relay-ai-guess/">去畫一棒 → Play</a>
 </article>
 
-<div id="sheet" role="region" aria-label="反應 Reactions" aria-live="polite" hidden><div class="in"><button id="shut" type="button" aria-label="收起 Close">收起</button><div id="rxs"></div></div></div>
-<noscript><p>開啟 JavaScript 後，可以點筆記上有顏色的字，看句子之間的反應。</p></noscript>
 <footer>© 2026 onholdlab</footer>
 </main>
-<script>
-/* 筆記上的句子：打字筆記的句子直接寫在 HTML 的 <mark class="ph tx" data-id> 裡，這裡不放 r。
-   手寫圖（草稿）的句子也寫在圖下方的 <mark class="ph tx"> 裡；r = 句子在圖上的位置 [x, y, 寬, 高]，單位是圖片的百分比，只用來在反應裡剪出手寫字，不會畫在圖上。
-   反應：a、b 是兩句的代號；kind 是 react（反應）或 clash（矛盾）。新增方法見 devlog/README.md。 */
-const PHRASES={
- keep:{note:'standard',label:'把當時的喜好保存下來'},
- future:{note:'standard',label:'不管未來的我喜不喜歡'},
- worry:{note:'standard',label:'擔憂就留給未來'},
- timer:{note:'why',label:'畫畫遊戲都有一定的時間限制'},
- video:{note:'why',label:'不同畫師接力的影片'},
- h24:{note:'sketch',label:'24小時內提交',r:[[5.5,30,25,4.8]]},
- tail:{note:'sketch',label:'上一棒尾巴，右邊接著畫',r:[[34,62.5,45.5,5.5]]},
- scroll:{note:'sketch',label:'看歷史畫卷',r:[[33,69.5,27,5.5]]}
-};
-const REACTIONS=[
- {a:'worry',b:'timer',kind:'react',zh:'計時器，就是現在就送到的擔憂。兩張筆記做的是同一件事：把壓力從當下拿走。',en:'A timer is worry delivered right now. Both notes do the same thing: take the pressure out of the present.'},
- {a:'keep',b:'scroll',kind:'react',zh:'畫卷對每個畫家做的，就是我對自己做的事：每一棒都是當時的喜好，存下來就不回頭改。',en:'The scroll does for every painter what I do for myself: each baton is what someone loved in that moment, saved and never revised.'},
- {a:'future',b:'tail',kind:'react',zh:'接力裡，下一棒就是那個「未來的我」。喜不喜歡，都只能接著畫。',en:'In a relay, the next painter is that "future me". Like it or not, they can only draw on from where it ends.'},
- {a:'keep',b:'video',kind:'react',zh:'小時候看的影片，隔了這麼多年還是變成了遊戲。當時的喜好，原來本來就留得住。',en:'Videos I watched as a kid became a game years later. What I loved back then was never going to disappear anyway.'},
- {a:'timer',b:'h24',kind:'clash',zh:'說好沒有時間限制，草稿上卻寫著 24 小時。限制沒有消失，只是從「畫」搬到了「交棒」。',en:'No time limit, yet the sketch says 24 hours. The limit never left. It moved from drawing to handing over.'}
-];
-(function(){
- const notes={};document.querySelectorAll('.note').forEach(f=>notes[f.dataset.note]=f);
- const KIND={react:'反應 REACTION',clash:'矛盾 CLASH'};
- let open=null;
- const partners=id=>REACTIONS.filter(x=>x.a===id||x.b===id);
- document.querySelectorAll('.ph.tx').forEach(button=>{
-  button.setAttribute('aria-expanded','false');
-  button.setAttribute('aria-controls','sheet');
-  button.addEventListener('click',()=>toggle(button.dataset.id));
-  button.addEventListener('keydown',event=>{
-   if(event.key!=='Enter'&&event.key!==' ')return;
-   event.preventDefault();
-   if(!event.repeat)toggle(button.dataset.id);
-  });
- });
- function crop(id){const p=PHRASES[id];if(!p.r){const q=document.createElement('span');q.className='quote';q.textContent=p.label;return q;}const img=notes[p.note].querySelector('img'),quote=document.createElement('span');
-  quote.className='sketch-quote';
-  quote.setAttribute('role','img');
-  quote.setAttribute('aria-label',p.label);
-  p.r.forEach(([x,y,w,h])=>{const ratio=w*Number(img.getAttribute('width'))/(h*Number(img.getAttribute('height'))),d=document.createElement('span');d.className='crop';
-   d.style.width=34*ratio+'px';d.style.aspectRatio=ratio;
-   const im=new Image();im.src=img.currentSrc||img.src;im.alt='';im.style.cssText=`width:${10000/w}%;height:${10000/h}%;left:${-100*x/w}%;top:${-100*y/h}%`;
-   d.appendChild(im);quote.appendChild(d);});return quote;}
- const sheet=document.getElementById('sheet'),rxs=document.getElementById('rxs');
- const main=document.querySelector('main');
- function clear(){rxs.textContent='';sheet.hidden=true;
-  document.querySelectorAll('.ph').forEach(b=>{b.classList.remove('on','lit','clash');b.setAttribute('aria-expanded','false');});
-  main.classList.remove('busy');open=null;}
- function toggle(id){const was=open;clear();if(was===id)return;open=id;
-  main.classList.add('busy');
-  document.querySelector(`.ph[data-id="${id}"]`).closest('.note,.sk').after(sheet);
-  document.querySelectorAll(`.ph[data-id="${id}"]`).forEach(b=>{b.classList.add('on');b.setAttribute('aria-expanded','true');});
-  partners(id).forEach(x=>{const other=x.a===id?x.b:x.a;
-   document.querySelectorAll(`.ph[data-id="${other}"]`).forEach(b=>{b.classList.add('lit');if(x.kind==='clash')b.classList.add('clash');});
-   if(x.kind==='clash')document.querySelectorAll(`.ph[data-id="${id}"]`).forEach(b=>b.classList.add('clash'));
-   const box=document.createElement('div');box.className='rx';
-   const pair=document.createElement('div');pair.className='pair';pair.appendChild(crop(id));
-   const xx=document.createElement('span');xx.className='x';xx.textContent='×';xx.setAttribute('aria-hidden','true');pair.appendChild(xx);pair.appendChild(crop(other));
-   box.appendChild(pair);
-   box.insertAdjacentHTML('beforeend',`<p class="k"></p><p class="t"></p><p class="e"></p>`);
-   box.querySelector('.k').textContent=KIND[x.kind];box.querySelector('.t').textContent=x.zh;box.querySelector('.e').textContent=x.en;
-   if(PHRASES[other].note!==PHRASES[id].note){const go=document.createElement('a');go.className='go';go.href='#';go.textContent='去看另一句 · See the other line';
-    go.addEventListener('click',event=>{
-     event.preventDefault();
-     const target=document.querySelector(`.ph[data-id="${other}"]`);
-     const firstLine=target.getClientRects()[0];
-     target.focus({preventScroll:true});
-     scrollTo({
-      top:scrollY+firstLine.top-innerHeight*0.3,
-      behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'
-     });
-    });
-    box.appendChild(go);}
-   rxs.appendChild(box);});
-  sheet.hidden=false;
-  if(window.goatcounter&&goatcounter.count)goatcounter.count({path:'devlog-reaction-'+id,title:PHRASES[id].label,event:true});}
- function closeSheet(){
-  if(!open)return;
-  const trigger=document.querySelector(`.ph[data-id="${open}"]`);
-  clear();
-  trigger.focus({preventScroll:true});
-  trigger.scrollIntoView({block:'center'});
- }
- document.getElementById('shut').addEventListener('click',closeSheet);
- document.addEventListener('keydown',event=>{
-  if(event.key==='Escape')closeSheet();
- });
-})();
-</script>
 </body>
 </html>
