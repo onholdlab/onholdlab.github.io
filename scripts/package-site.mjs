@@ -4,10 +4,11 @@ import { pathToFileURL } from 'node:url';
 import { createHash } from 'node:crypto';
 
 const extensions = new Set(['.html','.css','.js','.json','.xml','.txt','.png','.jpg','.jpeg','.webp','.gif','.svg','.ico','.woff','.woff2','.ttf','.mp3','.wav','.ogg','.mp4','.webm','.glb','.gltf','.bin']);
-function safePath(path) {
+export function safePath(path, { directory = false } = {}) {
   if (typeof path !== 'string' || !path || /[\\:*?"<>|\x00-\x1f]/.test(path) || isAbsolute(path)) throw new Error('Unsafe path: ' + path);
   const parts = path.split('/');
   if (parts.some(p => !p || p.startsWith('.') || /[. ]$/.test(p) || /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(?:\.|$)/i.test(p) || /^(node_modules|work|outputs|tests|scripts)$/i.test(p))) throw new Error('Private or unsafe path: ' + path);
+  if (directory) return;
   const license = /^(OFL[^/]*|LICENSE[^/]*)\.md$/i.test(parts.at(-1));
   if (!extensions.has(extname(path).toLowerCase()) && !license && !['_headers','_redirects'].includes(path)) throw new Error('Not a public asset: ' + path);
 }

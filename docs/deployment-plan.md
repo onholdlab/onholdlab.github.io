@@ -36,3 +36,24 @@ Supabase Free：500 MB DB、5 GB egress，閒置一週可能暫停；D1 Free：�
 交接的 41,320 次／30 天不能單獨證明 DDoS；27,970 次也未提供峰值。建議先在 Security → Security rules 建立針對 `/.git/`、`/.work/`、`/.codex-remote-attachments/` 的 Block 規則並觀察 Security events。不要整國封鎖，也不要僅因單一月總數就對全站設低門檻。
 
 Free 方案有一條 rate limiting rule，可用 Path、Verified Bot 條件、依 IP 計數；若有持續高峰，再針對明確被濫用路徑設定，從實際峰值與正常同 NAT 流量決定門檻。[官方限制](https://developers.cloudflare.com/waf/rate-limiting-rules/)。onholdlab.com 的 zone 規則不涵蓋獨立 `ohl-api.onholdlab.workers.dev`；API 防濫用需另外設計，不能宣稱網站 WAF 已保護它。CORS 也不是驗證機制，沒有 Origin 的腳本請求仍可使用 API。
+
+## 更新發布清單：改檔 → 產生草稿 → 看差異 → 確認 → 打包 → 部署
+
+1. 修改網站檔案或加入遊戲後，從 repo 執行：
+   ```sh
+   node scripts/make-manifest.mjs
+   ```
+   預設掃描腳本所在 repo 根目錄（不依賴目前工作目錄），讀取根目錄的 `.release-manifest.json`，產生 `.release-manifest.draft.json`。第一次沒有正式清單時，所有候選檔案都列為新增。
+2. 若完整網站在另一個部署資料夾，指定來源；也可指定正式清單與草稿路徑（相對路徑以目前工作目錄為準，父資料夾須已存在）：
+   ```sh
+   node scripts/make-manifest.mjs /path/to/site /path/to/release-manifest.json /path/to/release-manifest.draft.json
+   ```
+   省略後兩個參數時，清單放在來源根目錄。掃描直接共用 `package-site.mjs` 的路徑與副檔名規則，排除任一層點開頭路徑、`work`、`tests`、`scripts`、`outputs`、`node_modules` 等；不跟隨 symlink/junction，也不把本次正式清單或草稿列為公開檔案。清單依路徑排序，SHA-256 使用原始檔案位元組。
+3. 檢查終端的 `Added`（新增）、`Removed`（刪除）、`Changed`（雜湊變更），並逐項審查草稿。符合公開路徑規則不代表內容可公開，尤其照片與 JSON 仍需人工確認。工具不會覆寫正式清單或既有草稿；要重跑請先移走或刪除舊草稿。
+4. 確認後，先將舊正式清單備份到網站來源之外，再手動將草稿改名為正式清單。若刪去不應發布的項目，下次掃描仍會列為新增，需再次審查。
+5. 使用同一來源和確認過的正式清單打包；輸出必須是來源之外、尚不存在的新資料夾，父資料夾須存在：
+   ```sh
+   node scripts/package-site.mjs /path/to/site /path/to/release-manifest.json /path/to/new-release
+   ```
+   審查後若再次改檔，打包會因雜湊不符而拒絕；請重新產生草稿、審查與確認。
+6. 檢查打包結果後，才將 `new-release` 交給現有 Cloudflare 部署流程。兩支腳本都不會自動部署。正式清單、草稿與備份不要放進公開發布輸出。
