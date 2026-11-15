@@ -40,3 +40,11 @@ GitHub Action（`.github/workflows/works.yml`）只保留手動 Run workflow，�
 2026-11-06 以前的回饋還留在 Supabase 的 `feedback` 表，沒有搬過來。
 
 `DESIGN.md` 是舊版等候室頁面的設計紀錄，目前首頁不再使用。
+
+## 可審查的發布輸出
+
+`node scripts/package-site.mjs <來源目錄> <清單.json> <新的輸出目錄>` 只複製清單 `files` 明列的相對檔案，清單不得用 glob 或資料夾。每筆為 `{path, sha256}`；先完整驗證路徑、雜湊與檔案類型才建立輸出。禁止隱藏目錄、路徑跳脫、符號連結、工作檔、Windows 特殊路徑與重複路徑。輸出必須不存在且在來源之外；不刪除、不覆寫來源或既有輸出，不呼叫部署。新增檔案必須重新審查清單；清單與報告放在輸出目錄外。發布前另比對線上資源與本次輸出，合併 PR 不代表已部署。
+
+共用 `OHLFeedback.send` 對去除前後空白後超過 2,000 個 UTF-16 code units 的留言回傳 `{ok:false, reason:'invalid'}`，不呼叫網路；2,000 以內完整送至 Worker `/feedback`，不默默截斷。呼叫端保留輸入，讓使用者縮短後重送。
+
+發布步驟與架構選擇見 [docs/deployment-plan.md](docs/deployment-plan.md)。

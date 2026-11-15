@@ -13,13 +13,13 @@ window.OHLFeedback = (function () {
   function send(o) {
     o = o || {};
     var msg = String(o.message || '').trim();
-    if (!msg) return Promise.resolve({ ok: false, reason: 'invalid' });
+    if (!msg || msg.length > 2000) return Promise.resolve({ ok: false, reason: 'invalid' });
     if (!configured()) return Promise.resolve({ ok: false, reason: 'not_configured' });
     var kinds = ['message', 'bug', 'idea', 'question'];
     var body = {
       source: String(o.source || 'home').slice(0, 40),
       kind: kinds.indexOf(o.kind) >= 0 ? o.kind : 'message',
-      message: msg.slice(0, 2000),
+      message: msg,
       contact: o.contact ? String(o.contact).trim().slice(0, 200) || null : null,
       page: String(location.href).slice(0, 300),
       ua: String(navigator.userAgent).slice(0, 200)
