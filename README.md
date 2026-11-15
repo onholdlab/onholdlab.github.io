@@ -37,7 +37,7 @@ GitHub Action（`.github/workflows/works.yml`）只保留手動 Run workflow，�
 
 送出的內容在 Cloudflare 後台 → Storage & Databases → D1 → `ohl-db` → `feedback` 表查看。`feedback.js` 只寫了 Worker 網址，沒有任何金鑰；Worker 只開放新增回饋，網頁讀不到別人的回饋。
 
-2026-11-06 以前的回饋還留在 Supabase 的 `feedback` 表，沒有搬過來。
+舊版表單收到的回饋仍留在 Supabase 的 `feedback` 表；各部署版本切換時間不同，不以單一日期推定資料已搬遷。
 
 `DESIGN.md` 是舊版等候室頁面的設計紀錄，目前首頁不再使用。
 
@@ -48,3 +48,5 @@ GitHub Action（`.github/workflows/works.yml`）只保留手動 Run workflow，�
 共用 `OHLFeedback.send` 對去除前後空白後超過 2,000 個 UTF-16 code units 的留言回傳 `{ok:false, reason:'invalid'}`，不呼叫網路；2,000 以內完整送至 Worker `/feedback`，不默默截斷。呼叫端保留輸入，讓使用者縮短後重送。
 
 發布步驟與架構選擇見 [docs/deployment-plan.md](docs/deployment-plan.md)。
+
+隱私規格：七種語言都說明新版回饋存於 Cloudflare、舊版所收回饋仍保留 Supabase；部署版本不一致，不能用統一日期宣稱已完成遷移。
