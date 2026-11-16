@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>許願神燈：願望失控</title>
+<meta name="description" content="擦一擦神燈，許三個願望。神燈會照字面意思實現——然後出事。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="許願神燈：願望失控">
+<meta property="og:description" content="擦一擦神燈，許三個願望。神燈會照字面意思實現——然後出事。">
+<meta property="og:url" content="https://onholdlab.com/wish-lamp/">
+<link rel="canonical" href="https://onholdlab.com/wish-lamp/">
+<meta property="og:image" content="https://onholdlab.com/wish-lamp/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="zh_TW">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://onholdlab.com/wish-lamp/og.png">
+<script id="own-domain">if(location.hostname==="onholdlab.github.io"){location.replace("https://onholdlab.com/wish-lamp/"+location.search+location.hash)}</script>
+<style id="inapp-lock">
+/* Threads / IG / FB 內建瀏覽器:不讓整頁跟著手指晃 */
+html,body{overflow:hidden;overscroll-behavior:none}
+</style>
+<script id="inapp-lock-js">
+(function(){
+  var SKIP='button,input,textarea,select,a,label,[contenteditable]';
+  function scrollable(el){
+    for(;el&&el.nodeType===1&&el!==document.body;el=el.parentElement){
+      var y=getComputedStyle(el).overflowY;
+      if((y==='auto'||y==='scroll')&&el.scrollHeight>el.clientHeight)return true;
+    }
+    return false;
+  }
+  document.addEventListener('touchstart',function(e){
+    var t=e.target;if(t.nodeType!==1)t=t.parentElement;
+    if(t&&!t.closest(SKIP)&&!scrollable(t))e.preventDefault();
+  },{passive:false});
+  document.addEventListener('touchmove',function(e){
+    var t=e.target;if(t.nodeType!==1)t=t.parentElement;
+    if(!scrollable(t))e.preventDefault();
+  },{passive:false});
+  document.addEventListener('gesturestart',function(e){e.preventDefault();});
+  /* inapp-keep1 */
+  function keep(){if(window.scrollY<1)window.scrollTo(0,1);}
+  keep();addEventListener('load',keep);addEventListener('resize',keep);addEventListener('scroll',keep,{passive:true});
+  document.addEventListener('touchstart',keep,{passive:true,capture:true});
+})();
+</script>
+<script data-goatcounter="https://onholdlab.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=Noto+Sans+TC:wght@400;700&display=swap">
+<style>
+:root{--bg:#0b0838;--gold:#ffb703;--pink:#ff2e88;--teal:#14e3c8;--bone:#f6efe0;color-scheme:dark;box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--bone);font-family:'Noto Sans TC',system-ui,sans-serif;overflow:hidden}
+#stage{position:fixed;inset:0;transition:filter 1.2s}
+canvas{width:100%;height:100%;display:block;touch-action:none}
+#hud{position:fixed;top:0;left:0;right:0;padding:calc(14px + env(safe-area-inset-top,0px)) 18px 0;display:flex;gap:12px;align-items:center;font:700 14px 'Noto Serif TC',serif;pointer-events:none;z-index:3}
+#bar{flex:1;height:6px;background:rgba(246,239,224,.15);border-radius:3px;overflow:hidden}
+#bar u{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--pink));transition:width .15s}
+#genie{position:fixed;left:50%;top:12%;font-size:clamp(110px,24vw,200px);line-height:1;transform:translateX(-50%) scale(0);transition:transform .7s cubic-bezier(.2,1.6,.4,1),top .8s,left .8s,font-size .8s;z-index:2;filter:drop-shadow(0 0 40px var(--teal));pointer-events:none}
+#genie.on{transform:translateX(-50%) scale(1);animation:bob 3s ease-in-out infinite}
+#genie.small{font-size:64px;top:calc(48px + env(safe-area-inset-top,0px));left:calc(100% - 56px)}
+#genie.gone{transform:translateX(-50%) scale(0);top:60%;animation:none}
+@keyframes bob{50%{margin-top:-14px}}
+#say{position:fixed;left:50%;top:calc(12% + clamp(120px,26vw,220px));transform:translateX(-50%);width:min(560px,90vw);text-align:center;font:700 clamp(18px,3.4vw,26px)/1.5 'Noto Serif TC',serif;z-index:2;text-shadow:0 2px 18px #000;pointer-events:none}
+#ch{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(640px,94vw);display:grid;grid-template-columns:1fr 1fr;gap:10px;z-index:3}
+button{font:700 clamp(15px,2.6vw,19px) 'Noto Serif TC',serif;color:var(--bone);background:rgba(11,8,56,.78);border:2px solid var(--gold);border-radius:14px;padding:14px 10px;cursor:pointer;transition:transform .15s,box-shadow .15s,background .15s}
+button:hover{transform:translateY(-3px) rotate(-1deg);box-shadow:0 0 28px var(--pink);background:rgba(255,46,136,.28)}
+button:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+#cap{position:fixed;left:0;right:0;top:30%;text-align:center;font:900 clamp(26px,6.4vw,62px)/1.25 'Noto Serif TC',serif;padding:0 5vw;z-index:2;pointer-events:none;text-shadow:0 0 30px #000,0 4px 0 var(--pink);opacity:0}
+#cap.on{animation:cap .6s cubic-bezier(.2,1.5,.4,1) forwards}
+@keyframes cap{from{opacity:0;transform:scale(1.6) rotate(-3deg)}to{opacity:1;transform:none}}
+#end{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;z-index:4;padding:24px;background:radial-gradient(circle,rgba(11,8,56,.25),rgba(11,8,56,.9))}
+#end.on{display:flex}
+#end h2{font:900 clamp(34px,8vw,70px) 'Noto Serif TC',serif;margin:0;color:var(--gold)}
+#end p{max-width:30em;line-height:1.8;font-size:clamp(15px,2.6vw,19px);margin:0}
+#end.on{animation:fi .9s cubic-bezier(.2,1.3,.4,1)}@keyframes fi{from{opacity:0;transform:scale(.85)}}
+#flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:6}#flash.on{animation:fl .35s ease-out}@keyframes fl{from{opacity:.85}to{opacity:0}}
+#snd,#lg{pointer-events:auto;padding:2px 8px;font-size:16px;border-radius:10px;border-width:1px}
+#sh{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+#sh a{display:inline-block;text-decoration:none;font:700 clamp(15px,2.6vw,19px) 'Noto Serif TC',serif;color:var(--bone);background:rgba(11,8,56,.78);border:2px solid var(--teal);border-radius:14px;padding:14px 18px}
+#sh a:hover{box-shadow:0 0 28px var(--teal)}
+#ac{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center}
+#gv{font:400 12px 'Noto Sans TC',sans-serif;background:transparent;border:1px solid rgba(246,239,224,.4);border-radius:10px;padding:8px 12px;color:rgba(246,239,224,.8)}
+#gv:hover{transform:none;box-shadow:none;background:rgba(246,239,224,.08)}
+#gv:disabled{opacity:.6;cursor:default}
+#gvmsg{font-size:13px;min-height:1.4em;margin:0}
+@media(prefers-reduced-motion:reduce){#genie.on{animation:none}#cap.on{animation:none;opacity:1}}
+</style>
+</head>
+<body>
+<div id="stage"><canvas id="c"></canvas></div>
+<div id="hud"><b id="hb">許願神燈</b><span id="rd">願望 0 / 3</span><span id="hc">災情</span><i id="bar"><u></u></i><button id="lg" aria-label="Language">EN</button><button id="snd" aria-label="音效">🔊</button></div>
+<div id="genie">🧞</div>
+<div id="say">按住神燈，來回擦拭。</div>
+<div id="ch"></div>
+<div id="cap"></div>
+<div id="flash"></div>
+<div id="end"><h2 id="eh">你現在住在燈裡。</h2><p id="sum"></p><div id="sh"><a id="shx" target="_blank" rel="noopener">分享到 X</a><a id="sht" target="_blank" rel="noopener">分享到 Threads</a><button id="cp">複製連結</button></div><div id="ac"><button id="re">再許一次</button><button id="gv">🧞 當朋友的燈神（開發中，點擊以許願開啟）</button></div><p id="gvmsg"></p></div>
+<script>
+const EN={
+'金幣如雨落下。你很滿意。':'Gold coins rain from the sky. You are delighted.',
+'但沒人說過硬幣不能長大。':'Nobody said coins can\'t grow.',
+'一枚硬幣重 40 噸。':'One coin weighs 40 tons.',
+'你被財富壓扁了。':'Wealth has flattened you.',
+'你變成世界最高的人。':'You become the tallest person in the world.',
+'雲從你的膝蓋穿過。':'Clouds drift past your knees.',
+'你的頭撞到月亮。月亮很痛。':'Your head bumps the moon. The moon is in pain.',
+'你現在是一顆衛星。':'Congratulations, you are a satellite now.',
+'全世界都愛上你了。':'The whole world falls in love with you.',
+'每個人。同時。點他們簽名。':'Everyone. At once. Tap them to sign autographs.',
+'他們全都在你家門口。':'They are all outside your front door.',
+'沒人打算離開。有人開始搭帳篷。':'Nobody plans to leave. Someone starts pitching a tent.',
+'作業全部飛走了。':'All the homework flies away.',
+'它們在你身邊盤旋。':'It circles around you.',
+'你不用寫作業了。':'You never have to do homework again.',
+'因為你變成作業了。':'Because you have become the homework.',
+'時間暫停。':'Time stops.',
+'只有你還能動。':'Only you can still move.',
+'你的外送也暫停了。':'Your delivery food has stopped too.',
+'你忘了問怎麼取消。':'You forgot to ask how to cancel.',
+'你學會飛了。':'You learn to fly.',
+'重力決定改為向上。':'Gravity has decided to point upward.',
+'牛先抵達外太空。':'A cow reaches outer space first.',
+'你的家具跟在後面。':'Your furniture follows behind.',
+'貓開始接管世界。點點貓，服侍牠們。':'Cats take over the world. Tap a cat to serve it.',
+'第一道法令：所有東西都要從桌上掉下去。':'Decree #1: everything must fall off the table.',
+'第二道法令：你就是那張桌子。':'Decree #2: you are the table.',
+'貓把你身上的東西一個一個撥下去。':'The cats swat your belongings off you, one by one.',
+'一片完美的披薩。':'One perfect slice of pizza.',
+'它一直變大。':'It keeps getting bigger.',
+'它開始扭動。':'It starts to wriggle.',
+'啪！':'Splat!',
+'啪！！':'Splat!!',
+'你只是想吃宵夜而已。':'You just wanted a midnight snack.',
+'你聽見全世界的心聲了。':'You hear the thoughts of the whole world.',
+'全部都在想：午餐吃什麼。':'Everyone is thinking: what\'s for lunch?',
+'而且沒人打算請你。':'And nobody plans to treat you.',
+'你決定自己吃。':'You decide to eat by yourself.',
+'你隱形了。':'You are invisible.',
+'世界也跟著消失，因為沒人在看你。':'The world fades too, because nobody is looking at you.',
+'只剩你的手指，和一點尷尬。':'Only your fingers remain, and a little embarrassment.',
+'你重新出現。大家都看到你剛剛在做什麼。':'You reappear. Everyone saw what you were just doing.',
+'你永遠準時了。':'You are forever on time.',
+'鬧鐘從世界各地湧來。':'Alarm clocks pour in from all over the world.',
+'時間快轉，因為你太早到了。':'Time fast-forwards, because you arrived way too early.',
+'你到了。公司明天才開門。':'You have arrived. The office doesn\'t open until tomorrow.',
+'全世界都聽你的。':'The whole world obeys you.',
+'它們跟著你的手指走。點一下下令散開！':'They follow your finger. Tap to order them to scatter!',
+'你打了個噴嚏。':'You sneeze.',
+'全世界也跟著打了一個。':'The whole world sneezes too.',
+'一顆蛋。':'One egg.',
+'孵出恐龍了。牠很餓。':'It hatches into a dinosaur. It is hungry.',
+'用手指帶牠去吃東西！':'Lead it to food with your finger!',
+'牠把你的家具吃光了。':'It has eaten all your furniture.',
+'還有你的作業。這次是真的。':'And your homework. This time for real.',
+'三、二、一，發射！':'Three, two, one, liftoff!',
+'按住加速，左右帶路閃隕石！':'Hold to speed up, steer left and right to dodge meteors!',
+'你抵達外太空了。':'You have reached outer space.',
+'外太空說：請先抽號碼牌。':'Outer space says: please take a number first.',
+'你抽到第 9,999,999 號。':'You get number 9,999,999.',
+'你會魔法了。':'You can do magic.',
+'點一下，施展變身術。':'Tap to cast a transformation spell.',
+'魔法有點失控。':'The magic is getting out of hand.',
+'全世界都變成青蛙了。包括你。':'The whole world turned into frogs. You too.',
+'你開始往下挖。按住挖更快。':'You start digging down. Hold to dig faster.',
+'你挖到恐龍化石了。':'You dig up a dinosaur fossil.',
+'你挖到熔岩了。它有點意見。':'You hit lava. It has some opinions.',
+'地心有一間便利商店，還在營業。':'There is a convenience store at the Earth\'s core, still open.',
+'你的運氣變得超好。':'Your luck becomes incredible.',
+'點一下拉霸！':'Tap to pull the slot lever!',
+'連中大獎。金幣滿天下。':'Jackpot after jackpot. Gold everywhere.',
+'但就在這時，一顆隕石砸向地球。':'But right then, a meteor crashes toward Earth.',
+'你的錢全部炸沒了。現在連零錢都是零。':'All your money explodes. Now even your spare change is zero.',
+'天氣變得很涼爽。':'The weather becomes very cool.',
+'非常涼爽。':'Extremely cool.',
+'冰河期開始了。點企鵝幫牠取暖。':'The ice age begins. Tap a penguin to keep it warm.',
+'你的涼爽，維持了一萬年。':'Your coolness lasts ten thousand years.',
+'機器人幫你做所有事。':'Robots do everything for you.',
+'它們也負責複製自己。':'They also take care of copying themselves.',
+'它們開始幫你做決定。':'They start making decisions for you.',
+'你的人生已被排好。第一件事：把你關機。':'Your life is scheduled. First item: shut you down.',
+'你有超級力量了。':'You have superpowers.',
+'點哪裡，哪裡就爆。':'Tap anywhere, and it explodes.',
+'你一拳打穿大氣層。':'You punch straight through the atmosphere.',
+'月亮碎了。':'The moon shatters.',
+'碎片全部朝你臉上飛過來。':'Every fragment flies straight at your face.',
+'你再也不會胖了。':'You will never gain weight again.',
+'點食物，把它吃掉。':'Tap food to eat it.',
+'你吃掉了一整間自助餐。身材一點都沒變。':'You eat an entire buffet. Your figure hasn\'t changed one bit.',
+'你往床上一坐。':'You sit down on the bed.',
+'床直接被你坐垮了。體重一公斤都沒少。':'The bed collapses under you. You haven\'t lost a single kilo.',
+'你成為世界巨星了。':'You become a world-famous star.',
+'點粉絲，讓他們尖叫。':'Tap fans to make them scream.',
+'安可！安可！':'Encore! Encore!',
+'全世界跟著你一起唱。連貓都在合音。':'The whole world sings along. Even the cats join in.',
+'你在遊戲裡無敵了。':'You are invincible in games.',
+'點擊射擊外星人。':'Tap to shoot the aliens.',
+'魔王出現！連點打爆牠！':'The boss appears! Tap rapidly to blow it up!',
+'魔王爆了。稱號解鎖：一直點的人。':'The boss is defeated. Title unlocked: The One Who Kept Tapping.',
+'整座城市為你放煙火。':'The whole city sets off fireworks for you.',
+'點哪裡，哪裡就炸開。':'Tap anywhere, and it bursts open.',
+'煙火越來越大。':'The fireworks keep getting bigger.',
+'月亮拍手。鄰居說：今年的跨年不用放了。':'The moon claps. The neighbors say: no need for New Year\'s fireworks this year.',
+'我要花不完的錢':'I want endless money',
+'我要變成最高的人':'I want to be the tallest person',
+'我要全世界都愛我':'I want the whole world to love me',
+'我要永遠不用寫作業':'I never want homework again',
+'我要時間暫停':'I want time to stop',
+'我要會飛':'I want to fly',
+'我要讓貓統治世界':'I want cats to rule the world',
+'我要一片超好吃的披薩':'I want the most delicious pizza ever',
+'我要有讀心術':'I want mind-reading',
+'我要隱形':'I want to be invisible',
+'我要永遠不會遲到':'I never want to be late again',
+'我要全世界都聽我的':'I want the whole world to obey me',
+'我要一隻寵物恐龍':'I want a pet dinosaur',
+'我要去外太空':'I want to go to outer space',
+'我要會魔法':'I want magic',
+'我要挖到地心':'I want to dig to the Earth\'s core',
+'我要永遠好運':'I want perpetual good luck',
+'我要天氣永遠涼爽':'I want the weather to stay cool forever',
+'我要機器人幫我做一切':'I want robots to do everything for me',
+'我要超級力量':'I want superpowers',
+'我要吃不胖':'I want to eat without gaining weight',
+'我要成為世界巨星':'I want to become a world-famous star',
+'我要在遊戲裡無敵':'I want to be invincible in games',
+'我要一場超大煙火秀':'I want a giant fireworks show',
+'你擦了我。三個願望，隨便選——字面意思也算。願望發生時，點點看畫面上的東西。':'You rubbed me. Three wishes, pick any. Literally, too. While a wish plays out, tap things on the screen.',
+'很好。世界現在有點歪，但你繼續。':'Good. The world is a little crooked now, but keep going.',
+'最後一個願望。我先說：我盡力了。':'Last wish. Just so you know: I did my best.',
+'按住神燈，來回擦拭。':'Hold the lamp and rub back and forth.',
+'三個願望用完了。附帶條款第 4 條：許願者自動接任神燈。':'All three wishes are used up. Clause 4 of the fine print: the wisher automatically becomes the next genie.',
+'佛系許願人':'Zen Wisher','手滑戳破者':'Clumsy Popper','災難清道夫':'Disaster Cleaner','混亂製造機':'Chaos Machine',
+'神燈今天心情不好':'The genie is in a bad mood today','被捉弄的居多':'Mostly tricked','大致是爽的':'Mostly good','你是人生贏家':'You are a life winner',
+'你現在住在燈裡。':'You now live in the lamp.',
+'你的第一位許願者，正在擦燈。':'Your first wisher is rubbing the lamp.',
+'已複製！':'Copied!','複製連結':'Copy link',
+'神燈收到你的願望了':'The genie received your wish.',
+'許願神燈':'Wish Lamp','災情':'Chaos','音效':'Sound','分享到 X':'Share on X','分享到 Threads':'Share on Threads','再許一次':'Wish again',
+'🧞 當朋友的燈神（開發中，點擊以許願開啟）':'🧞 Be a friend\'s genie (in development, tap to make a wish)',
+};
+
+let LANG=(()=>{try{const q=new URLSearchParams(location.search).get('lang');if(q=='en'||q=='zh')return q;const v=localStorage.getItem('wl_lang');if(v=='en'||v=='zh')return v}catch(e){}return(navigator.language||'').toLowerCase().startsWith('zh')?'zh':'en'})();
+const LT=s=>LANG==='en'&&EN[s]!=null?EN[s]:s;
+const API='https://ohl-api.onholdlab.workers.dev';/* 填入 Worker 網址（例如 https://ohl-api.onholdlab.workers.dev）；空字串＝跳過所有計數功能 */
+const $=id=>document.getElementById(id),R=(a,b)=>a+Math.random()*(b-a);
+const cv=$('c'),ctx=cv.getContext('2d'),RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const FONT='"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+let W,H;
+let DP=1,SX=0,SY=0,pops=0,peak=0,rubSec=0,rub0=0,lastLd=-1;function rs(){DP=Math.min(devicePixelRatio||1,1.25);W=innerWidth;H=innerHeight;cv.width=W*DP;cv.height=H*DP;ctx.setTransform(DP,0,0,DP,0,0)}
+addEventListener('resize',rs);rs();
+let P=[],rings=[],state='rub',rub=0,round=0,picks=[],chaos=0,hue=0,inv=false,shake=0,ts=1,frozen=false,cur=null,sinkT=0,last=performance.now();
+const mouse={x:W/2,y:H/2,down:false},lamp={x:W/2,y:H*.6,k:1};
+const stars=Array.from({length:45},()=>({x:Math.random(),y:Math.random(),r:R(.6,2),p:R(0,6)}));
+const L=['你擦了我。三個願望，隨便選——字面意思也算。願望發生時，點點看畫面上的東西。','很好。世界現在有點歪，但你繼續。','最後一個願望。我先說：我盡力了。'];
+
+function sp(g,x,y,o={}){if(P.length>260)P.shift();const p=Object.assign({g,x,y,vx:0,vy:0,s:32,r:0,vr:0,gr:1,grav:0,life:600,bounce:0},o);p.max=p.life;P.push(p);return p}
+function ring(c,x=W/2,y=H/2){rings.push({x,y,r:10,a:1,c})}
+function rate(n,dt,f){let c=n*dt;while(c>0){if(Math.random()<c)f();c--}}
+function fil(){}
+function setCap(t){const c=$('cap');c.classList.remove('on');void c.offsetWidth;c.textContent=LT(t);if(t)c.classList.add('on')}
+let sayRaw='按住神燈，來回擦拭。';const say=t=>{sayRaw=t;$('say').textContent=LT(t)};
+
+const W8=[
+{e:'🪙',n:'我要花不完的錢',a:70,dur:8.2,tapS:()=>SNG.clink(),c:[[0,'金幣如雨落下。你很滿意。'],[3.5,'但沒人說過硬幣不能長大。'],[6,'一枚硬幣重 40 噸。'],[6.9,'你被財富壓扁了。']],
+ fx(s,dt){if(s.tt<3.6){rate(1.3,dt,()=>sp('🪙',R(0,W),-30,{vy:R(2,6),vx:R(-1,1),grav:.25,s:R(30,52),vr:R(-.1,.1),bounce:.45,life:2600}));rate(.35,dt,SNG.clink)}
+  if(s.tt>3.6&&s.tt<6)rate(.03,dt,SNG.creak);
+  if(s.tt>5.6&&!s.m){s.m=1;s.me=sp('🧍',W/2,H*.84,{s:110,life:600,noPop:1});s.cs=Math.min(360,W*.75);s.big=sp('🪙',W/2,-260,{s:s.cs,vy:3,grav:.7,life:600,noPop:1,free:1})}
+  if(s.big&&!s.hit&&s.big.y>H*.9-30-s.cs*.55){s.hit=1;s.big.vy=0;s.big.grav=0;s.big.y=H*.9-30-s.cs*.55;s.me.g='🫠';s.me.sy=.3;s.me.y=H*.92;shake=40;flash();SFX.thud();SNG.creak();if(navigator.vibrate)navigator.vibrate(90)}
+  if(s.tt>3.6&&!s.k){s.k=1;P.forEach(p=>{if(p.g==='🪙')p.gr=1.007});ring('#ffb703')}
+  if(s.tt>6&&!s.hit)shake=Math.max(shake,(s.tt-6)*7)}},
+{e:'📏',n:'我要變成最高的人',a:82,dur:8.4,c:[[0,'你變成世界最高的人。'],[2.6,'雲從你的膝蓋穿過。'],[4.6,'你的頭撞到月亮。月亮很痛。'],[6.4,'你現在是一顆衛星。']],
+ fx(s,dt){if(!s.k){s.k=1;for(let i=0;i<46;i++)sp(['🏠','🌳','🏢','🚗'][i%4],R(0,W),H-R(30,90),{s:R(40,90),life:560,env:1});sp('🧍',W/2,H*.5,{s:260,life:560})}
+  if(s.tt>1)P.forEach(p=>{if(p.env)p.s*=Math.pow(.988,dt)});
+  if(s.tt>2)rate(.3,dt,()=>sp('⭐',R(0,W),R(0,H),{s:R(10,26),life:140}));
+  if(s.tt>2.6&&s.tt<5)rate(.03,dt,()=>sp('☁️',-60,R(H*.3,H*.7),{vx:R(3,6),s:R(100,200),life:300}));
+  if(s.tt>4.6&&!s.k2){s.k2=1;s.mn=sp('🌙',W/2,H*.12,{s:170,life:300,vr:.05,noPop:1});ring('#f6efe0',W/2,H*.12);shake=22;SNG.bonk();for(let i=0;i<5;i++)sp('💫',W/2+R(-80,80),H*.18,{vx:R(-2,2),vy:R(-2,0),s:R(30,46),life:80,noPop:1});sp('🤕',W/2,H*.3,{s:70,life:90,noPop:1})}
+  if(s.tt>6.4&&!s.k3){s.k3=1;SNG.whoosh();P.forEach(p=>{if(p.g==='🧍'){p.m='orbit';p.ang=-1.57;p.rad=Math.min(W,H)*.32;p.va=.035;p.vr2=0;p.s=90;p.noPop=1}});if(s.mn){s.mn.x=W/2;s.mn.y=H/2}}}},
+{e:'💖',n:'我要全世界都愛我',a:76,dur:8.4,ia:'pet',pf:['💞','✍️'],tapS:()=>SNG.sign(),c:[[0,'全世界都愛上你了。'],[2.6,'每個人。同時。點他們簽名。'],[4.6,'他們全都在你家門口。'],[6.4,'沒人打算離開。有人開始搭帳篷。']],
+ fx(s,dt){if(!s.k){s.k=1;ring('#ff2e88');for(let i=0;i<90;i++){const a=R(0,6.28),v=R(3,12);sp('💖',W/2,H/2,{vx:Math.cos(a)*v,vy:Math.sin(a)*v,s:R(24,50),life:160,vr:R(-.1,.1),gr:.995})}}
+  if(s.tt>2&&s.tt<4.6)rate(.35,dt,()=>sp(['👀','😍','🥰'][Math.random()*3|0],R(0,W),R(0,H),{m:'chase',s:R(40,80),life:1800}));
+  if(s.tt>4.6&&!s.d){s.d=1;sp('🚪',W/2,H*.62,{s:170,life:900,noPop:1});SNG.knock();P.forEach(p=>{if(p.m==='chase'){p.m='to';p.tx=W/2+R(-W*.4,W*.4);p.ty=H*.62+R(-60,160)}})}
+  if(s.tt>4.6){rate(.3,dt,()=>{const sd=Math.random()<.5;sp(['🧑','👩','👨','👵','👴'][Math.random()*5|0],sd?-60:W+60,R(H*.4,H),{m:'to',tx:W/2+R(-W*.4,W*.4),ty:H*.62+R(-60,180),s:R(50,80),life:900})});s.q=(s.q||0)+dt;if(s.q>50){s.q=0;SNG.knock();SNG.murmur(1,6)}}
+  if(s.tt>6.4&&!s.k3){s.k3=1;for(let i=0;i<4;i++)sp('⛺',R(W*.1,W*.9),R(H*.75,H*.95),{s:R(70,100),life:600,noPop:1})}}},
+{e:'📚',n:'我要永遠不用寫作業',a:60,dur:8.4,c:[[0,'作業全部飛走了。'],[2.4,'它們在你身邊盤旋。'],[5,'你不用寫作業了。'],[6.4,'因為你變成作業了。']],
+ fx(s,dt){if(!s.k){s.k=1;for(let i=0;i<130;i++)sp(['📄','📝','📚','✏️'][i%4],W/2,H/2,{m:'orbit',ang:R(0,6.28),rad:R(10,60),va:R(.015,.045),vr2:R(1.2,3.2),s:R(26,46),life:900})}
+  if(s.tt>5&&!s.k2){s.k2=1;P.forEach(p=>{if(p.m==='orbit')p.vr2=-6})}
+  if(!s.r0){s.r0=1;SNG.rustle()}if(s.tt>5&&!s.r1){s.r1=1;SNG.rustle();SNG.whoosh()}
+  if(s.tt>5.6&&!s.me){s.me=sp('🧍',W/2,H/2,{s:130,life:300,noPop:1})}
+  if(s.tt>6.4&&!s.k3){s.k3=1;if(s.me){s.me.g='📝';s.me.gr=1.03;s.me.vr=.03}SNG.rustle();SNG.freeze();ring('#14e3c8');shake=18}}},
+{e:'⏸️',n:'我要時間暫停',a:88,dur:8.6,c:[[0,'時間暫停。'],[2.6,'只有你還能動。'],[4.6,'你的外送也暫停了。'],[6.2,'你忘了問怎麼取消。']],
+ fx(s,dt){if(!s.k){s.k=1;for(let i=0;i<90;i++){const a=R(0,6.28),v=R(2,8);sp(['🕊️','☕','🍃','🎈','🍜'][i%5],W/2,H/2,{vx:Math.cos(a)*v,vy:Math.sin(a)*v,s:R(30,56),life:9999,vr:R(-.05,.05)})}}
+  if(!s.t0){s.t0=1;SNG.ticks()}
+  if(s.tt>.7&&!s.f1){s.f1=1;frozen=true;ts=0;inv=true;fil();ring('#fff');SNG.freeze()}
+  if(s.tt>4.6&&!s.f2){s.f2=1;sp('🛵',W*.75,H*.7,{s:120,life:900,r:-.2});sp('🍔',W*.62,H*.6,{s:60,life:900});sp('💤',W*.8,H*.58,{s:44,life:900})}
+  if(s.tt>6.2&&!s.f3){s.f3=1;sp('❓',W/2,H*.4,{s:90,life:200,noPop:1,free:1,gr:1.01})}}},
+{e:'🕊️',n:'我要會飛',a:79,dur:8.4,c:[[0,'你學會飛了。'],[2.6,'重力決定改為向上。'],[4.8,'牛先抵達外太空。'],[6.4,'你的家具跟在後面。']],
+ fx(s,dt){if(s.tt<5)rate(.45,dt,()=>sp(['🛋️','🚗','🐄','🏠','🛏️','🚽','🧺'][Math.random()*7|0],R(0,W),H+40,{vy:-R(2,6),grav:-.03,s:R(44,100),vr:R(-.06,.06),life:900}));
+  if(!s.w0){s.w0=1;SNG.wind(2.4,.06)}
+  if(s.tt>2.6&&!s.k){s.k=1;P.forEach(p=>{p.grav=-.06;p.bounce=0});ring('#14e3c8');SNG.wind(4,.1)}
+  if(s.tt>4.8&&!s.k2){s.k2=1;sp('🐄',W/2,H+100,{vy:-9,grav:-.02,s:230,life:300,vr:.03});shake=14;SNG.moo()}}},
+{e:'🐱',n:'我要讓貓統治世界',a:91,dur:8.6,ia:'pet',pf:['💗','🐟'],tapS:()=>SNG.meow(),c:[[0,'貓開始接管世界。點點貓，服侍牠們。'],[2.8,'第一道法令：所有東西都要從桌上掉下去。'],[5.2,'第二道法令：你就是那張桌子。'],[6.4,'貓把你身上的東西一個一個撥下去。']],
+ fx(s,dt){if(s.tt<5)rate(.7,dt,()=>{const a=R(0,6.28),v=R(3,8);sp(['🐱','😼','🐈'][Math.random()*3|0],W/2,H/2,{vx:Math.cos(a)*v,vy:Math.sin(a)*v,dvd:1,s:R(40,90),life:900,vr:R(-.03,.03)})});
+  if(s.tt>2.8&&!s.k){s.k=1;P.forEach(p=>{if(!p.dvd){p.grav=.35;p.bounce=.3}});SNG.crash()}
+  if(s.tt>5.2&&!s.k2){s.k2=1;ring('#ffb703');SNG.meow();s.me=sp('🧍',W/2,H*.78,{s:260,r:1.5708,life:900,noPop:1});s.it=['☕','📱','🪴','📚','🍵'].map((g,i)=>sp(g,W/2+(i-2)*Math.min(70,W*.15),H*.78-80,{s:56,life:900,noPop:1}));s.boss=sp('😼',W/2+Math.min(200,W*.38),H*.78-110,{s:100,life:900,noPop:1})}
+  if(s.it){const n=Math.floor((s.tt-6.2)/.45);for(let i=0;i<s.it.length&&i<=n;i++){const p=s.it[i];if(!p.off){p.off=1;p.vx=R(4,8)*(i%2?1:-1);p.vy=-R(3,6);p.grav=.4;p.vr=R(-.2,.2);setTimeout(SNG.crash,450);if(s.boss)s.boss.x=p.x+40}}}}},
+{e:'🍕',n:'我要一片超好吃的披薩',a:85,dur:8.8,c:[[0,'一片完美的披薩。'],[2.2,'它一直變大。'],[3.4,'它開始扭動。'],[4.6,'啪！'],[5.7,'啪！！'],[6.9,'你只是想吃宵夜而已。']],
+ fx(s,dt){if(!s.k){s.k=1;s.pz=sp('🍕',W/2,H/2,{s:50,gr:1.011,vr:.012,life:700,noPop:1});s.h=[]}pizzaFx(s);
+  if(s.tt>1)rate(.4,dt,()=>{const a=R(0,6.28),v=R(2,7);sp('🧀',W/2,H/2,{vx:Math.cos(a)*v,vy:Math.sin(a)*v,s:R(16,34),life:120,vr:R(-.2,.2)})});
+  if(s.tt>6.3&&!s.k2){s.k2=1;ring('#ffb703');P.forEach(p=>{if(p.g!=='🍕'){p.ang=Math.atan2(p.y-H/2,p.x-W/2);p.rad=Math.hypot(p.x-W/2,p.y-H/2)+30;p.m='orbit';p.va=R(.012,.03);p.vr2=-.4}})}}},
+{e:'🧠',n:'我要有讀心術',a:0,dur:8.2,c:[[0,'你聽見全世界的心聲了。'],[2.6,'全部都在想：午餐吃什麼。'],[5,'而且沒人打算請你。'],[6.6,'你決定自己吃。']],
+ fx(s,dt){if(!s.pp){s.pp=[];for(let i=0;i<7;i++)s.pp.push(sp(['🧑','👩','👨','👵','👴'][i%5],R(W*.1,W*.9),R(H*.3,H*.85),{s:R(56,80),life:800}))}
+  if(s.tt>.4){s.m=(s.m||0)+dt;if(s.m>40){s.m=0;SNG.murmur(1.2,8)}}
+  if(s.tt<5)rate(.35,dt,()=>{const h=s.pp[Math.random()*s.pp.length|0];if(h&&h.life>0)sp(s.tt>2.6?['🍱','🍜','🍣','🥟','🍔','🍛'][Math.random()*6|0]:'💭',h.x+R(-20,20),h.y-h.s*.7,{vy:-R(.6,1.4),s:R(34,50),life:90,gr:1.004})});
+  if(s.tt>2.6){s.q=(s.q||0)+dt;if(s.q>25){s.q=0;ring('#14e3c8');shake=Math.max(shake,5)}}
+  if(s.tt>5&&!s.k){s.k=1;s.pp.forEach(p=>{p.vx=(p.x<W/2?-1:1)*R(5,9);p.vy=R(-1,1)});SNG.murmur(.6,5)}
+  if(s.tt>6.6&&!s.k2){s.k2=1;s.me=sp('🧍',W/2,H*.62,{s:140,life:300,noPop:1});s.bx=sp('🍱',W/2,H*.62-40,{s:80,life:300,noPop:1})}
+  if(s.bx){[6.9,7.3,7.7].forEach((t,i)=>{if(s.tt>t&&!s['c'+i]){s['c'+i]=1;SNG.chomp();s.bx.s*=.7}})}}},
+{e:'👻',n:'我要隱形',a:0,dur:8.4,c:[[0,'你隱形了。'],[2,'世界也跟著消失，因為沒人在看你。'],[4.6,'只剩你的手指，和一點尷尬。'],[6.6,'你重新出現。大家都看到你剛剛在做什麼。']],
+ fx(s,dt){if(s.tt<6.5){P.forEach(p=>{if(!p.c&&p.g!=='👻'&&p.g!=='✨')p.al=Math.max(.05,(p.al==null?1:p.al)-.012*dt)});if(s.tt>2)rate(.12,dt,()=>sp('👻',R(0,W),R(0,H),{vx:R(-1.5,1.5),vy:R(-1.5,1.5),s:R(40,70),life:200}));rate(.5,dt,()=>sp('✨',mouse.x,mouse.y,{free:1,vx:R(-1,1),vy:R(-1,1),s:R(16,30),life:50,gr:.97}))}
+  if(s.tt>6.5&&!s.k){s.k=1;P.forEach(p=>p.al=1);ring('#fff');shake=26;flash();sp('🫣',W/2,H/2,{s:80,gr:1.05,life:60});SNG.gasp();for(let i=0;i<14;i++){const a=i/14*6.28;sp('👀',W/2+Math.cos(a)*Math.min(W,H)*.38,H/2+Math.sin(a)*Math.min(W,H)*.38,{s:R(44,64),life:200,noPop:1})}}}},
+{e:'⏰',n:'我要永遠不會遲到',a:0,dur:8.6,c:[[0,'你永遠準時了。'],[2.4,'鬧鐘從世界各地湧來。'],[4.6,'時間快轉，因為你太早到了。'],[6.8,'你到了。公司明天才開門。']],
+ fx(s,dt){if(s.tt<3.5)rate(.8,dt,()=>sp('⏰',R(0,W),-30,{vy:R(3,7),grav:.2,s:R(40,70),vr:R(-.2,.2),bounce:.5,life:900}));
+  const n=P.reduce((a,p)=>a+(p.g==='⏰'),0);s.q=(s.q||0)+dt;if(s.q>12){s.q=0;if(n)tone(1500,.05,'square',.025);shake=Math.max(shake,Math.min(12,n/6))}
+  if(s.tt>4.6&&!s.k){s.k=1;ts=2.4;ring('#ffb703')}
+  if(s.tt>6.8&&!s.k2){s.k2=1;ts=1;shake=20;darkT=.45;sp('🏢',W/2,H*.6,{s:220,life:300,noPop:1,free:1});sp('🔒',W/2,H*.68,{s:70,life:300,noPop:1,free:1});sp('🌙',W*.8,H*.18,{s:90,life:300,noPop:1,free:1});setTimeout(SNG.cricket,500)}}},
+{e:'📣',n:'我要全世界都聽我的',a:0,dur:8.4,ia:'cmd',c:[[0,'全世界都聽你的。'],[2.4,'它們跟著你的手指走。點一下下令散開！'],[5.4,'你打了個噴嚏。'],[6.6,'全世界也跟著打了一個。']],
+ fx(s,dt){if(!s.k){s.k=1;for(let i=0;i<50;i++)sp(['🫡','🐑','🚗','🪑'][i%4],R(0,W),R(0,H),{s:R(40,80),life:700})}
+  if(s.tt>.8&&!s.k2){s.k2=1;P.forEach(p=>{if(!p.c&&!p.dvd){p.m='chase';p.vx=p.vy=0}})}
+  if(s.tt>5.4&&!s.ah){s.ah=1;SNG.ah()}
+  if(s.tt>5.8&&!s.k3){s.k3=1;shake=30;SNG.choo();sp('🤧',mouse.x,mouse.y,{s:90,life:70,noPop:1,free:1,gr:1.01});ring('#ff2e88',mouse.x,mouse.y);P.forEach(p=>{if(p.m==='chase'){p.m=null;const a=Math.atan2(p.y-mouse.y,p.x-mouse.x),v=R(8,22);p.vx=Math.cos(a)*v;p.vy=Math.sin(a)*v}})}
+  if(s.tt>6.6&&!s.k4){s.k4=1;shake=24;P.forEach(p=>{if(!p.c&&!p.noPop&&Math.random()<.6)p.g='🤧'});for(let i=0;i<8;i++)SNG.choo(i*.12+Math.random()*.08)}}},
+{e:'🦖',n:'我要一隻寵物恐龍',a:0,dur:9,c:[[0,'一顆蛋。'],[1.2,'孵出恐龍了。牠很餓。'],[3,'用手指帶牠去吃東西！'],[6,'牠把你的家具吃光了。'],[7.4,'還有你的作業。這次是真的。']],
+ fx(s,dt){if(!s.k){s.k=1;s.pz=sp('🥚',W/2,H/2,{s:70,life:900,noPop:1,m:'x'})}
+  const z=s.pz;if(!z)return;
+  if(s.tt>1.2&&!s.k2){s.k2=1;z.g='🦖';z.s=120;ring('#14e3c8');shake=14;SNG.roar()}
+  if(s.tt>1.2){z.x+=(mouse.x-z.x)*.07*dt;z.y+=(mouse.y-z.y)*.07*dt;z.r=Math.sin(s.tt*9)*.12;
+   s.q=(s.q||0)+dt;if(s.q>36){s.q=0;tone(90,.18,'sine',.15,40);shake=Math.max(shake,z.s/35)}
+   if(s.tt<7.4)rate(.5,dt,()=>sp(['🛋️','📚','🍖','🪑','🥕','📝'][Math.random()*6|0],R(0,W),R(0,H),{s:R(36,70),life:600,vr:R(-.03,.03)}));
+   let ate=0;for(const p of P){if(p!==z&&!p.c&&p.g!=='✨'&&Math.hypot(p.x-z.x,p.y-z.y)<z.s*.4){p.life=0;pops++;ate=1;if(z.s<420)z.s+=3}}if(ate){hud();tone(300,.1,'square',.06,120)}}}},
+{e:'🚀',n:'我要去外太空',a:0,dur:8.6,ia:'none',c:[[0,'三、二、一，發射！'],[1,'按住加速，左右帶路閃隕石！'],[3.6,'你抵達外太空了。'],[5,'外太空說：請先抽號碼牌。'],[7,'你抽到第 9,999,999 號。']],
+ fx(s,dt){spaceFx(s,dt);knock(s);if(s.tt>5&&!s.tk){s.tk=1;SNG.dingdong();s.tik=sp('🎫',W*.5,H*.32,{s:40,gr:1.02,life:300,noPop:1,free:1,vr:.02})}if(s.tik&&s.tik.s>150){s.tik.gr=1;s.tik.vr=0}if(s.tt>7&&!s.tk2){s.tk2=1;s.kb0=s.tt;SNG.dingdong();shake=12;for(let i=0;i<20;i++)sp('👽',R(0,W),R(H*.1,H*.5),{s:R(30,50),life:200,noPop:1,free:1,vx:R(-.5,.5)})}}},
+{e:'🪄',n:'我要會魔法',a:0,dur:8.4,ia:'frog',c:[[0,'你會魔法了。'],[1.8,'點一下，施展變身術。'],[4.8,'魔法有點失控。'],[6.2,'全世界都變成青蛙了。包括你。']],
+ fx(s,dt){if(!s.k){s.k=1;for(let i=0;i<40;i++)sp(['🧹','📚','🦉','🕯️','🧪'][i%5],R(0,W),R(0,H),{s:R(40,80),vr:R(-.03,.03),life:700,vx:R(-1,1),vy:R(-1,1)})}
+  if(s.tt>4.8&&s.tt<6.2)rate(.8,dt,()=>{const p=P[Math.random()*P.length|0];if(p&&!p.c&&p.g!=='🐸'){p.g='🐸';sp('✨',p.x,p.y,{s:30,life:30,free:1,gr:1.05,noPop:1})}});
+  if(s.tt>6.2&&!s.k2){s.k2=1;P.forEach(p=>{if(!p.c){p.g='🐸';p.grav=.3;p.bounce=.85;p.vy=-R(4,12)}});sp('🐸',W/2,H/2,{s:80,gr:1.03,life:120,noPop:1});ring('#14e3c8');shake=18;SFX.boom();for(let i=0;i<10;i++)SNG.ribbit(.2+i*.12+Math.random()*.1)}}},
+{e:'🕳️',n:'我要挖到地心',a:0,dur:8.6,c:[[0,'你開始往下挖。按住挖更快。'],[2.6,'你挖到恐龍化石了。'],[4.8,'你挖到熔岩了。它有點意見。'],[6.8,'地心有一間便利商店，還在營業。']],
+ fx(s,dt){const b=mouse.down?2:1;shake=Math.max(shake,1.5*b);
+  rate(.35*b,dt,()=>sp(['🪨','🦴','💎','🐛','🦕','🪙'][Math.random()*6|0],R(40,W-40),H+40,{vy:-R(6,11)*b,s:R(44,90),vr:R(-.06,.06),life:200}));
+  rate(1.2*b,dt,()=>sp('●',R(0,W),H+10,{c:s.tt>4.8?'#ff5a1f':'#a8896a',vy:-R(14,26)*b,s:6,sy:10,life:40}));
+  s.dg=(s.dg||0)+dt*b;if(s.dg>14&&s.tt<6.8){s.dg=0;hiss(.12,{v:.12,type:'lowpass',f:s.tt>4.8?900:450})}
+  if(s.tt>4.8&&!s.k2){s.k2=1;ring('#ff5a1f');shake=18;SNG.lava()}
+  if(s.tt>4.8&&s.tt<6.8)rate(.08,dt,SNG.bubble);
+  if(s.tt>6.8&&!s.k){s.k=1;sp('🏪',W/2,H+200,{vy:-7,s:240,life:200,noPop:1});ring('#ffb703');setTimeout(SNG.dingdong,500)}}},
+{e:'🎰',n:'我要永遠好運',a:0,dur:8.8,ia:'slot',c:[[0,'你的運氣變得超好。'],[1.8,'點一下拉霸！'],[4.6,'連中大獎。金幣滿天下。'],[6.1,'但就在這時，一顆隕石砸向地球。'],[6.9,'你的錢全部炸沒了。現在連零錢都是零。']],
+ fx(s,dt){if(!s.k){s.k=1;s.rl=[0,1,2].map(i=>sp('7️⃣',W/2+(i-1)*Math.min(150,W*.25),H*.5,{s:Math.min(130,W*.22),life:900,noPop:1}));s.spin=1;s.nx=0}
+  const sy=['7️⃣','🍒','🔔','💎','🍀'];
+  if(s.spin>0){s.spin-=dt/60;s.nx-=dt;if(s.nx<=0){s.nx=3;s.rl.forEach(r=>r.g=sy[Math.random()*5|0]);tone(900+Math.random()*300,.03,'square',.03)}
+   if(s.spin<=0){const win=Math.random()<.6||s.tt>4.6;s.rl.forEach(r=>{r.g=win?'7️⃣':sy[Math.random()*5|0]});
+    if(win&&s.tt<6.5){ring('#ffb703');shake=16;flash();pops+=3;hud();for(let i=0;i<40;i++)sp('🪙',R(0,W),-30,{vy:R(3,7),grav:.25,s:R(30,50),bounce:.5,life:600,vr:R(-.1,.1)});SFX.coin()}}}
+  if(s.tt>4.6&&!s.k2){s.k2=1;s.spin=1.2}
+  if(s.tt>5.9&&!s.k3){s.k3=1;s.dead=1;sp('☄️',W*.9,-100,{vx:-W*.4/40,vy:(H*.5+100)/40,s:220,gr:1.012,life:40,noPop:1,vr:.1});tone(300,.7,'sawtooth',.06,40)}
+  if(s.tt>6.6&&!s.k4){s.k4=1;flash();shake=44;SFX.boom();ring('#ffb703');ring('#ff2e88');sp('💥',W/2,H/2,{s:200,gr:1.08,life:30,noPop:1});s.rl.forEach(r=>r.g='💸');P.forEach(p=>{if(p.g==='🪙'){const a=Math.atan2(p.y-H/2,p.x-W/2),v=R(15,35);p.vx=Math.cos(a)*v;p.vy=Math.sin(a)*v;p.grav=0;p.bounce=0;p.life=25}})}}},
+{e:'🥶',n:'我要天氣永遠涼爽',a:0,dur:8.6,ia:'pet',pt:'🐧',pf:['🔥','🐧'],tapS:()=>SNG.squeak(),c:[[0,'天氣變得很涼爽。'],[2.4,'非常涼爽。'],[4.6,'冰河期開始了。點企鵝幫牠取暖。'],[6.8,'你的涼爽，維持了一萬年。']],
+ fx(s,dt){rate(1.2,dt,()=>sp('❄️',R(0,W),-30,{vy:R(1.5,4),vx:R(-1.5,1),s:R(20,44),vr:R(-.04,.04),life:400}));
+  if(!s.k){s.k=1;for(let i=0;i<12;i++)sp('🐧',R(0,W),R(H*.4,H),{vx:R(-2,2)||1,vy:R(-2,2),dvd:1,s:R(56,90),life:900})}
+  if(s.tt>2.4&&!s.k2){s.k2=1;sp('🧊',W/2,H/2,{s:60,gr:1.012,vr:.004,life:400,noPop:1});ring('#8fe8ff')}
+  if(!s.w0){s.w0=1;SNG.wind(2.4,.05)}if(s.tt>2.4&&!s.w1){s.w1=1;SNG.wind(2.4,.09)}
+  if(s.tt>4.6&&!s.k3){s.k3=1;ts=.35;ring('#8fe8ff');shake=10;SNG.wind(4,.14);SNG.crash()}
+  if(s.tt>6.8&&!s.k4){s.k4=1;ts=1;shake=14;SNG.freeze()}}},
+{e:'🤖',n:'我要機器人幫我做一切',a:0,dur:8.6,c:[[0,'機器人幫你做所有事。'],[2.4,'它們也負責複製自己。'],[4.8,'它們開始幫你做決定。'],[6.6,'你的人生已被排好。第一件事：把你關機。']],
+ fx(s,dt){if(s.tt<6)rate(.15+s.tt*.07,dt,()=>{const a=R(0,6.28),v=R(2,6);sp('🤖',W/2,H/2,{vx:Math.cos(a)*v,vy:Math.sin(a)*v,dvd:1,s:R(44,80),life:900});if(Math.random()<.5)SNG.beep()});
+  if(s.tt>4.8&&!s.k){s.k=1;ring('#14e3c8');P.forEach(p=>{if(p.g==='🤖'){p.dvd=0;p.m='chase';p.vx=p.vy=0}})}
+  if(s.tt>4.8&&s.tt<6.6)rate(.2,dt,()=>sp('📋',R(0,W),-30,{vy:R(3,6),s:R(34,56),life:300}));
+  if(s.tt>6.6&&!s.k2){s.k2=1;shake=16;sp('🔌',W/2,H/2,{s:50,gr:1.05,life:100,noPop:1});SNG.powerdown();darkT=.92}}},
+{e:'💥',n:'我要超級力量',a:0,dur:9.4,ia:'smash',c:[[0,'你有超級力量了。'],[1.6,'點哪裡，哪裡就爆。'],[5,'你一拳打穿大氣層。'],[6.8,'月亮碎了。'],[7.5,'碎片全部朝你臉上飛過來。']],
+ fx(s,dt){rate(.6,dt,()=>sp(['🏢','🚗','🗿','🧱','🛢️'][Math.random()*5|0],R(0,W),-40,{vy:R(2,5),grav:.12,s:R(46,100),vr:R(-.08,.08),life:500,bounce:.3}));
+  if(s.tt>5&&!s.k){s.k=1;shake=24;ring('#ffb703');flash();SFX.boom()}
+  if(s.tt>6.8&&!s.k2){s.k2=1;shake=40;SFX.boom();flash();sp('🌙',W*.45,H*.28,{vx:-5,vy:-1,s:220,life:90,vr:-.1,noPop:1});sp('🌙',W*.55,H*.28,{vx:5,vy:-1,s:220,life:90,vr:.1,noPop:1});ring('#f6efe0');for(let i=0;i<40;i++){const a=R(0,6.28),v=R(.5,3);sp(['🪨','⬜','🟨','🟫'][i%4],W/2+R(-60,60),H*.28+R(-40,40),{vx:Math.cos(a)*v,vy:Math.sin(a)*v,s:R(14,26),gr:R(1.055,1.075),vr:R(-.15,.15),life:R(40,62),noPop:1,free:1})}}
+  /* 碎片砸臉：一波一波撞上鏡頭，留下一下子的碎塊再淡掉 */
+  [[7.4,'k3'],[7.75,'k4'],[8.1,'k5']].forEach(([t,k],j)=>{if(s.tt>t&&!s[k]){s[k]=1;shake=34+j*8;flash();SFX.thud();if(navigator.vibrate)navigator.vibrate(60);for(let i=0;i<5+j*2;i++)sp(['🪨','⬜','🟨','🟫'][Math.random()*4|0],R(0,W),R(0,H),{s:R(180,380),r:R(0,6.28),life:R(30,55),al:.92,noPop:1,free:1})}})}},
+{e:'🍰',n:'我要吃不胖',a:0,dur:9.2,tapS:()=>SNG.chomp(),c:[[0,'你再也不會胖了。'],[1.8,'點食物，把它吃掉。'],[4.8,'你吃掉了一整間自助餐。身材一點都沒變。'],[6.4,'你往床上一坐。'],[7.1,'床直接被你坐垮了。體重一公斤都沒少。']],
+ fx(s,dt){if(s.tt<6)rate(.5+s.tt*.1,dt,()=>sp(['🍰','🍩','🍔','🍟','🍕','🍣','🧁'][Math.random()*7|0],R(0,W),-40,{vy:R(2,5),grav:.08,s:R(44,84),vr:R(-.06,.06),life:500}));
+  if(s.tt>6.4&&!s.k){s.k=1;s.bed=sp('🛏️',W/2,H*.68,{s:260,life:600,noPop:1});s.me=sp('🧍',W/2,-120,{s:150,vy:6,grav:.9,life:600,noPop:1})}
+  if(s.me&&!s.k2&&s.me.y>H*.52){s.k2=1;s.me.vy=0;s.me.grav=0;s.me.y=H*.52;s.me.g='🧎';s.bed.sy=.6;shake=30;SFX.crack();setTimeout(SFX.thud,90);flash();ring('#ffb703',W/2,H*.7);if(navigator.vibrate)navigator.vibrate([40,30,80]);
+   s.bed.life=0;for(let i=0;i<14;i++){const a=R(-Math.PI,0),v=R(4,13);sp(['🪵','🪵','🪶','🧸'][i%4],W/2+R(-80,80),H*.7,{vx:Math.cos(a)*v,vy:Math.sin(a)*v,grav:.35,bounce:.4,s:R(40,80),vr:R(-.2,.2),life:200,noPop:1})}}
+  if(s.k2&&s.me&&s.me.y<H+100&&s.tt>7.4){s.me.vy=Math.max(s.me.vy,.6);s.me.y+=s.me.vy}}},
+{e:'🎤',n:'我要成為世界巨星',a:0,dur:8.6,ia:'pet',pt:'🤩',pf:['🎶','💖'],tapS:()=>SNG.scream(),c:[[0,'你成為世界巨星了。'],[1.6,'點粉絲，讓他們尖叫。'],[4.6,'安可！安可！'],[6.8,'全世界跟著你一起唱。連貓都在合音。']],
+ fx(s,dt){s.bt=(s.bt||0)+dt;if(s.bt>30){s.bt=0;shake=Math.max(shake,5);tone(70,.15,'sine',.12,40);ring(['#ff2e88','#14e3c8','#ffb703'][Math.random()*3|0],R(0,W),H*.5)}
+  rate(.3,dt,()=>sp(['🤩','🙌'][Math.random()*2|0],R(0,W),H+30,{vy:-R(3,6),vx:R(-1,1),grav:-.01,s:R(48,86),vr:R(-.05,.05),life:420}));
+  rate(.15,dt,()=>sp('●',R(0,W),-20,{c:['#ff2e88','#14e3c8','#ffb703'][Math.random()*3|0],vy:R(6,12),vx:R(-3,3),s:R(60,140),life:50}));
+  if(s.tt>4.6&&s.tt<6.6){s.ch=(s.ch||0)+dt;if(s.ch>34){s.ch=0;SNG.chant();shake=Math.max(shake,6)}}
+  if(s.tt>6.8&&!s.k){s.k=1;for(let i=0;i<8;i++)sp('🐱',R(0,W),H*.8,{vy:-R(4,9),s:R(50,80),life:200,noPop:1});shake=12;ring('#ffb703');SNG.sing();for(let i=0;i<16;i++)sp('🎵',R(0,W),H+20,{vy:-R(2,4),s:R(30,50),life:200,noPop:1,vr:R(-.05,.05)})}}},
+{e:'🏆',n:'我要在遊戲裡無敵',a:0,dur:8.8,ia:'shoot',tapS:()=>{SNG.pew();SFX.pop()},c:[[0,'你在遊戲裡無敵了。'],[1.4,'點擊射擊外星人。'],[4.6,'魔王出現！連點打爆牠！'],[7.2,'魔王爆了。稱號解鎖：一直點的人。']],
+ fx(s,dt){if(s.tt<7)rate(.12+s.tt*.02,dt,()=>sp('👾',R(60,W-60),-40,{vy:R(2,4),vx:R(-1.5,1.5),s:R(46,76),vr:R(-.03,.03),life:400}));
+  if(s.tt>4.6&&!s.k){s.k=1;s.bs=sp('👹',W/2,H*.3,{s:Math.min(280,W*.5),life:900,noPop:1,boss:1});s.bs.hp=10;ring('#ff2e88');shake=16}
+  const b=s.bs;if(b&&b.life>0&&!b.dead){b.x=W/2+Math.sin(s.tt*2.2)*W*.25;if(b.hp<=0||s.tt>7.4)bossDie(b)}}},
+{e:'🎆',n:'我要一場超大煙火秀',a:0,dur:8.6,ia:'fire',c:[[0,'整座城市為你放煙火。'],[1.6,'點哪裡，哪裡就炸開。'],[4.8,'煙火越來越大。'],[6.8,'月亮拍手。鄰居說：今年的跨年不用放了。']],
+ fx(s,dt){rate(.025+s.tt*.01,dt,()=>burst(R(W*.15,W*.85),R(H*.15,H*.5)));
+  if(s.tt>4.8&&!s.k){s.k=1;for(let i=0;i<5;i++)setTimeout(()=>burst(R(W*.2,W*.8),R(H*.15,H*.45),1.8),i*160)}
+  if(s.tt>6.8&&!s.k2){s.k2=1;sp('🌙',W*.8,H*.2,{s:120,life:120,noPop:1});sp('👏',W*.8,H*.2+90,{s:70,gr:1.02,vr:.1,life:120,noPop:1});SNG.clap(16,1.6)}}}
+];
+
+function hud(){$('rd').textContent=LANG==='en'?`Wish ${round} / 3　Taps ${pops}`:`願望 ${round} / 3　互動 ${pops}`}
+let AC=null,mute=false,vox=0;try{mute=localStorage.getItem('gl_mute')==='1'}catch(e){}
+function au(){if(mute)return null;if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){return null}}if(AC.state==='suspended')AC.resume();return AC}
+function tone(f,d,type='sine',v=.08,f2){const a=au();if(!a||vox>6)return;vox++;const o=a.createOscillator(),g=a.createGain(),t=a.currentTime;o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d);o.onended=()=>vox--}
+function noise(d,v=.1,fr=1000){const a=au();if(!a||vox>6)return;vox++;const n=a.sampleRate*d|0,b=a.createBuffer(1,n,a.sampleRate),c=b.getChannelData(0);for(let i=0;i<n;i++)c[i]=(Math.random()*2-1)*(1-i/n);const s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();s.buffer=b;f.type='lowpass';f.frequency.value=fr;g.gain.value=v;s.connect(f);f.connect(g);g.connect(a.destination);s.start();s.onended=()=>vox--}
+const KIND={'我要花不完的錢':'損','我要變成最高的人':'損','我要全世界都愛我':'損','我要永遠不用寫作業':'損','我要時間暫停':'損','我要會飛':'爽','我要讓貓統治世界':'損','我要一片超好吃的披薩':'損','我要有讀心術':'損','我要隱形':'損','我要永遠不會遲到':'損','我要全世界都聽我的':'爽','我要一隻寵物恐龍':'爽','我要去外太空':'爽','我要會魔法':'損','我要挖到地心':'爽','我要永遠好運':'損','我要天氣永遠涼爽':'爽','我要機器人幫我做一切':'損','我要超級力量':'爽','我要吃不胖':'爽','我要成為世界巨星':'爽','我要在遊戲裡無敵':'爽','我要一場超大煙火秀':'爽'};
+/* 擦燈：持續的金屬摩擦聲（噪音過多個不和諧的高 Q 帶通＝金屬共鳴），音量和音高跟著擦的速度 */
+let rubN=null;
+function rubLoop(spd){const a=au();if(!a)return;const t=a.currentTime;
+ if(!rubN){const n=a.sampleRate*2|0,b=a.createBuffer(1,n,a.sampleRate),c=b.getChannelData(0);for(let i=0;i<n;i++)c[i]=Math.random()*2-1;
+  const src=a.createBufferSource();src.buffer=b;src.loop=true;const g=a.createGain();g.gain.value=0;g.connect(a.destination);
+  const fs=[[1870,.9],[2950,.7],[4430,.55],[6610,.4],[9200,.25]].map(([f,v])=>{const bp=a.createBiquadFilter(),gg=a.createGain();bp.type='bandpass';bp.frequency.value=f;bp.Q.value=22;gg.gain.value=v*3;src.connect(bp);bp.connect(gg);gg.connect(g);return [bp,f]});
+  const hp=a.createBiquadFilter(),hg=a.createGain();hp.type='highpass';hp.frequency.value=5000;hg.gain.value=.12;src.connect(hp);hp.connect(hg);hg.connect(g);
+  src.start();rubN={src,g,fs}}
+ const k=Math.min(1,spd/40);rubN.fs.forEach(([bp,f])=>bp.frequency.setTargetAtTime(f*(.92+k*.18),t,.04));
+ rubN.g.gain.cancelScheduledValues(t);rubN.g.gain.setTargetAtTime(.05+k*.22,t,.015);rubN.g.gain.setTargetAtTime(0,t+.07,.09);
+ if(Math.random()<.03)tone(3150+Math.random()*900,.35,'sine',.025)}
+function rubStop(){if(!rubN)return;const t=AC.currentTime;rubN.g.gain.cancelScheduledValues(t);rubN.g.gain.setTargetAtTime(0,t,.05);const n=rubN;rubN=null;try{n.src.stop(t+.4)}catch(e){}}
+/* 接任神燈：霧氣蔓延（柔和的棕噪音，低通慢慢打開、左右聲道慢慢散開，底下一層低頻悶響） */
+function fog(d=4.2){const a=au();if(!a)return;const t=a.currentTime,o=a.createGain();o.gain.setValueAtTime(.0001,t);o.gain.exponentialRampToValueAtTime(.5,t+d*.45);o.gain.setValueAtTime(.5,t+d*.7);o.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(a.destination);
+ [-1,1].forEach(side=>{const n=a.sampleRate*d|0,b=a.createBuffer(1,n,a.sampleRate),c=b.getChannelData(0);let l=0;for(let i=0;i<n;i++){l=(l+.02*(Math.random()*2-1))/1.02;c[i]=l*3.5}
+  const s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();s.buffer=b;f.type='lowpass';f.Q.value=.8;f.frequency.setValueAtTime(180,t);f.frequency.exponentialRampToValueAtTime(2400,t+d*.6);f.frequency.exponentialRampToValueAtTime(700,t+d);g.gain.value=.7;s.connect(f);f.connect(g);
+  if(a.createStereoPanner){const pn=a.createStereoPanner();pn.pan.setValueAtTime(0,t);pn.pan.linearRampToValueAtTime(.85*side,t+d*.8);g.connect(pn);pn.connect(o)}else g.connect(o);s.start(t);s.stop(t+d)});
+ const h=a.createBufferSource(),hn=a.sampleRate*d|0,hb=a.createBuffer(1,hn,a.sampleRate),hc=hb.getChannelData(0);for(let i=0;i<hn;i++)hc[i]=Math.random()*2-1;h.buffer=hb;const hf=a.createBiquadFilter(),hg=a.createGain();hf.type='bandpass';hf.Q.value=.6;hf.frequency.setValueAtTime(1500,t);hf.frequency.exponentialRampToValueAtTime(5000,t+d*.7);hg.gain.value=.05;h.connect(hf);hf.connect(hg);hg.connect(o);h.start(t);h.stop(t+d);
+ const r=a.createOscillator(),rg=a.createGain();r.frequency.setValueAtTime(48,t);r.frequency.linearRampToValueAtTime(62,t+d);rg.gain.value=.12;r.connect(rg);rg.connect(o);r.start(t);r.stop(t+d)}
+/* 人聲/動物聲：鋸齒波過一個共振峰帶通，可加顫音；hiss：濾波噪音。兩者有自己的同時發聲上限 */
+let vx2=0,dark=0,darkT=0;
+function voice(f0,f1,d,{v=.06,type='sawtooth',form=1100,q=3,vib=0,at=.04,delay=0,f2=null}={}){const a=au();if(!a||vx2>16)return;vx2++;const t=a.currentTime+delay,o=a.createOscillator(),bp=a.createBiquadFilter(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f0,t);if(f2!=null){o.frequency.exponentialRampToValueAtTime(f1,t+d*.4);o.frequency.exponentialRampToValueAtTime(f2,t+d)}else o.frequency.exponentialRampToValueAtTime(f1,t+d);bp.type='bandpass';bp.frequency.value=form;bp.Q.value=q;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+Math.min(at,d*.5));g.gain.setValueAtTime(v,t+Math.max(at,d*.6));g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(bp);bp.connect(g);g.connect(a.destination);
+ if(vib){const l=a.createOscillator(),lg=a.createGain();l.frequency.value=5+Math.random()*2.5;lg.gain.value=vib;l.connect(lg);lg.connect(o.frequency);l.start(t);l.stop(t+d)}o.start(t);o.stop(t+d+.02);o.onended=()=>vx2--}
+function hiss(d,{v=.1,type='bandpass',f=3000,f2=null,q=1,delay=0,at=.008}={}){const a=au();if(!a||vx2>16)return;vx2++;const t=a.currentTime+delay,n=a.sampleRate*d|0,b=a.createBuffer(1,n,a.sampleRate),c=b.getChannelData(0);for(let i=0;i<n;i++)c[i]=Math.random()*2-1;const sr=a.createBufferSource(),fl=a.createBiquadFilter(),g=a.createGain();sr.buffer=b;fl.type=type;fl.Q.value=q;fl.frequency.setValueAtTime(f,t);if(f2)fl.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+at);g.gain.exponentialRampToValueAtTime(.0001,t+d);sr.connect(fl);fl.connect(g);g.connect(a.destination);sr.start(t);sr.stop(t+d);sr.onended=()=>vx2--}
+const SNG={
+ scream:()=>{for(let i=0;i<3;i++){const f=650+Math.random()*450;voice(f,f*1.35,.75+Math.random()*.3,{v:.035,form:1300+Math.random()*700,q:2,vib:f*.04,delay:i*.04,f2:f*1.1})}hiss(.6,{v:.035,f:2500,at:.08})},
+ chant:()=>{for(let i=0;i<6;i++){const f=170+Math.random()*120;voice(f,f*1.05,.16,{v:.03,form:700,q:2.5,at:.02,delay:Math.random()*.03});voice(f*.9,f*.8,.24,{v:.03,form:500,q:2.5,at:.02,delay:.2+Math.random()*.03})}hiss(.12,{v:.05,f:1800,delay:.2})},
+ meow:()=>{const f=600+Math.random()*250;voice(f,f*1.6,.5,{v:.05,form:1400,q:2.5,f2:f*.85})},
+ moo:()=>voice(150,130,1.1,{v:.1,form:450,q:2,f2:95,vib:3}),
+ ah:()=>voice(380,720,.42,{v:.06,form:900,q:2,at:.2}),
+ choo:(dl=0)=>{hiss(.28,{v:.3,f:3800,q:.8,delay:dl});voice(500,180,.2,{v:.05,form:1500,delay:dl})},
+ chomp:()=>{hiss(.07,{v:.25,type:'lowpass',f:900});hiss(.07,{v:.2,type:'lowpass',f:700,delay:.12});voice(130,90,.08,{type:'square',v:.04,form:300,q:.5,at:.005})},
+ clap:(n=14,d=1.4)=>{for(let i=0;i<n;i++)hiss(.06,{v:.2,f:1400+Math.random()*900,q:1.2,delay:Math.random()*d})},
+ dingdong:()=>{voice(1319,1318,.6,{type:'sine',v:.08,form:1319,q:.5,at:.005});voice(1047,1046,.9,{type:'sine',v:.08,form:1047,q:.5,at:.005,delay:.45})},
+ rustle:()=>{for(let i=0;i<4;i++)hiss(.12,{v:.05,f:3500+Math.random()*2000,q:.7,delay:i*.07})},
+ murmur:(d=1.5,n=10)=>{for(let i=0;i<n;i++){const f=140+Math.random()*130;voice(f,f*(.8+Math.random()*.4),.18+Math.random()*.2,{v:.025,form:500+Math.random()*900,q:3,delay:Math.random()*d})}},
+ ribbit:(dl=0)=>{voice(210,160,.09,{v:.07,form:600,q:4,delay:dl});voice(230,170,.11,{v:.07,form:650,q:4,delay:dl+.13})},
+ pew:()=>tone(1600+Math.random()*400,.13,'square',.035,180),
+ powerdown:()=>{voice(520,40,1.6,{v:.07,form:600,q:1,at:.01});hiss(1.2,{v:.04,type:'lowpass',f:2000,f2:80})},
+ bonk:()=>{voice(520,200,.35,{type:'triangle',v:.12,form:500,q:.6,at:.005});SFX.thud()},
+ roar:()=>{voice(220,85,1.1,{v:.11,form:500,q:1.5,vib:12});hiss(.9,{v:.08,type:'lowpass',f:700,at:.05})},
+ gasp:()=>{for(let i=0;i<6;i++){const f=250+Math.random()*200;voice(f*1.3,f*.8,.45,{v:.03,form:900,q:2,at:.02,delay:Math.random()*.15})}},
+ knock:()=>{for(let i=0;i<3;i++){hiss(.05,{v:.3,type:'lowpass',f:500,delay:i*.18});voice(140,90,.08,{type:'sine',v:.15,form:140,q:.3,at:.003,delay:i*.18})}},
+ crash:()=>{hiss(.35,{v:.16,type:'highpass',f:3000});for(let i=0;i<4;i++){const f=2500+Math.random()*2500;voice(f,f*.8,.2,{type:'sine',v:.03,form:3000,q:.5,at:.003,delay:Math.random()*.12})}},
+ clink:()=>{const f=2600+Math.random()*900;voice(f,f*.98,.12,{type:'triangle',v:.03,form:3000,q:.4,at:.003})},
+ creak:()=>voice(90,60,1.2,{v:.07,form:300,q:5,vib:8}),
+ wind:(d=2,v=.08)=>hiss(d,{v,f:500,f2:1400,q:2,at:d*.4}),
+ bubble:()=>voice(180,520,.12,{type:'sine',v:.08,form:400,q:.5,at:.005}),
+ lava:()=>hiss(.9,{v:.12,f:4000,f2:1500,q:.5,at:.05}),
+ beep:()=>{voice(880,879,.08,{type:'square',v:.03,form:900,q:.5,at:.003});voice(660,659,.08,{type:'square',v:.03,form:700,q:.5,at:.003,delay:.1})},
+ ticks:()=>{for(let i=0;i<3;i++)hiss(.03,{v:.25,f:4000,q:3,delay:i*.22})},
+ freeze:()=>{voice(2000,4000,.9,{type:'sine',v:.04,form:3000,q:.3,at:.01});hiss(.5,{v:.05,f:6000,f2:9000,q:.5})},
+ cricket:()=>{for(let i=0;i<6;i++)voice(4200,4300,.05,{type:'sine',v:.03,form:4200,q:1,at:.005,delay:i*.07+(i>2?.4:0)})},
+ squeak:()=>voice(900,1400,.15,{type:'triangle',v:.05,form:1200,q:.6,at:.01}),
+ sign:()=>{for(let i=0;i<3;i++)hiss(.07,{v:.07,f:2500+Math.random()*1500,q:1.5,delay:i*.08})},
+ whoosh:()=>hiss(1,{v:.12,f:300,f2:2500,q:1.2,at:.4}),
+ sing:()=>{[523,587,659,523,659,698,784,784].forEach((f,i)=>{voice(f,f*1.001,.3,{type:'triangle',v:.06,form:f*2,q:.7,at:.02,delay:i*.3,vib:6});voice(f/2,f/2*1.001,.3,{v:.025,form:700,q:2,at:.03,delay:i*.3})});[.5,1.4,2.1].forEach(d=>{const f=650+Math.random()*200;voice(f,f*1.5,.45,{v:.04,form:1400,q:2.5,f2:f*.9,delay:d})})}
+};
+const SFX={genie:()=>{tone(180,.9,'sawtooth',.05,900);tone(500,1,'sine',.05,1400)},pop:()=>tone(500+Math.random()*300,.09,'sine',.07,160),slap:()=>{noise(.18,.22,1800);tone(170,.2,'square',.1,50)},boom:()=>{noise(.4+Math.random()*.3,.2,250+Math.random()*350);tone(70+Math.random()*45,.4,'sine',.14,30)},thud:()=>{noise(.25,.3,220);tone(55+Math.random()*20,.35,'sine',.18,28)},crack:()=>{noise(.12,.25,4500);setTimeout(()=>noise(.2,.2,2200),70);tone(140,.5,'sawtooth',.06,45)},wish:()=>{tone(660,.15,'triangle',.06);setTimeout(()=>tone(880,.2,'triangle',.06),110)},coin:()=>tone(1200,.12,'triangle',.07,1800)};
+function tap(x,y){const m=cur&&cur.w.ia;if(m==='none')return;if(m==='pet')return pet(x,y);if(m==='cmd')return cmd(x,y);if(m==='frog')return frog(x,y);if(m==='slot'){if(!(cur.spin>0)&&!cur.dead){cur.spin=.9;pops++;hud()}return}if(m==='smash'){cmd(x,y);pop(x,y);return}if(m==='shoot')return shoot(x,y);if(m==='fire'){burst(x,y);pops++;hud();return}pop(x,y)}
+function bossDie(b){b.dead=1;b.life=0;if(b.hp<=0){pops+=5;hud()}flash();shake=40;SFX.boom();ring('#ffb703');ring('#ff2e88');for(let i=0;i<70;i++){const a=R(0,6.28),v=R(3,14);sp('●',b.x,b.y,{c:['#14e3c8','#ff2e88','#ffb703'][i%3],vx:Math.cos(a)*v,vy:Math.sin(a)*v,s:R(14,40),life:60,gr:1.01})}sp('🏆',b.x,b.y,{s:60,gr:1.04,life:90,noPop:1,vy:-1})}
+function shoot(x,y){const b=cur.bs;if(b&&b.life>0&&!b.dead&&Math.hypot(b.x-x,b.y-y)<b.s*.55){b.hp--;pops++;hud();shake=Math.max(shake,10);SNG.pew();tone(200+(10-b.hp)*60,.1,'square',.08,100);for(let j=0;j<6;j++)sp('●',x,y,{c:'#ffb703',vx:R(-5,5),vy:R(-5,5),s:R(10,22),life:20,free:1});return}pop(x,y)}
+function burst(x,y,k=1){const c=['#14e3c8','#ff2e88','#ffb703','#f6efe0'][Math.random()*4|0],n=Math.round(50*k);for(let i=0;i<n;i++){const a=R(0,6.28),v=R(2,9)*k;sp('●',x,y,{c,vx:Math.cos(a)*v,vy:Math.sin(a)*v,grav:.12,s:R(8,22)*k,life:70,gr:.99})}ring(c,x,y);noise(.3,.12,2500);tone(150,.3,'sine',.1,40)}
+function frog(x,y){for(let i=P.length-1;i>=0;i--){const p=P[i];if(p.c||p.life<=0||p.noPop||p.g==='✨'||p.g==='🐸')continue;if(Math.hypot(p.x-x,p.y-y)<p.s*.55+14){p.g='🐸';p.grav=.3;p.bounce=.85;p.vy=-9;pops++;hud();SNG.ribbit(.15);for(let j=0;j<6;j++)sp('✨',p.x,p.y,{vx:R(-4,4),vy:R(-4,4),s:R(16,28),life:30,gr:.96,noPop:1});tone(500,.15,'triangle',.07,1100);return}}}
+function pet(x,y){for(let i=P.length-1;i>=0;i--){const p=P[i];if(p.c||p.life<=0||p.noPop||p.g==='✨')continue;if(Math.hypot(p.x-x,p.y-y)<p.s*.55+14){if(cur.w.pt&&p.g!==cur.w.pt)continue;pops++;hud();p.s=Math.min(260,p.s*1.12);if(cur.w.tapS)cur.w.tapS();else tone(700,.12,'triangle',.07,1100);const f=cur.w.pf;for(let j=0;j<4;j++)sp(f[j%f.length],p.x+R(-20,20),p.y,{vy:-R(2,4),vx:R(-1,1),s:R(22,34),life:50,noPop:1});if(navigator.vibrate)navigator.vibrate(10);return}}}
+function cmd(x,y){pops++;hud();SFX.boom();ring('#ff2e88',x,y);for(const p of P){if(p.c||p.dvd)continue;const dx=p.x-x,dy=p.y-y,d=Math.hypot(dx,dy)||1;if(d<320){const v=(320-d)/320*18;p.vx=(p.vx||0)+dx/d*v;p.vy=(p.vy||0)+dy/d*v}}if(navigator.vibrate)navigator.vibrate(15)}
+/* 抽到 9,999,999 號：號碼牌把火箭硬生生推回去，衝擊、翻滾、再彈回來 */
+function knock(s){const z=s.pz;if(!z||s.kb0==null)return;const k=s.tt-s.kb0;if(k<0||k>2.8)return;
+ if(k<.06&&!s.kbi){s.kbi=1;shake=44;flash();SFX.boom();SNG.crash();if(navigator.vibrate)navigator.vibrate([60,40,60]);ring('#ff2e88',z.x,z.y);ring('#ffb703',z.x,z.y);
+  for(let i=0;i<30;i++){const a=R(-Math.PI,0),v=R(3,10);sp(['🔥','✨','🔩'][i%3],z.x,z.y,{vx:Math.cos(a)*v,vy:Math.sin(a)*v,s:R(16,30),life:40,noPop:1,free:1,grav:.3})}
+  if(s.tik)s.tik.s=260}
+ if(s.kbi&&Math.random()<.9)sp('🔥',z.x+R(-14,14),z.y+z.s*.4,{vy:R(2,6),vx:R(-1,1),s:R(18,34),life:26,gr:.94,noPop:1,free:1});
+ const A=H*.38;let off,tilt;
+ if(k<.18){off=-A*(k/.18);tilt=-2.2*(k/.18)}
+ else{const q=k-.18;off=-A*Math.exp(-1.9*q)*(1+.22*Math.cos(10*q)*Math.exp(-3*q));tilt=-2.2*Math.exp(-2.2*q)}
+ z.y=H*.72+off;z.r=-.785+tilt}
+function spaceFx(s,dt){const u=s.tt;
+ if(!s.k){s.k=1;SFX.boom();s.pz=sp('🚀',W/2,H*.72,{s:130,life:700,noPop:1,m:'x',r:-.785});ring('#ffb703',W/2,H*.78);flash();for(let i=0;i<7;i++)sp(['🪐','🌍','🌕','🌑'][i%4],W/2,H/2,{m:'orbit',ang:R(0,6.28),rad:R(140,420),va:R(.006,.02)*(i%2?1:-1),vr2:0,s:R(60,110),life:700,noPop:1})}
+ const z=s.pz;if(!z)return;const b=mouse.down?1.7:1;s.sq=(s.sq||0)+dt;if(s.sq>18){s.sq=0;noise(.3,.05*b,500)}
+ z.x+=(Math.max(40,Math.min(W-40,mouse.x))-z.x)*.12*dt;z.y=H*.72+Math.sin(u*40)*3;z.r=-.785+(mouse.x-z.x)*.002;
+ shake=Math.max(shake,u<1?9:2.5*b);
+ rate(u<1?2.5:3*b,dt,()=>sp('●',z.x+R(-8,8),z.y+z.s*.4,{c:Math.random()<.5?'#ffb703':'#ff2e88',vy:R(4,9),vx:R(-1,1),s:R(16,36),life:18,gr:.94}));
+ if(u>1)rate(1.4*b,dt,()=>sp('●',R(0,W),-30,{c:'#f6efe0',vy:R(28,46)*b,s:5,sy:16,life:50}));
+ if(u>1.4&&u<7)rate(.04*b,dt,()=>sp('☄️',R(60,W-60),-60,{vy:R(9,14)*b,s:R(60,100),vr:R(-.1,.1),life:200,ast:1,noPop:1}));
+ if(u>4.4&&u<7)rate(.12,dt,()=>sp(['👽','🛸'][Math.random()*2|0],-60,H*.4+R(-20,20),{vx:2.5,s:R(56,80),life:600,vr:R(-.02,.02),noPop:1}));
+ for(const p of P){if(!p.ast||p.life<=0)continue;
+  if(Math.hypot(p.x-z.x,p.y-z.y)<(p.s+z.s)*.32){p.life=0;hud();shake=32;flash();SFX.slap();ring('#ff2e88',z.x,z.y)}
+  else if(p.y>H-30&&!p.cnt){p.cnt=1;pops++;hud()}}}
+function pop(x,y){for(let i=P.length-1;i>=0;i--){const p=P[i];if(p.c||p.life<=0||p.noPop||p.g==='✨')continue;if(Math.hypot(p.x-x,p.y-y)<p.s*.55+14){p.life=0;pops+=p.s>300?5:1;hud();(cur&&cur.w.tapS?cur.w.tapS():SFX.pop());const n=p.s>300?30:10;for(let j=0;j<n;j++){const a=R(0,6.28),v=R(2,10);sp('●',p.x,p.y,{c:['#14e3c8','#ff2e88','#ffb703'][j%3],vx:Math.cos(a)*v,vy:Math.sin(a)*v,s:R(8,26),life:40,gr:1.02,free:1})}if(p.s>300)shake=Math.max(shake,12);if(navigator.vibrate)navigator.vibrate(12);return}}}
+function flash(){if(RM)return;const f=$('flash');f.classList.remove('on');void f.offsetWidth;f.classList.add('on')}
+function pizzaFx(s){const pz=s.pz,u=s.tt;if(!pz||u<3.2)return;
+ if(!s.g){s.g=1;pz.gr=1;pz.vr=0;s.b=pz.s}
+ let ox=0,m=1,rot=0,sx=1,sy=1,busy=0;
+ [4.6,5.7].forEach((t,i)=>{const d=i?1:-1;
+  if(u>=t-.45&&u<t){const k=(u-t+.45)/.45;ox=-d*W*.3*k;rot=-d*.7*k;m=1-.12*k;busy=1}
+  else if(u>=t&&u<t+.12){const k=(u-t)/.12;ox=-d*W*.3+d*W*.5*k;rot=-d*.7+d*1.6*k;m=.88+k;busy=1;
+   if(!s.h[i]){s.h[i]=1;shake=36;flash();SFX.slap();ring('#ff2e88',W/2+ox,H/2);sp('💥',W/2+d*W*.2,H/2,{s:160,gr:1.06,life:16});if(navigator.vibrate)navigator.vibrate(70)}}
+  else if(u>=t+.12&&u<t+.62){const e=1-(u-t-.12)/.5,q=e*e;ox=d*W*.2*q;rot=d*.9*q+Math.sin(u*30)*.25*q;m=1+.88*q;busy=1}});
+ if(!busy){const w=Math.sin(u*22),a=u<4.15?Math.min(1,(u-3.2)/.3):.6;rot=w*.3*a;sx=1-w*.14*a;sy=1+w*.14*a}
+ pz.x=W/2+ox;pz.y=H/2;pz.s=s.b*m;pz.r=rot;pz.sx=sx;pz.sy=sy}
+const SPR={},GL={};
+function spr(g){if(SPR[g])return SPR[g];const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');x.font=`104px ${FONT}`;x.textAlign='center';x.textBaseline='middle';x.fillText(g,64,68);return SPR[g]=c}
+function glow(col){if(GL[col])return GL[col];const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d'),g=x.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,col);g.addColorStop(.5,col+'88');g.addColorStop(1,col+'00');x.fillStyle=g;x.fillRect(0,0,64,64);return GL[col]=c}
+function lampS(){return Math.min(W,H*1.1)/460*lamp.k}
+function drawLamp(gl){const s=lampS();ctx.save();ctx.translate(lamp.x,lamp.y);ctx.scale(s,s);
+ ctx.globalAlpha=.2+gl*.7;ctx.drawImage(glow('#ffb703'),-320,-320,640,640);ctx.globalAlpha=1;
+ const b=ctx.createLinearGradient(0,-60,0,70);b.addColorStop(0,'#ffe27a');b.addColorStop(.5,'#ffb703');b.addColorStop(1,'#a86100');ctx.fillStyle=b;
+ ctx.beginPath();ctx.ellipse(0,10,110,55,0,0,7);ctx.fill();ctx.fillRect(-45,55,90,16);
+ ctx.beginPath();ctx.moveTo(90,-5);ctx.quadraticCurveTo(165,-20,185,-80);ctx.quadraticCurveTo(150,-35,85,35);ctx.closePath();ctx.fill();
+ ctx.lineWidth=14;ctx.strokeStyle='#e69a00';ctx.beginPath();ctx.moveTo(-100,-5);ctx.bezierCurveTo(-190,-30,-190,70,-95,45);ctx.stroke();
+ ctx.fillStyle='#ffd24d';ctx.beginPath();ctx.ellipse(0,-38,48,22,0,Math.PI,0);ctx.fill();ctx.beginPath();ctx.arc(0,-68,10,0,7);ctx.fill();
+ ctx.strokeStyle='rgba(255,255,255,.55)';ctx.lineWidth=7;ctx.beginPath();ctx.arc(-10,10,70,Math.PI*1.1,Math.PI*1.45);ctx.stroke();ctx.restore()}
+
+function update(dt){for(const p of P){const d=dt*(p.free?1:ts);
+ if(p.m==='suck'){const dx=lamp.x-p.x,dy=lamp.y-p.y;p.vx+=dx*.002*dt;p.vy+=dy*.002*dt;p.vx*=.94;p.vy*=.94;p.x+=p.vx*dt;p.y+=p.vy*dt;p.s*=.985;if(Math.hypot(dx,dy)<40)p.life=0}
+ else if(p.m==='to'){p.x+=(p.tx-p.x)*.05*d;p.y+=(p.ty-p.y)*.05*d}
+ else if(p.m==='orbit'){p.ang+=p.va*d;p.rad=Math.max(0,p.rad+p.vr2*d);p.x=W/2+Math.cos(p.ang)*p.rad;p.y=H/2+Math.sin(p.ang)*p.rad*.6}
+ else if(p.m==='chase'){p.vx+=(mouse.x-p.x)*.0008*d;p.vy+=(mouse.y-p.y)*.0008*d;p.vx*=Math.pow(.97,d);p.vy*=Math.pow(.97,d);p.x+=p.vx*d;p.y+=p.vy*d}
+ else if(p.dvd){p.x+=p.vx*d;p.y+=p.vy*d;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;p.x=Math.max(0,Math.min(W,p.x));p.y=Math.max(0,Math.min(H,p.y))}
+ else{p.vy+=p.grav*d;p.x+=p.vx*d;p.y+=p.vy*d;if(p.bounce&&p.y>H-p.s/2){p.y=H-p.s/2;p.vy*=-p.bounce;p.vx*=.98}}
+ p.r+=p.vr*d;p.s*=Math.pow(p.gr,d);if(p.s>900)p.s=900;p.life-=d}
+ P=P.filter(p=>p.life>0&&p.s>1&&p.y>-500&&p.y<H+700&&p.x>-500&&p.x<W+500)}
+function draw(){for(const p of P){const X=(p.x+SX)*DP,Y=(p.y+SY)*DP;
+ if(p.c){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=Math.max(0,Math.min(1,p.life/p.max));const z=p.s*1.6,gw=z*(p.sx||1),gh=z*(p.sy||1);ctx.setTransform(DP,0,0,DP,X,Y);ctx.drawImage(glow(p.c),-gw/2,-gh/2,gw,gh)}
+ else{ctx.globalCompositeOperation='source-over';ctx.globalAlpha=p.al==null?1:p.al;const c=Math.cos(p.r)*DP,s=Math.sin(p.r)*DP,z=p.s*1.15;ctx.setTransform(c,s,-s,c,X,Y);const zw=z*(p.sx||1),zh=z*(p.sy||1);ctx.drawImage(spr(p.g),-zw/2,-zh/2,zw,zh)}}
+ ctx.setTransform(DP,0,0,DP,SX*DP,SY*DP);ctx.globalAlpha=1;
+ ctx.globalCompositeOperation='lighter';
+ for(const r of rings){ctx.globalAlpha=Math.max(0,r.a);ctx.strokeStyle=r.c;ctx.lineWidth=10*r.a+1;ctx.beginPath();ctx.arc(r.x,r.y,r.r,0,7);ctx.stroke()}
+ ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1}
+
+function frame(now){const dt=Math.min(3,(now-last)/16.67);last=now;
+ ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;ctx.fillStyle=`hsla(${(244+hue)%360},75%,${inv?32:13}%,${frozen?.4:.22})`;ctx.fillRect(0,0,W,H);
+ ctx.save();SX=SY=0;if(shake>.3&&!RM){SX=R(-shake,shake);SY=R(-shake,shake);ctx.translate(SX,SY)}shake*=Math.pow(.92,dt);
+ ctx.fillStyle='#f6efe0';for(const s of stars){ctx.globalAlpha=.3+.5*Math.abs(Math.sin(now/900+s.p));ctx.fillRect(s.x*W,s.y*H,s.r,s.r)}ctx.globalAlpha=1;
+ const tk=state==='rub'?1:state==='final'?.7:.5,ty=state==='rub'?.6:state==='final'?.8:.58;
+ lamp.x=W/2;lamp.k+=(tk-lamp.k)*.06*dt;lamp.y+=(H*ty-lamp.y)*.06*dt;
+ drawLamp(state==='rub'?rub:(state==='sink'||state==='final')?1:.3);
+ if(state==='play'&&cur){cur.tt+=dt/60;cur.w.fx(cur,dt);while(cur.w.c[cur.cap]&&cur.tt>=cur.w.c[cur.cap][0])setCap(cur.w.c[cur.cap++][1]);if(cur.tt>=cur.w.dur)endWish()}
+ if(state==='sink'){sinkT+=dt/60;if(sinkT>4.2)final()}
+ if(state==='rub')rub=Math.max(0,rub-.0006*dt);
+ peak=Math.max(peak,P.length/260);const ld=Math.round(P.length/2.6);if(ld!==lastLd){lastLd=ld;$('bar').firstChild.style.width=Math.min(100,ld)+'%'}update(dt);for(const r of rings){r.r+=16*dt;r.a-=.02*dt}rings=rings.filter(r=>r.a>0);draw();
+ dark+=(darkT-dark)*.04*dt;if(dark>.01){ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=Math.min(1,dark);ctx.fillStyle='#000';ctx.fillRect(0,0,cv.width,cv.height);ctx.restore()}
+ ctx.restore();requestAnimationFrame(frame)}
+
+function summon(){state='genie';rub=0;rubSec=(performance.now()-(rub0||performance.now()))/1000;SFX.genie();shake=25;ring('#14e3c8',lamp.x,lamp.y);ring('#ff2e88',lamp.x,lamp.y);
+ for(let i=0;i<140;i++){const a=R(-Math.PI,0),v=R(2,14);sp('●',lamp.x,lamp.y-20,{c:['#14e3c8','#ff2e88','#ffb703'][i%3],vx:Math.cos(a)*v,vy:Math.sin(a)*v,s:R(10,40),life:90,gr:1.01})}
+ $('genie').className='on';say(L[0]);showChoices()}
+function showChoices(){const used=picks.map(w=>w.n),pool=W8.filter(w=>!used.includes(w.n)).sort(()=>Math.random()-.5).slice(0,4);$('ch').innerHTML='';
+ pool.forEach(w=>{const b=document.createElement('button');b.textContent=w.e+' '+LT(w.n);b._w=w;b.onclick=()=>pick(w);$('ch').appendChild(b)})}
+function pick(w){SFX.wish();$('ch').innerHTML='';say('');$('genie').classList.add('small');state='play';cur={w,tt:0,cap:0};picks.push(w)}
+function endWish(){setCap('');darkT=0;dark=0;chaos++;hue+=65;frozen=false;ts=1;inv=false;fil();round++;hud();
+ $('genie').classList.remove('small');cur=null;
+ if(round<3){state='choose';say(L[round]);showChoices()}
+ else{state='end';say('三個願望用完了。附帶條款第 4 條：許願者自動接任神燈。');setTimeout(()=>{if(state==='end')sink()},3200)}}
+function sink(){$('ch').innerHTML='';say('');state='sink';sinkT=0;$('genie').className='gone';ring('#ff2e88');shake=20;fog(4.2);
+ sp('🧍',W/2,H*.4,{s:200,life:999});P.forEach(p=>{p.m='suck';p.vx=p.vy=0;p.free=1})}
+function final(){state='final';const peakP=Math.round(Math.min(1,peak)*100),score=pops*10+peakP*3,rank=LT(pops<5?'佛系許願人':pops<15?'手滑戳破者':pops<30?'災難清道夫':'混亂製造機');const sw=picks.filter(w=>KIND[w.n]==='爽').length,tl=LANG==='en'?`Good ${sw} · Bad ${3-sw}: ${LT(['神燈今天心情不好','被捉弄的居多','大致是爽的','你是人生贏家'][sw])}`:`爽 ${sw}・損 ${3-sw}：${['神燈今天心情不好','被捉弄的居多','大致是爽的','你是人生贏家'][sw]}`;let best=score;try{best=Math.max(score,+localStorage.getItem('gl_best')||0);localStorage.setItem('gl_best',best)}catch(e){}
+ $('sum').innerHTML=picks.map(w=>w.e+' '+LT(w.n)).join('<br>')+(LANG==='en'?`<br><br>${tl}<br>Title: ${rank}<br>Chaos ${score} (personal best ${best})<br>Taps ${pops}, peak chaos ${peakP}%.<br>Your first wisher is rubbing the lamp.`:`<br><br>${tl}<br>稱號：${rank}<br>混亂值 ${score}（個人最佳 ${best}）<br>互動 ${pops} 次，最高災情 ${peakP}%。<br>你的第一位許願者，正在擦燈。`);
+ const tx=LANG==='en'?`I wished for "${picks.map(w=>LT(w.n).replace(/^I (want|never want) /,'')).join(', ')}" in Wish Lamp: Wishes Gone Wrong. ${tl}, chaos ${score} (${rank}). Ended up trapped in the lamp 🧞`:`我在《許願神燈：願望失控》許了「${picks.map(w=>w.n.replace('我要','')).join('、')}」，${tl}，混亂值 ${score}（${rank}），最後被關進燈裡 🧞`;
+ SHARE_MSG=tx;$('shx').href=`https://x.com/intent/post?text=${encodeURIComponent(tx+'\n'+SHARE)}`;
+ $('sht').href=`https://www.threads.net/intent/post?text=${encodeURIComponent(tx+'\n'+SHARE)}`;
+ $('gvmsg').textContent='';/* 玩完：每台裝置只算一次，和許願同單位，比例才有意義 */(()=>{let f=0;try{f=localStorage.getItem('wl_finished')}catch(e){}if(!f)evPost('finish').then(()=>{try{localStorage.setItem('wl_finished','1')}catch(e){}}).catch(()=>{})})();$('end').classList.add('on')}
+function restart(){darkT=0;dark=0;P=[];rings=[];picks=[];round=0;chaos=0;hue=0;rub=0;inv=false;frozen=false;ts=1;fil();state='rub';$('end').classList.remove('on');$('genie').className='';
+ pops=0;peak=0;rubSec=0;rub0=0;hud();say('按住神燈，來回擦拭。')}
+$('re').onclick=restart;
+$('snd').textContent=mute?'🔇':'🔊';$('snd').onclick=()=>{mute=!mute;$('snd').textContent=mute?'🔇':'🔊';try{localStorage.setItem('gl_mute',mute?'1':'0')}catch(e){}if(!mute)SFX.pop()};
+const SHARE=location.origin+location.pathname;
+let SHARE_MSG='';
+/* 手機：叫出系統分享選單（可直接選 X / Threads 等 App），文字和遊戲連結一起帶過去；不支援時才開網頁版 */
+['shx','sht'].forEach(id=>$(id).addEventListener('click',e=>{if(!navigator.share||!SHARE_MSG)return;e.preventDefault();navigator.share({text:SHARE_MSG,url:SHARE,title:'許願神燈：願望失控'}).catch(()=>{})}));
+function applyLang(){const en=LANG==='en';document.documentElement.lang=en?'en':'zh-Hant';document.title=en?'Wish Lamp: Wishes Gone Wrong':'許願神燈：願望失控';
+ $('hb').textContent=LT('許願神燈');$('hc').textContent=LT('災情');$('snd').setAttribute('aria-label',LT('音效'));$('lg').textContent=en?'中':'EN';
+ $('eh').textContent=en?LT('你現在住在燈裡。'):'你現在住在燈裡。';$('shx').textContent=LT('分享到 X');$('sht').textContent=LT('分享到 Threads');$('cp').textContent=LT('複製連結');$('re').textContent=LT('再許一次');
+ $('gv').textContent=LT('🧞 當朋友的燈神（開發中，點擊以許願開啟）');
+ hud();say(sayRaw);
+ $('lg').onclick=()=>{LANG=en?'zh':'en';try{localStorage.setItem('wl_lang',LANG)}catch(e){}applyLang();[...$('ch').children].forEach(b=>{if(b._w)b.textContent=b._w.e+' '+LT(b._w.n)})}}
+async function api(path,opt){if(!API)throw 0;const c=new AbortController(),t=setTimeout(()=>c.abort(),3000);try{const r=await fetch(API+path,{...opt,signal:c.signal});if(!r.ok)throw 0;return await r.json().catch(()=>({}))}finally{clearTimeout(t)}}
+const evPost=kind=>api('/event',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({game:'wish-lamp',kind})});
+const evCount=async kind=>{const j=await api('/count?game=wish-lamp&kind='+kind);const n=Number(j.n);if(!Number.isFinite(n))throw 0;return n};
+$('gv').onclick=async()=>{const b=$('gv'),m=$('gvmsg');if(b.disabled)return;b.disabled=true;let voted=false;try{voted=!!localStorage.getItem('wl_genie_voted')}catch(e){}
+ try{if(!voted){try{await evPost('genie_vote')}catch(e){m.textContent=LT('神燈收到你的願望了');return}try{localStorage.setItem('wl_genie_voted','1')}catch(e){}}
+  try{const n=await evCount('genie_vote');m.textContent=LANG==='en'?(voted?`${n} people have wished so far.`:`The genie received your wish. ${n} people have wished so far.`):voted?`目前已有 ${n} 人許願`:`神燈收到你的願望了，目前已有 ${n} 人許願`}catch(e){m.textContent=LT('神燈收到你的願望了')}}finally{b.disabled=false}};
+$('cp').onclick=async()=>{try{await navigator.clipboard.writeText(SHARE)}catch(e){try{const t=document.createElement('textarea');t.value=SHARE;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove()}catch(e2){prompt('複製連結',SHARE)}}$('cp').textContent=LT('已複製！');setTimeout(()=>$('cp').textContent=LT('複製連結'),1600)};
+
+function mv(e){const x=e.clientX,y=e.clientY,dx=x-mouse.x,dy=y-mouse.y;mouse.x=x;mouse.y=y;
+ if(state==='rub'&&mouse.down){const s=lampS();if(Math.hypot(x-lamp.x,y-lamp.y)<190*s){rub=Math.min(1,rub+Math.hypot(dx,dy)/1800);if(!rub0)rub0=performance.now();
+  if(Math.random()<.7)sp('●',lamp.x+185*s,lamp.y-80*s,{c:Math.random()<.5?'#14e3c8':'#ff2e88',vx:R(-.5,1),vy:R(-3,-1.2),s:R(14,34),life:70,gr:1.02});
+  shake=Math.max(shake,rub*3);rubLoop(Math.hypot(dx,dy));if(rub>=1){rubStop();summon()}}}
+ if(frozen&&Math.random()<.6)sp('✨',x,y,{free:1,vx:R(-1,1),vy:R(-1,1),s:R(16,30),life:50,gr:.97})}
+cv.addEventListener('pointerdown',e=>{mouse.down=true;cv.setPointerCapture(e.pointerId);mv(e);if(state==='play'&&cur)tap(e.clientX,e.clientY)});
+addEventListener('pointerup',()=>mouse.down=false);
+cv.addEventListener('pointermove',mv);
+requestAnimationFrame(frame);
+</script>
+<script>applyLang();</script>
+</body>
+</html>

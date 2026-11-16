@@ -269,7 +269,7 @@ body{min-height:calc(100dvh + 2px)}
  </div>
 
  <h2 class="news-h" data-i="newsH"></h2>
- <!-- onholdnews --><a class="onn" href="weekly/"><b>ONHOLDNEWS</b><span>科技遊戲週報 →</span><small>每週二，整理把科學真正寫進玩法的新遊戲 · Weekly: new games where real science runs the mechanics</small></a>
+ <!-- onholdnews --><a class="onn" id="onnLink" href="weekly/"><b>ONHOLDNEWS</b><span id="onnT">科技遊戲週報 →</span><small id="onnS">每週二，整理把科學真正寫進玩法的新遊戲</small></a>
  <!-- devlog --><a class="onn" href="devlog/"><b>DEVLOG</b><span>開發日誌 →</span><small>做遊戲時的筆記和手繪草稿 · Notes and hand-drawn sketches from making games</small></a>
  <div class="low">
   <div class="ask">
@@ -469,6 +469,9 @@ for(const attr of ['aria-label','placeholder','alt','title','content'])document.
  document.querySelectorAll('[data-i-ph]').forEach(e=>{e.placeholder=L[e.dataset.iPh]});
  document.querySelectorAll('[data-i-aria]').forEach(e=>{e.setAttribute('aria-label',L[e.dataset.iAria])});
  $('privLink').href=lang==='zh'?'privacy/':'privacy/?lang='+lang;
+ $('onnLink').href=lang==='zh'?'weekly/':'weekly/en/';
+ $('onnT').textContent=lang==='zh'?'科技遊戲週報 →':'Science games weekly →';
+ $('onnS').textContent=lang==='zh'?'每週二，整理把科學真正寫進玩法的新遊戲':'Every Tuesday: new games where real science runs the mechanics';
  $('langLabel').textContent=LANGS.find(x=>x[0]===lang)[1];
  $('lang').setAttribute('aria-label',OHLi18n.t('common.language')+': '+$('langLabel').textContent);
  $('langOptions').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===lang)));

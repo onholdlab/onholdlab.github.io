@@ -1,0 +1,1353 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tool Twins · 工具雙胞胎</title>
+<meta name="description" content="檢查你的 Claude skills 與 MCP 工具會不會互相搶觸發：找出名稱或描述太像的組合、給一句排除說明，並估算每個項目佔用的 token。全部在瀏覽器裡計算，不會上傳。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2032%2032'%3E%3Crect%20x%3D'2'%20y%3D'6'%20width%3D'18'%20height%3D'20'%20rx%3D'4'%20fill%3D'%230B7C8A'%2F%3E%3Crect%20x%3D'12'%20y%3D'6'%20width%3D'18'%20height%3D'20'%20rx%3D'4'%20fill%3D'%234FC9D6'%20fill-opacity%3D'.85'%2F%3E%3C%2Fsvg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tool Twins · 工具雙胞胎">
+<meta property="og:description" content="檢查你的 Claude skills 與 MCP 工具會不會互相搶觸發：找出名稱或描述太像的組合、給一句排除說明，並估算每個項目佔用的 token。全部在瀏覽器裡計算，不會上傳。 Check whether your Claude skills and MCP tools compete for the same requests. Runs in your browser; nothing is uploaded.">
+<meta property="og:url" content="https://onholdlab.com/tool-twins/">
+<meta property="og:image" content="https://onholdlab.com/tool-twins/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tool Twins · 工具雙胞胎">
+<meta name="twitter:description" content="Check whether your Claude skills and MCP tools compete for the same requests. Runs in your browser; nothing is uploaded.">
+<meta name="twitter:image" content="https://onholdlab.com/tool-twins/og.png">
+<script data-goatcounter="https://onholdlab.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<!-- SPDX-License-Identifier: Apache-2.0
+     Copyright 2026 onholdlab. Third-party demo data: see NOTICE. -->
+<script>
+// REPO_URL: the public source repository. The footer link "Source and issues" points here and shows it;
+// change this one line if the repository moves, nothing else in the file holds the address.
+var REPO_URL='https://github.com/onholdlab/tool-twins';
+</script>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: a hero (one sentence, an illustration, one main action, a drop zone), then a conclusion card, three lanes
+   (fix first / could be better / done right), token bars, details, and a collapsed "method and sources" footer.
+   Offline: system fonts only. Teal = similarity, orange = needs fixing, amber = could be better, green = done right;
+   every state also carries an icon and words, never color alone. */
+:root{
+  --bg:#EDF1F4; --page:#FBFCFD; --ink:#16212B; --muted:#55636E; --rule:#CBD6DD; --teal:#0B7C8A; --on-teal:#fff;
+  --hot:#A93F06; --hot-bg:#FCEDE4; --warn:#7A5300; --warn-bg:#FBF1D9; --ok:#13703F; --ok-bg:#E2F3E8; --tint:#E1ECF0; --cell0:#EAF1F4; --hl:#BFE6EB;
+  --f-disp:system-ui,-apple-system,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --f-body:system-ui,-apple-system,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --f-mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#0E151B;--page:#17212A;--ink:#E6EEF3;--muted:#9AACB8;--rule:#2B3B47;--teal:#4FC9D6;--on-teal:#04262A;--hot:#FF9A5E;--hot-bg:#3A2219;--warn:#F0C25A;--warn-bg:#352B14;--ok:#5FD9A0;--ok-bg:#16302A;--tint:#1F2E39;--cell0:#1B2832;--hl:#1F4D55;color-scheme:dark}
+}
+:root[data-theme="dark"]{--bg:#0E151B;--page:#17212A;--ink:#E6EEF3;--muted:#9AACB8;--rule:#2B3B47;--teal:#4FC9D6;--on-teal:#04262A;--hot:#FF9A5E;--hot-bg:#3A2219;--warn:#F0C25A;--warn-bg:#352B14;--ok:#5FD9A0;--ok-bg:#16302A;--tint:#1F2E39;--cell0:#1B2832;--hl:#1F4D55;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important} /* the page's own display rules (.pop is a grid) must never beat hidden */
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;
+ padding-block:12px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button,textarea{font:inherit;color:inherit}
+button:focus-visible,textarea:focus-visible,summary:focus-visible,.cell:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.app{max-width:920px;margin:0 auto;display:grid;gap:16px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.lang{display:inline-flex;border:1.5px solid var(--rule);border-radius:99px;overflow:hidden}
+.lang button{border:0;background:transparent;padding:4px 12px;font-size:13px;cursor:pointer;min-height:32px}
+.lang button[aria-pressed="true"]{background:var(--teal);color:var(--on-teal)}
+.brand{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--f-disp);font-weight:800;font-size:clamp(28px,7vw,44px);line-height:1.05;margin:0;letter-spacing:-.02em;text-wrap:balance}
+h2{font-family:var(--f-disp);font-weight:700;font-size:19px;margin:0;text-wrap:balance}
+h3{font-size:15px;margin:0}
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:12px 28px;align-items:center}
+.hero-copy{display:grid;gap:12px;align-content:start}
+.tagline{margin:0;font-weight:700;font-size:clamp(17px,4.4vw,21px);line-height:1.35;max-width:30ch;text-wrap:balance}
+.art-col{display:grid;gap:4px;min-width:0}
+.lint{margin:0;color:var(--muted);font-size:12px;text-align:center}
+.art{width:100%;max-height:200px;display:block}
+.cta{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{border:1.5px solid var(--rule);background:var(--page);border-radius:10px;padding:8px 14px;font-size:14px;cursor:pointer;font-weight:500;min-height:40px}
+.btn.p{background:var(--teal);color:var(--on-teal);border-color:transparent;font-weight:700}
+.btn.big{font-size:16px;padding:10px 18px;min-height:46px}
+.btn:disabled{opacity:.7;cursor:progress}
+.btn.s{padding:4px 10px;font-size:13px;flex:none;min-height:34px}
+.drop{border:2px dashed var(--rule);border-radius:14px;background:var(--page);padding:14px;display:grid;gap:8px;min-width:0}
+.drop.over{border-color:var(--teal);background:var(--tint)}
+.drop-h{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;margin:0}
+.drop-h svg{flex:none;color:var(--teal)}
+.paste>summary{cursor:pointer;font-size:14px;color:var(--muted);width:max-content;max-width:100%}
+.paste[open]>summary{margin-bottom:8px}
+textarea{width:100%;min-height:150px;border:1.5px solid var(--rule);background:var(--page);border-radius:12px;padding:10px 12px;font-family:var(--f-mono);font-size:12.5px;line-height:1.5;resize:vertical}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.msg{font-size:14px;color:var(--hot);margin:0}
+.stat{font-size:14px;color:var(--ok);font-weight:600}
+.flist{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.flist:empty{display:none}
+a.home{color:inherit;text-decoration:underline;text-underline-offset:3px}
+a.home:focus-visible{outline:3px solid var(--teal);outline-offset:2px;border-radius:4px}
+.trust{margin:-8px 0 0;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.trust svg{flex:none;color:var(--ok)}
+.flist li.fsum{border:0;background:none;padding:0;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;font:inherit;font-size:14px}
+.fsum summary{cursor:pointer}
+.fsum .flist{margin-top:6px}
+.flist li{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--rule);background:var(--bg);border-radius:99px;padding:2px 4px 2px 10px;font:12px var(--f-mono);max-width:100%;overflow-wrap:anywhere}
+.flist button{border:0;background:transparent;cursor:pointer;min-width:28px;min-height:28px;border-radius:99px;font-size:15px;line-height:1}
+@media (max-width:640px){
+  .hero{grid-template-columns:1fr;gap:8px}
+  .hero-copy{gap:8px}
+  .art{max-height:150px}
+  .hero .lint{display:none}
+  .drop{padding:12px}
+}
+/* results */
+.card{background:var(--page);border:1px solid var(--rule);border-radius:14px;padding:14px;display:grid;gap:10px;min-width:0}
+.sub{margin:0;font-size:14px;color:var(--muted)}
+.note{font-size:12px;color:var(--muted);margin:0}
+.verdict{border-width:2px}
+.verdict.clean{border-color:var(--ok)} .verdict.better{border-color:var(--warn)} .verdict.risky{border-color:var(--hot)}
+.verdict-h{display:flex;gap:10px;align-items:flex-start}
+.verdict-h svg{flex:none;margin-top:3px}
+.verdict.clean .verdict-h svg{color:var(--ok)} .verdict.better .verdict-h svg{color:var(--warn)} .verdict.risky .verdict-h svg{color:var(--hot)}
+.verdict-h p{margin:0;font-size:16px;max-width:65ch}
+.nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.num{background:var(--bg);border-radius:12px;padding:8px 12px;min-width:0}
+.num .v{font-family:var(--f-disp);font-weight:800;font-size:clamp(22px,6vw,30px);line-height:1.1;font-variant-numeric:tabular-nums}
+.num .l{font-size:12px;color:var(--muted)}
+.lane{border-left-width:6px}
+.lane.fix{border-left-color:var(--hot)} .lane.better{border-left-color:var(--warn)} .lane.done{border-left-color:var(--ok)}
+.lane-h{display:flex;align-items:center;gap:8px}
+.lane-h svg{flex:none}
+.lane.fix .lane-h svg{color:var(--hot)} .lane.better .lane-h svg{color:var(--warn)} .lane.done .lane-h svg{color:var(--ok)}
+.count{font:700 13px var(--f-mono);border-radius:99px;padding:1px 9px;font-variant-numeric:tabular-nums}
+.lane.fix .count{background:var(--hot-bg);color:var(--hot)} .lane.better .count{background:var(--warn-bg);color:var(--warn)} .lane.done .count{background:var(--ok-bg);color:var(--ok)}
+.block{display:grid;gap:10px;border-top:1px solid var(--rule);padding-top:10px;min-width:0}
+details.block>summary,details.card>summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+details.block>summary::-webkit-details-marker,details.card>summary::-webkit-details-marker{display:none}
+details.block>summary::before,details.card>summary::before{content:"▸";color:var(--muted)}
+details.block[open]>summary::before,details.card[open]>summary::before{content:"▾"}
+details>summary h2,details>summary h3{display:inline}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.tile{background:var(--bg);border-radius:12px;padding:8px 12px}
+.tile .v{font-family:var(--f-disp);font-weight:800;font-size:22px;line-height:1.1;font-variant-numeric:tabular-nums}
+.tile .l{font-size:12px;color:var(--muted)}
+/* pair cards */
+.pair{display:grid;gap:8px;border-top:1px solid var(--rule);padding-top:12px;min-width:0}
+.pair:first-of-type{border-top:0;padding-top:0}
+.pair b{font-family:var(--f-mono);font-size:13px;overflow-wrap:anywhere}
+.duo{display:grid;grid-template-columns:minmax(0,max-content) minmax(64px,200px) minmax(0,max-content);justify-content:start;gap:8px;align-items:center}
+.name{font:600 13px var(--f-mono);background:var(--tint);border-radius:8px;padding:3px 9px;overflow-wrap:anywhere;min-width:0}
+.meter{display:grid;gap:2px;justify-items:center;min-width:0}
+.meter .track{width:100%;height:6px;border-radius:99px;background:var(--cell0);overflow:hidden}
+.meter .fill{display:block;height:100%;background:var(--teal);border-radius:99px}
+.meter .val{font:600 12px var(--f-mono);color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin:0;padding:0;list-style:none}
+.chips li{font-size:12px;background:var(--hl);border-radius:6px;padding:0 7px}
+.why{margin:0;font-size:14px}
+.raw>summary{cursor:pointer;font-size:13px;color:var(--muted);width:max-content;max-width:100%}
+.badge{display:inline-block;font:600 11px var(--f-mono);padding:1px 8px;border-radius:99px;border:1.5px solid currentColor;margin-left:6px}
+.badge.hi{color:var(--hot)} .badge.mid{color:var(--muted)}
+.shared{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.fix{font-size:14px}
+.sig{font-size:13px;overflow-wrap:anywhere}
+.exq{margin:6px 0 0;padding-left:18px;font-size:13px;display:grid;gap:2px;overflow-wrap:anywhere}
+.exq q{color:var(--muted)}
+code.tpl{font-family:var(--f-mono);font-size:13px;background:var(--tint);border-radius:4px;padding:1px 6px;overflow-wrap:anywhere}
+.sug{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+.sug .fix{margin:0;flex:1 1 220px;min-width:0;overflow-wrap:anywhere}
+.sug>*{flex:1 1 100%;min-width:0;margin:0}.sug>.btn{flex:none}.sug .how ol{margin:4px 0;padding-left:20px;display:grid;gap:2px}
+.src{display:inline-block;font:600 10px var(--f-mono);letter-spacing:.04em;padding:0 6px;border-radius:4px;background:var(--tint);color:var(--muted);margin-right:4px;vertical-align:1px}
+.iss{color:var(--hot)}
+.ok{color:var(--ok)}
+/* token bars */
+.bars{display:grid;gap:4px;margin:0;padding:0;list-style:none}
+.bars li{display:grid;grid-template-columns:minmax(0,11em) minmax(0,1fr) 4.5em;gap:8px;align-items:center;font-size:12px}
+.bars .bn{font-family:var(--f-mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bars .bt{height:12px;border-radius:4px;background:var(--cell0);overflow:hidden}
+.bars .bf{display:block;height:100%;background:var(--muted);opacity:.5;border-radius:4px}
+.bars li.big .bf{background:var(--teal);opacity:1}
+.bars .bv{font:600 12px var(--f-mono);text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.bars li.big .bv{color:var(--ink)}
+@media (max-width:480px){.bars li{grid-template-columns:minmax(0,7.5em) minmax(0,1fr) 3.8em}}
+/* details section */
+.hm{overflow-x:auto;padding-bottom:4px}
+.grid{display:grid;gap:2px;width:max-content;min-width:100%}
+.cell{height:26px;min-width:26px;border-radius:4px;border:0;padding:0;font:600 10px var(--f-mono);display:grid;place-items:center;cursor:default;color:var(--ink);background:var(--cell0)}
+.cell.diag{background:transparent;border:1px dashed var(--rule)}
+.cell.dk{color:#fff}
+.rl{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px;align-self:center;padding-right:6px}
+.cl{font:600 10px var(--f-mono);text-align:center;color:var(--muted);align-self:end}
+.scale{display:flex;align-items:center;gap:8px;font:11px var(--f-mono);color:var(--muted)}
+.scale i{display:block;width:160px;height:8px;border-radius:99px;background:linear-gradient(90deg,var(--cell0),var(--teal))}
+.hm-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.hm-full{position:fixed;inset:0;z-index:15;background:var(--page);display:flex;flex-direction:column}
+.hm-full .hm-bar{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--rule)}
+.hm-full .hm-bar h2{margin-right:auto}
+.hm-full .hm-body{flex:1;overflow:auto;padding:12px 16px}
+.hm-full .hm{overflow:visible}
+.hm-full .grid{grid-template-columns:170px repeat(var(--n),var(--cs,26px))!important}
+.hm-full .cell{height:var(--cs,26px);min-width:var(--cs,26px)}
+.hm-full .rl{max-width:170px}
+#tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--bg);border-radius:8px;padding:6px 10px;font-size:12px;max-width:260px;display:none}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font:600 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td.n{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto}
+.rep{width:100%;min-height:180px}
+.foot{gap:8px}
+.foot>summary{cursor:pointer;font-size:14px;font-weight:600}
+.link{border:0;background:none;padding:4px 2px;color:var(--teal);text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-size:14px;min-height:32px;text-align:left}
+.one-file{margin:0}
+.mobile-note{margin:0;font-size:14px;font-weight:600}
+.drop.nodrop{border-style:solid}
+.where{position:relative}
+.pop{position:absolute;z-index:10;top:calc(100% + 6px);left:0;width:min(360px,calc(100vw - 48px));background:var(--page);border:1px solid var(--rule);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:12px;display:grid;gap:8px}
+.pop-h{margin:0;font-weight:700;font-size:14px}
+.path{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center}
+.path code{font:12px var(--f-mono);background:var(--tint);border-radius:6px;padding:3px 7px;overflow-wrap:anywhere}
+@media (max-width:640px){.where{position:static}.pop{position:static;width:auto;margin-top:6px;box-shadow:none}.bar:has(.where){align-items:flex-start}}
+.stack{display:flex;gap:1px;height:10px;border-radius:99px;overflow:hidden;background:var(--cell0)}
+.stack span{flex-basis:0;min-width:2px;background:var(--muted);opacity:.4}
+.stack span.big{background:var(--teal);opacity:1}
+.lane-h .sub{margin-left:4px}
+.noscript{border:2px solid var(--warn)}
+.noscript p{margin:0;max-width:65ch}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.bars li:not(.big) .bv{opacity:0}
+.bars li:hover .bv,.bars li:focus .bv{opacity:1}
+.bars li:focus{outline:2px solid var(--teal);outline-offset:1px;border-radius:4px}
+</style>
+
+<div class="app">
+  <div class="top"><div class="brand">ONHOLD LAB · TOOL TWINS</div>
+  <div class="lang" id="lang" role="group" aria-label="Language"><button type="button" data-l="zh">繁中</button><button type="button" data-l="en">EN</button></div></div>
+  <section class="hero" aria-labelledby="h1">
+    <div class="hero-copy">
+      <h1 id="h1" data-t="h1">工具雙胞胎</h1>
+      <p class="tagline" data-t="tagline">檢查你的 skills 會不會互相搶觸發</p>
+      <div class="cta"><button class="btn p big" id="tryDemo" type="button" data-t="tryDemo">用示範試試看</button></div>
+    </div>
+    <div class="art-col"><div id="art" aria-hidden="true"></div><p class="lint" data-t="lint">檢查工具只看單一 skill；工具雙胞胎看它們彼此之間。</p></div>
+  </section>
+  <div class="drop" id="drop">
+    <p class="drop-h"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 10v6M9 13l3 3 3-3"/></svg><span data-t="dropTitle">把 skills 資料夾拖到這裡</span></p>
+    <div class="bar"><button class="btn p" id="pickD" type="button" data-t="pickD">選擇 skills 資料夾</button>
+      <span class="where"><button type="button" class="link" id="whereBtn" aria-expanded="false" aria-controls="wherePop" data-t="whereQ">skills 放在哪？</button>
+        <div class="pop" id="wherePop" role="dialog" aria-labelledby="whereH" hidden>
+          <p class="pop-h" id="whereH" data-t="whereH">Claude Code 的個人 skills 資料夾</p>
+          <div class="path"><span class="brand">Windows</span><code id="pathWin" data-t="pathWin">C:\Users\你的名字\.claude\skills</code><button type="button" class="btn s cp" data-path="pathWin" data-t="copyPath">複製路徑</button></div>
+          <div class="path"><span class="brand">Mac / Linux</span><code id="pathMac">~/.claude/skills</code><button type="button" class="btn s cp" data-path="pathMac" data-t="copyPath">複製路徑</button></div>
+          <p class="note" data-t="macHint">Mac 的選擇視窗看不到隱藏資料夾時，按 Cmd+Shift+G，再貼上路徑。</p>
+          <button type="button" class="btn s" id="whereClose" data-t="close">關閉</button>
+        </div></span></div>
+    <p class="note" id="pickDNote" data-t="pickDNote">一次分析裡面所有 SKILL.md</p>
+    <p class="mobile-note" id="mobileNote" data-t="mobileNote" hidden>手機上請用「用示範試試看」或貼上文字；選資料夾請改用電腦。</p>
+    <p class="one-file"><button type="button" class="link" id="pickF" data-t="pickF">只有單一檔案？選擇 SKILL.md 或 tools/list 的 JSON</button></p>
+    <input type="file" id="fileF" multiple accept=".md,.json,text/markdown,application/json" hidden><input type="file" id="fileD" webkitdirectory multiple hidden>
+    <ul class="flist" id="flist"></ul>
+    <details class="paste" id="paste"><summary data-t="pasteH">或貼上文字（tools/list JSON 或 SKILL.md）</summary>
+      <label class="brand" for="inp" data-t="label">工具定義 JSON 或 SKILL.md（下面是示範資料）</label>
+      <textarea id="inp" spellcheck="false"></textarea>
+    </details>
+    <p class="note" id="mix" data-t="mixNote" hidden>文字框裡的內容會與檔案一起分析。</p>
+    <div class="bar"><button class="btn p" id="run" type="button" data-t="run">分析</button><button class="btn" id="demo" type="button" data-t="demo">載入示範</button><span class="stat" id="stat" role="status" aria-live="polite"></span><span class="msg" id="msg" role="alert"></span></div>
+  </div>
+  <p class="trust"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span data-t="trust">全部在你的瀏覽器計算，不會上傳</span></p>
+  <noscript><section class="card noscript">
+    <h2>這個工具需要 JavaScript · JavaScript required</h2>
+    <p>工具雙胞胎檢查你的 Claude skills 與 MCP 工具會不會互相搶觸發：找出名稱或描述太像、模型可能選錯的組合，給一句可以補進描述的排除說明，並估算每個項目佔用的 token。</p>
+    <p>怎麼用：開啟 JavaScript 後重新整理，按「選擇 skills 資料夾」（例如 ~/.claude/skills），或貼上 SKILL.md、tools/list 的 JSON，再按「分析」。也可以先按「用示範試試看」。</p>
+    <p>隱私：所有計算都在你的瀏覽器裡完成，頁面不送出任何網路請求，你的檔案不會上傳。</p>
+    <p class="poll">這個工具有幫到你嗎？<a href="https://github.com/onholdlab/tool-twins/discussions/2" target="_blank" rel="noopener">一鍵投票 →</a></p>
+    <p lang="en">Tool Twins checks whether your Claude skills and MCP tools compete for the same requests, suggests an exclusion line for each confusable pair, and estimates the tokens each item costs. Turn on JavaScript and reload, then choose your skills folder (e.g. ~/.claude/skills) or paste SKILL.md files and press Analyze. Everything runs in your browser; nothing is uploaded.</p>
+    <p class="poll" lang="en">Did this tool help you? <a href="https://github.com/onholdlab/tool-twins/discussions/2" target="_blank" rel="noopener">Vote in one click →</a></p>
+  </section></noscript>
+  <div id="out" style="display:grid;gap:16px;scroll-margin-top:12px"></div>
+  <details class="foot card" id="foot"><summary data-t="footH">方法與來源 · 示範資料授權（Apache-2.0、MIT）</summary>
+    <p class="sub" data-t="lede">貼上 MCP 伺服器的 tools/list 結果、SKILL.md，或把整個 skills 資料夾拖進來。這個工具找出名字和描述太像、模型可能選錯的「雙胞胎」，並估算每個項目佔多少 token。全部在瀏覽器內計算，不會上傳。</p>
+    <p class="note" data-t="lint">檢查工具只看單一 skill；工具雙胞胎看它們彼此之間。</p>
+    <p class="note" data-t="note">相似度用 TF-IDF 加餘弦距離，比較名稱、描述與參數名稱；英文會合併詞形（file／files）與常見同義動詞（get／fetch、delete／remove），中文用兩字詞片段。名稱開頭是已知動詞時，動作不同、或動作相同但物件互不相干的兩個工具，分數減半。skill 只比較描述：相似度 ≥ 0.50，或共用觸發詞（兩個詞，或一個引號短語）且相似度 ≥ 0.30，而且兩邊都沒有指向對方的排除說明或轉交句（例如「For …, use 另一個 skill」）時，列為需要先處理；只共用觸發詞、相似度低於 0.30 的組合放在摺疊的弱訊號區塊。這是啟發式檢查，可能誤報，也可能漏報；分數和標籤只是提示，不是定論，也不是模型實際的選擇機率。token 數是以字元數換算的估計值。</p>
+    <p class="note" data-t="tokNote">token 是估算值：英文約 4 個字元算 1 個，中日韓文約 1.25 個字元算 1 個。各模型的 tokenizer 不同，實際數字會有出入。MCP 工具計算名稱、描述與 inputSchema；skill 只計算啟動時載入的名稱與描述。</p>
+    <p class="note" data-t="where">skills 放在哪：Claude Code 的個人 skills 在 ~/.claude/skills，專案層級的在 .claude/skills。其他工具據說使用 .agents/skills/ 與 .github/skills/（未經驗證）。選資料夾時只讀取裡面的 SKILL.md。</p>
+    <p class="note" data-t="demoSrc">示範資料逐字取自公開 repo：skill-creator、webapp-testing 來自 github.com/anthropics/skills（Apache-2.0）；writing-skills、executing-plans、subagent-driven-development、requesting-code-review、receiving-code-review 來自 github.com/obra/superpowers（MIT，© 2025 Jesse Vincent）；browser_* 工具來自 @playwright/mcp 0.0.83（Apache-2.0，© Microsoft）；read_* 工具來自 @modelcontextprotocol/server-filesystem 2026.8.31（Apache-2.0／MIT）。</p>
+  </details>
+  <p class="note" data-t="heur">這是啟發式檢查，可能誤報，也可能漏報；分數和標籤只是提示，不是定論。</p>
+  <p class="note"><a class="home" id="repoLink" href="#" target="_blank" rel="noopener"></a></p>
+  <p class="note"><a class="home" id="pollLink" data-t="pollFoot" href="https://github.com/onholdlab/tool-twins/discussions/2" target="_blank" rel="noopener">這個工具有幫到你嗎？一鍵投票 →</a></p>
+</div>
+<div id="tip" role="tooltip"></div>
+
+<script>
+(function(){
+"use strict";
+var $=function(s){return document.querySelector(s)};
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;')}
+var L=(function(){try{var v=localStorage.getItem('olab-lang');if(v==='zh'||v==='en')return v}catch(e){}return /^zh/i.test(navigator.language||'zh')?'zh':'en'})();
+var S={
+zh:{h1:'工具雙胞胎',lede:'貼上 MCP 伺服器的 tools/list 結果、SKILL.md，或把整個 skills 資料夾拖進來。這個工具找出名字和描述太像、模型可能選錯的「雙胞胎」，並估算每個項目佔多少 token。全部在瀏覽器內計算，不會上傳。',
+ label:'工具定義 JSON 或 SKILL.md（下面是示範資料）',pickF:'只有單一檔案？選擇 SKILL.md 或 tools/list 的 JSON',pickD:'選擇 skills 資料夾',pickDNote:'一次分析裡面所有 SKILL.md',
+ whereQ:'skills 放在哪？',whereH:'Claude Code 的個人 skills 資料夾',pathWin:'C:\\Users\\你的名字\\.claude\\skills',copyPath:'複製路徑',close:'關閉',
+ macHint:'Mac 的選擇視窗看不到隱藏資料夾時，按 Cmd+Shift+G，再貼上路徑。',dropHint:'也可以把 SKILL.md、tools/list 的 JSON 或整個資料夾拖進這個區塊。',
+ where:'skills 放在哪：Claude Code 的個人 skills 在 ~/.claude/skills，專案層級的在 .claude/skills。其他工具據說使用 .agents/skills/ 與 .github/skills/（未經驗證）。選資料夾時只讀取裡面的 SKILL.md。',
+ demoSrc:'示範資料逐字取自公開 repo：skill-creator、webapp-testing 來自 github.com/anthropics/skills（Apache-2.0）；writing-skills、executing-plans、subagent-driven-development、requesting-code-review、receiving-code-review 來自 github.com/obra/superpowers（MIT，© 2025 Jesse Vincent）；browser_* 工具來自 @playwright/mcp 0.0.83（Apache-2.0，© Microsoft）；read_* 工具來自 @modelcontextprotocol/server-filesystem 2026.8.31（Apache-2.0／MIT）。',
+ running:'分析中…',analyzed:function(n,b,f){return '已分析 '+n+' 項（文字框 '+b+'、檔案 '+f+'）。'},
+ demoCleared:'已清除示範資料；要再用請按「載入示範」。',mixNote:'文字框裡的內容會與檔案一起分析。',removed:function(f){return '已移除 '+f+'。按「分析」更新結果。'},
+ added:function(s,m){return '已加入 '+s+' 個 skill'+(m?'、'+m+' 個工具':'')+'。加入檔案不會自動分析，按「分析」開始。'},
+ fromBox:'輸入框',copies:function(n,src,k,where){return '重複副本：'+n+' 載入了 '+k+' 次（'+where+'）。同一個'+(src==='skill'?' skill ':'工具')+'被載入多次，或裝在多個位置；內容相同，已合併成一項，不算衝突。'},
+ rmFile:function(n){return '移除 '+n},filesSum:function(s,m){return '已加入 '+s+' 個 skill'+(m?'、'+m+' 個工具':'')},clearAll:'清除',cleared:'已清除所有檔案。按「分析」更新結果。',badFile:function(n,e){return '無法讀取 '+n+'：'+e},noFm:'找不到 SKILL.md 的 frontmatter（以 --- 開頭，含 name 與 description）。',run:'分析',demo:'載入示範',
+ note:'相似度用 TF-IDF 加餘弦距離，比較名稱、描述與參數名稱；英文會合併詞形（file／files）與常見同義動詞（get／fetch、delete／remove），中文用兩字詞片段。名稱開頭是已知動詞時，動作不同、或動作相同但物件互不相干的兩個工具，分數減半。skill 只比較描述：相似度 ≥ 0.50，或共用觸發詞（兩個詞，或一個引號短語）且相似度 ≥ 0.30，而且兩邊都沒有指向對方的排除說明或轉交句（例如「For …, use 另一個 skill」）時，列為需要先處理；只共用觸發詞、相似度低於 0.30 的組合放在摺疊的弱訊號區塊。這是啟發式檢查，可能誤報，也可能漏報；分數和標籤只是提示，不是定論，也不是模型實際的選擇機率。token 數是以字元數換算的估計值。',
+ tagAct:'同物件、不同動作',tagObj:'同動作、不同物件',tagSub:'同物件、不同子資源',tagRef:'描述已互相指引',
+ sigTitle:'Skill 訊號',sigTrig:'共用觸發詞：',sigNoTrig:'沒有共用觸發詞',exBoth:'雙向已說明',exOne:function(n){return '單向（建議 '+n+' 補上排除說明）'},exNone:'未偵測到指向對方的排除說明',exFound:function(n){return n+' 的排除句：'},exNoneFound:'沒有找到排除句',exUsed:function(by,w,cue){return '判定採用這句：命中'+{name:'完整名稱',words:'名稱詞',anchor:'代表詞',handoff:'轉交句中的完整名稱'}[by]+'「'+w+'」，轉交詞「'+cue+'」'},
+ sugWhere:function(a,b){return '放的位置：'+a+' 的 description 文字最後（SKILL.md 裡引號的裡面，或工具描述的結尾），不是另起一行。___ 要填「'+a+' 不負責、由 '+b+' 負責的事」。'},sugOther:function(b){return b+' 自己的描述開頭（原文，供你判斷 ___ 可以寫什麼）：'},howH:'怎麼改？___ 要填什麼？',howSteps:function(a,b){return ['打開 '+a+' 的 SKILL.md（MCP 工具則改工具的 description）。','找到 <code>description:</code> 那一行。','把上面那句貼在 description 文字的最後面。如果 description 有用雙引號包起來，要貼在結尾的引號前面。','把 ___ 換成一件具體的事：一件你想讓 '+b+' 處理、不想讓 '+a+' 處理的事。','存檔。不要把這句單獨放在 description 外面一行，格式會壞掉。']},howEx:'範例（假設的 skill）：pdf-forms 的描述結尾加上 Not for editing existing PDF text; use pdf-editor instead.',sugAdd:function(n){return '在 '+n+' 的描述補上一句：'},sugWords:function(b,wb,a,wa){return '可參考的詞，'+b+'：'+(wb.join('、')||'—')+'；'+a+'：'+(wa.join('、')||'—')},sugMerge:'兩邊的描述幾乎沒有各自獨有的詞，考慮合併成一個。',copy:'複製',copied:'已複製',copyFail:'無法複製，請手動選取',fam:'同家族',famSub:'名稱只差一個子資源詞（files、comments、reviews…），處理的是同一物件的不同部分，不算雙胞胎。在描述裡寫清楚各自處理哪個部分即可。',
+ bodyTok:function(n){return '本文 ≈'+n+'（使用時才載入，不計入總量）'},tokNote:'token 是估算值：英文約 4 個字元算 1 個，中日韓文約 1.25 個字元算 1 個。各模型的 tokenizer 不同，實際數字會有出入。MCP 工具計算名稱、描述與 inputSchema；skill 只計算啟動時載入的名稱與描述。',
+ tagline:'檢查你的 skills 會不會互相搶觸發',lint:'檢查工具只看單一 skill；工具雙胞胎看它們彼此之間。',tryDemo:'用示範試試看',
+ dropTitle:'把 skills 資料夾拖到這裡',pasteH:'或貼上文字（tools/list JSON 或 SKILL.md）',footH:'方法與來源 · 示範資料授權（Apache-2.0、MIT）',
+ heur:'這是啟發式檢查，可能誤報，也可能漏報；分數和標籤只是提示，不是定論。',
+ artSim:'相似度 0.40',artBoth:'已互相說明',
+ vClean:function(n){return '這 '+n+' 項彼此分得很清楚：沒有會互相搶觸發的組合，該說明的也都說明了。目前不需要處理。'},
+ vBetter:function(one,weak,trig){var more=[one?one+' 組只有一邊說明':'',weak?weak+' 個項目說明不足':''].filter(Boolean).join('、');return (trig?S.zh.noFix+S.zh.weakNote(trig):'沒有會互相搶觸發的組合，這點做得很好。')+(more?'還可以更好：'+more+'。':'')},
+ noFix:'沒有需要先處理的組合。',weakNote:function(n){return '另有 '+n+' 組只共用少數詞的弱訊號，可選擇查看，其中可能仍有容易混淆的組合。'},tWeak:'弱訊號（只共用少數詞，未列入需要先處理）',
+ vRisky:function(n,ok,both,k){return '在 '+n+' 項中，'+ok+' 項沒有和別人搶觸發'+(both?'，'+both+' 組已互相說明':'')+'。有 '+k+' 組容易互相搶觸發，建議先處理。'},
+ trust:'全部在你的瀏覽器計算，不會上傳',mobileNote:'手機上請用「用示範試試看」或貼上文字；選資料夾請改用電腦。',repoLink:'原始碼與回報問題',pollFoot:'這個工具有幫到你嗎？一鍵投票 →',poll:'這次結果有幫到你嗎？一鍵投票 →',vH:'結論',stackLabel:function(top){return '每個項目佔的 token 比例；最大的三個：'+top},nItems:'項目',nTok:'每次對話先佔用 token（估）',nFix:'需要處理的組數',
+ laneFix:'需要先處理',laneBetter:'可以更好',laneDone:'已經做對',laneBetterNone:'沒有需要補強的地方。',
+ laneDoneNone:'還沒有互相說明的組合。兩邊各加一句排除說明後，會出現在這裡。',doneBoth:function(n){return n+' 組已互相說明'},weakH:'說明不足的項目',
+ tokH:'每次對話先佔用的 token',tokSub:'由大到小排列，最大的三個以顏色標出；滑過或聚焦可看數值。',tokMore:function(n){return '其餘 '+n+' 項'},bodyNote:'skill 本文只在使用時才載入，不計入。',
+ copySug:'複製建議句',rawH:'看原文與判定依據',detailsH:'細節：統計、熱圖、相似清單與每項檢查',
+ topH:'先處理這幾組',topSub:'名稱或描述很像、或會被同一句話觸發，而且未偵測到指向對方的排除說明。描述較具體、含排除說明的那個通常比較清楚；要留哪個由你決定。',noRisk:'沒有發現容易互相搶觸發的雙胞胎。',
+ whySim:function(s){return '名稱和描述很像（相似度 '+s+'），模型可能選錯。'},whyTrig:function(w){return '同一句請求可能同時觸發兩者（共用觸發詞：'+w+'）。'},whyNoEx:'未偵測到指向對方的排除說明。',
+ save:function(a,x,b,y){return '移除 '+a+' 約省 '+x+' token；移除 '+b+' 約省 '+y+' token（估）。'},more:function(n){return '另有 '+n+' 組高風險未列出，見下方清單。'},moreTrig:function(n){return '顯示更多（還有 '+n+' 組）'},
+ tItems:'項目數',tRisk:'高風險 pair',tSave:'可節省 token（估）',
+ trigOnlyH:'弱訊號：只共用觸發詞（整體相似度低於 0.30）',trigOnlySub:'這些組合有共用的觸發詞，但描述整體相似度低於 0.30，訊號太弱，所以不列入「需要先處理」，也不計入可節省 token。',
+ oneH:'只有一邊說明',oneSub:'其中一邊已說明何時改用另一邊，另一邊還沒有。替還沒說明的那邊補上排除說明即可。',
+ bothH:'雙向已說明',bothSub:'兩邊的描述都已指出何時改用對方，通常不需要再處理。',
+ rep:'Markdown 報告（可貼進 PR）',repZh:'複製報告（中文）',repEn:'Copy report (English)',repPrev:'預覽報告',
+ tTools:'工具數',tTok:'定義總 token（估）',tHi:'高度相似對（≥ 0.50）',tMid:'中度相似對（0.30–0.49）',tWeak:'說明不足的工具',
+ hm:'相似度熱圖',hmSub:'顏色越深代表名稱、描述與參數越像。滑過或點一格看細節。',skipped:function(n){return '已略過 '+n+' 個 plugin 目錄（marketplaces）或 node_modules / .git 裡的 SKILL.md，它們不是你實際安裝的 skill。'},scanning:'掃描資料夾中…',scanCap:'資料夾太大或太深，掃描提早停止，結果可能不完整。建議只選 skills 資料夾。',skipDirs:function(n){return '已略過 '+n+' 個不相關的資料夾（node_modules、.git、AppData、plugins/marketplaces 等）。'},dupWhy:function(l){return '這只是比對名稱文字：這些同名項目來自 '+l+'。如果只是同一個 skill 的不同版本副本，或不同 plugin 裡的 skill（plugin 的 skill 通常以 plugin 名稱當前綴，實際不會撞名），就不是真的衝突。本工具無法從資料夾路徑確認這點，請自行判斷再決定要不要改名。'},plugNote:function(n){return '注意：有 '+n+' 個項目來自 plugins 目錄。多版本或重複安裝可能讓數量與相似組合偏高；下方建議依描述文字推論，不代表實際會誤選。'},restored:'已還原你上次載入的內容(重新整理不會清掉;關閉分頁後才會清除)',hmFull:'全螢幕查看',hmBack:'返回',hmEsc:'按 Esc 也可以返回',vs:' 與 ',sim:' 相似度 ',
+ twins:'最相似的組合',noTwins:'沒有相似度達 0.30 的工具對。名稱和描述區分得不錯。',shared:'共同詞：',sep:'、',
+ adv:'在兩個描述各加一句「用在…，不要用在…」，講出差別（例如：處理哪一種輸入、回傳什麼）。',advParam:function(w){return ' 共同詞「'+w+'」多半來自參數，描述的差別要放在開頭。'},advSame:'這兩個名稱幾乎一樣，考慮合併成一個工具或改成不同動詞。',
+ per:'每個工具的檢查',thName:'名稱',thTok:'token（估）',thFind:'發現',fine:'沒有明顯問題',isep:'；',
+ noDesc:'沒有描述',short:function(n){return '描述太短（'+n+' 字元）'},shortCJ:'描述太短',noWhen:'沒說明何時該用、何時不該用',params:function(a,b){return a+'/'+b+' 個參數有說明'},noType:'參數缺少 type',mixed:'名稱混用大小寫與底線',
+ dupName:'名稱重複，模型無法區分',dup:function(n){return '同名工具：'+n+'。模型只能看到同一個名字，必須改名。'},
+ styles:function(s){return '名稱風格不一致：'+s+'。統一風格能讓模型更容易猜到沒看過的工具名。'},
+ badJson:'JSON 格式有誤：',need2:'需要至少兩個項目：MCP 工具（陣列或 { "tools": [...] }）或 SKILL.md。',needName:'每個項目都需要 name。',cap:function(n){return '一次最多分析 '+n+' 個工具，已取前 '+n+' 個。'}},
+en:{h1:'Tool Twins',lede:'Paste an MCP server\'s tools/list result or SKILL.md files, or drop a whole skills folder. This finds "twins" whose names and descriptions are close enough for a model to pick the wrong one, and estimates the tokens each item costs. Everything runs in your browser; nothing is uploaded.',
+ label:'Tool definitions JSON or SKILL.md (demo data below)',pickF:'Only one file? Choose a SKILL.md or a tools/list JSON',pickD:'Choose a skills folder',pickDNote:'Analyzes every SKILL.md inside at once',
+ whereQ:'Where are my skills?',whereH:'Claude Code personal skills folder',pathWin:'C:\\Users\\<your name>\\.claude\\skills',copyPath:'Copy path',close:'Close',
+ macHint:'If the Mac file dialog hides the folder, press Cmd+Shift+G and paste the path.',dropHint:'You can also drop SKILL.md files, tools/list JSON or a whole folder on this area.',
+ where:'Where skills live: Claude Code keeps personal skills in ~/.claude/skills and project skills in .claude/skills. Other tools reportedly use .agents/skills/ and .github/skills/ (unverified). A chosen folder is searched for SKILL.md files only.',
+ demoSrc:'The demo data is copied verbatim from public repositories: skill-creator and webapp-testing from github.com/anthropics/skills (Apache-2.0); writing-skills, executing-plans, subagent-driven-development, requesting-code-review and receiving-code-review from github.com/obra/superpowers (MIT, © 2025 Jesse Vincent); the browser_* tools from @playwright/mcp 0.0.83 (Apache-2.0, © Microsoft); the read_* tools from @modelcontextprotocol/server-filesystem 2026.8.31 (Apache-2.0 / MIT).',
+ running:'Analyzing…',analyzed:function(n,b,f){return 'Analyzed '+n+' items (input box '+b+', files '+f+').'},
+ demoCleared:'Cleared the demo data; press Load demo to bring it back.',mixNote:'What is in the text box is analyzed together with the files.',removed:function(f){return 'Removed '+f+'. Press Analyze to update the results.'},
+ added:function(s,m){return 'Added '+s+' skill'+(s===1?'':'s')+(m?' and '+m+' tool'+(m===1?'':'s'):'')+'. Adding files does not analyze them; press Analyze to start.'},
+ fromBox:'input box',copies:function(n,src,k,where){return 'Duplicate copies: '+n+' was loaded '+k+' times ('+where+'). The same '+(src==='skill'?'skill':'tool')+' is loaded more than once or installed in several places; the content is identical, so it counts as one item, not a conflict.'},
+ rmFile:function(n){return 'Remove '+n},filesSum:function(s,m){return 'Added '+s+' skill'+(s===1?'':'s')+(m?' and '+m+' tool'+(m===1?'':'s'):'')},clearAll:'Clear',cleared:'Removed all files. Press Analyze to update the results.',badFile:function(n,e){return 'Could not read '+n+': '+e},noFm:'No SKILL.md frontmatter found (starts with --- and has name and description).',run:'Analyze',demo:'Load demo',
+ note:'Similarity is TF-IDF with cosine distance over names, descriptions and parameter names. English word forms (file/files) and common synonym verbs (get/fetch, delete/remove) are merged; Chinese uses two-character fragments. When names start with a known verb, pairs with different actions, or the same action on unrelated objects, have their score halved. Skills are compared on their descriptions: a pair is listed under Fix first at similarity ≥ 0.50, or with shared trigger words (two words or one quoted phrase) at similarity ≥ 0.30, when neither side points at the other with an exclusion or a routing clause ("For …, use other-skill"); trigger-only pairs under 0.30 sit in the collapsed weak-signal block. It is a heuristic and can raise false alarms or miss real twins: scores and tags are hints, not verdicts, and not the model\'s real choice probability. Token counts are estimated from character counts.',
+ tagAct:'same object, different action',tagObj:'same action, different object',tagSub:'same object, different sub-resource',tagRef:'descriptions point to each other',
+ sigTitle:'Skill signals',sigTrig:'Shared trigger words: ',sigNoTrig:'No shared trigger words',exBoth:'Both sides say when not to use it',exOne:function(n){return 'One side only (suggest adding an exclusion to '+n+')'},exNone:'No exclusion pointing at the other was detected',exFound:function(n){return 'Exclusion sentences in '+n+': '},exNoneFound:'none found',exUsed:function(by,w,cue){return 'decided by this one: matched '+{name:'full name',words:'name words',anchor:'anchor word',handoff:'full name in a routing clause'}[by]+' "'+w+'", hand-off cue "'+cue+'"'},
+ sugWhere:function(a,b){return 'Where it goes: at the end of the description text of '+a+' (inside the quotes in SKILL.md, or at the end of the tool description), not on a new line. Fill ___ with what '+a+' does not handle and '+b+' does.'},sugOther:function(b){return 'How '+b+' describes itself (quoted as written, to help you judge what ___ can say): '},howH:'How to edit? What goes in the blank?',howSteps:function(a,b){return ['Open the SKILL.md of '+a+' (for an MCP tool, edit the tool description).','Find the <code>description:</code> line.','Paste the sentence above at the very end of the description text. If the description is wrapped in double quotes, paste it before the closing quote.','Replace ___ with one concrete thing: something you want '+b+' to handle and not '+a+'.','Save. Do not put the sentence on its own line outside the description; that breaks the format.']},howEx:'Example (made-up skills): add to the end of the pdf-forms description: Not for editing existing PDF text; use pdf-editor instead.',sugAdd:function(n){return 'Add a line to the description of '+n+':'},sugWords:function(b,wb,a,wa){return 'Words to consider, '+b+': '+(wb.join(', ')||'—')+'; '+a+': '+(wa.join(', ')||'—')},sugMerge:'The two descriptions have almost no words of their own; consider merging them.',copy:'Copy',copied:'Copied',copyFail:'Could not copy; select the text instead',fam:'Same family',famSub:'These names differ only by a sub-resource word (files, comments, reviews…): different parts of one object, not twins. Say in each description which part it handles.',
+ bodyTok:function(n){return 'body ≈'+n+' (loaded only when used, not in the total)'},tokNote:'Tokens are estimates: about 4 characters per token for English and about 1.25 for Chinese, Japanese and Korean. Every model\'s tokenizer differs, so real counts will vary. MCP tools count name, description and inputSchema; skills count only the name and description loaded at startup.',
+ tagline:'Check whether your skills compete for the same requests',lint:'Linters check each skill alone. Tool Twins checks them against each other.',tryDemo:'Try the demo',
+ dropTitle:'Drop your skills folder here',pasteH:'Or paste text (tools/list JSON or SKILL.md)',footH:'Method and sources · demo data licenses (Apache-2.0, MIT)',
+ heur:'This is a heuristic check: it can raise false alarms or miss real twins. Scores and tags are hints, not verdicts.',
+ artSim:'similarity 0.40',artBoth:'explain each other',
+ vClean:function(n){return 'These '+n+' items are clearly apart: none compete for the same requests, and the ones that need it say when not to use them. Nothing to fix.'},
+ vBetter:function(one,weak,trig){var more=[one?one+' pair'+(one===1?'':'s')+' explained on one side only':'',weak?weak+' item'+(weak===1?'':'s')+' under-documented':''].filter(Boolean).join(', ');return (trig?S.en.noFix+' '+S.en.weakNote(trig):'Nothing competes for the same requests, which is good.')+(more?' Could be better: '+more+'.':'')},
+ noFix:'No pairs to fix first.',weakNote:function(n){return n===1?'1 more pair shares only a few words (a weak signal); you can review it, and it may still be easy to confuse.':n+' more pairs share only a few words (weak signals); you can review them, and some may still be easy to confuse.'},tWeak:'Weak signals (only a few shared words, not under Fix first)',
+ vRisky:function(n,ok,both,k){return ok+' of '+n+' items compete with nothing'+(both?' and '+both+' pair'+(both===1?' explains':'s explain')+' each other':'')+'. '+k+' pair'+(k===1?' competes':'s compete')+' for the same requests; fix '+(k===1?'it':'those')+' first.'},
+ trust:'Everything runs in your browser; nothing is uploaded',mobileNote:'On a phone, use Try the demo or paste text; to choose a folder, use a computer.',repoLink:'Source code and issues',pollFoot:'Did this tool help you? Vote in one click →',poll:'Did this help? Vote in one click →',vH:'Summary',stackLabel:function(top){return 'Each item\'s share of the tokens; the three largest: '+top},nItems:'items',nTok:'tokens loaded per conversation (est.)',nFix:'pairs to fix',
+ laneFix:'Fix first',laneBetter:'Could be better',laneDone:'Done right',laneBetterNone:'Nothing to strengthen.',
+ laneDoneNone:'No pairs explain each other yet. Once both sides add an exclusion, they show up here.',doneBoth:function(n){return n+' pair'+(n===1?' explains':'s explain')+' each other'},weakH:'Under-documented items',
+ tokH:'Tokens loaded in every conversation',tokSub:'Largest first; the three largest are highlighted. Hover or focus a bar for its value.',tokMore:function(n){return n+' more items'},bodyNote:'Skill bodies load only when used and are not counted.',
+ copySug:'Copy suggestion',rawH:'Show original sentences and evidence',detailsH:'Details: totals, heatmap, similar pairs and per-item checks',
+ topH:'Fix these first',topSub:'Names or descriptions are alike, or one request could trigger both, and no exclusion pointing at the other was detected. The one with the more specific description and an exclusion is usually clearer; which to keep is your call.',noRisk:'No twins found that would compete for the same requests.',
+ whySim:function(s){return 'The names and descriptions are alike (similarity '+s+'), so a model may pick the wrong one.'},whyTrig:function(w){return 'One request could trigger both (shared trigger words: '+w+').'},whyNoEx:'No exclusion pointing at the other was detected.',
+ save:function(a,x,b,y){return 'Removing '+a+' saves about '+x+' tokens; removing '+b+' saves about '+y+' (est.).'},more:function(n){return n+' more high-risk pairs are not listed here; see the list below.'},moreTrig:function(n){return 'Show more ('+n+' more)'},
+ tItems:'items',tRisk:'high-risk pairs',tSave:'tokens you could save (est.)',
+ trigOnlyH:'Weak signal: shared trigger words only (overall similarity under 0.30)',trigOnlySub:'These pairs share trigger words but their descriptions are less than 0.30 alike overall, too weak a signal to list under Fix first or count in the savings.',
+ oneH:'One side explained',oneSub:'One description already says when to use the other; the other does not yet. Add an exclusion to the side that lacks one.',
+ bothH:'Both sides explained',bothSub:'Each description already says when to use the other, so these usually need nothing more.',
+ rep:'Markdown report (for a PR)',repZh:'複製報告（中文）',repEn:'Copy report (English)',repPrev:'Preview report',
+ tTools:'tools',tTok:'definition tokens (est.)',tHi:'high-similarity pairs (≥ 0.50)',tMid:'medium pairs (0.30–0.49)',tWeak:'under-documented tools',
+ hm:'Similarity heatmap',hmSub:'Darker means names, descriptions and parameters are more alike. Hover or tap a cell for details.',skipped:function(n){return 'Skipped '+n+' SKILL.md files under plugin marketplaces, node_modules or .git; they are not skills you installed.'},scanning:'Scanning folder…',scanCap:'The folder is too large or deep; the scan stopped early and results may be incomplete. Pick the skills folder instead.',skipDirs:function(n){return 'Skipped '+n+' unrelated folders (node_modules, .git, AppData, plugins/marketplaces and similar).'},dupWhy:function(l){return 'This only compares name text: these same-name items come from '+l+'. If they are versions of one skill, or skills inside different plugins (plugin skills are usually prefixed with the plugin name, so they would not really collide), it is not a real conflict. The tool cannot confirm that from folder paths, so judge before renaming.'},plugNote:function(n){return 'Note: '+n+' items come from plugin folders. Several versions or repeated installs can inflate the counts and similar pairs; the advice below is inferred from description text and does not mean the model will actually choose wrong.'},restored:'Restored what you loaded before the refresh (cleared when you close the tab).',hmFull:'Full screen',hmBack:'Back',hmEsc:'Esc also closes',vs:' and ',sim:' similarity ',
+ twins:'Most similar pairs',noTwins:'No pair reaches 0.30. Names and descriptions are well separated.',shared:'Shared words: ',sep:', ',
+ adv:'Add a "use this for…, not for…" sentence to both descriptions that states the difference (what input each takes, what it returns).',advParam:function(w){return ' The shared word "'+w+'" probably comes from a parameter, so put the difference at the start of the description.'},advSame:'These names are nearly identical. Consider merging them into one tool or using different verbs.',
+ per:'Per-tool checks',thName:'Name',thTok:'tokens (est.)',thFind:'Findings',fine:'No obvious problems',isep:'; ',
+ noDesc:'No description',short:function(n){return 'Description too short ('+n+' chars)'},shortCJ:'Description too short',noWhen:'Does not say when to use it and when not to',params:function(a,b){return a+'/'+b+' parameters described'},noType:'Parameter missing type',mixed:'Name mixes capitals and underscores',
+ dupName:'Duplicate name; the model cannot tell them apart',dup:function(n){return 'Duplicate tool names: '+n+'. The model sees only one name, so rename them.'},
+ styles:function(s){return 'Inconsistent naming styles: '+s+'. One style helps the model guess tool names it has not seen.'},
+ badJson:'Invalid JSON: ',need2:'Need at least two items: MCP tools (an array or { "tools": [...] }) or SKILL.md files.',needName:'Every item needs a name.',cap:function(n){return 'At most '+n+' tools per run; analyzed the first '+n+'.'}}};
+function t(k){return S[L][k]}
+var MAX=150;
+// demo: verbatim public examples; sources and licenses are in the demoSrc note under the input
+var DEMO=[
+ {"source":"skill","name":"webapp-testing","description":"Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing browser screenshots, and viewing browser logs."},
+ {"source":"skill","name":"skill-creator","description":"Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy."},
+ {"source":"skill","name":"writing-skills","description":"Use when creating new skills, editing existing skills, or verifying skills work before deployment"},
+ {"source":"skill","name":"executing-plans","description":"Use when executing an implementation plan in the current session as the implementer yourself — your human partner chose inline execution, or no subagent tool is available"},
+ {"source":"skill","name":"subagent-driven-development","description":"Use when executing implementation plans with independent tasks in the current session"},
+ {"source":"skill","name":"requesting-code-review","description":"Use when completing tasks, implementing major features, or before merging to verify work meets requirements"},
+ {"source":"skill","name":"receiving-code-review","description":"Use when receiving code review feedback, before implementing suggestions, especially if feedback seems unclear or technically questionable - requires technical rigor and verification, not performative agreement or blind implementation"},
+ {"name":"browser_take_screenshot","description":"Take a screenshot of the current page. You can't perform actions based on the screenshot, use browser_snapshot for actions.","inputSchema":{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","properties":{"element":{"description":"Human-readable element description used to obtain permission to interact with the element","type":"string"},"target":{"description":"Exact target element reference from the page snapshot, or a unique element selector","type":"string"},"type":{"description":"Image format for the screenshot. If unset, inferred from the filename extension, otherwise png.","type":"string","enum":["png","jpeg","webp"]},"filename":{"description":"File name to save the screenshot to. Relative file names are resolved against the workspace root. If not specified, the screenshot is saved into the output directory as `page-{timestamp}.{png|jpeg|webp}`.","type":"string"},"fullPage":{"description":"When true, takes a screenshot of the full scrollable page, instead of the currently visible viewport. Cannot be used with element screenshots.","type":"boolean"},"scale":{"default":"css","description":"Image resolution scale. \"css\" produces a screenshot sized in CSS pixels (smaller, consistent across devices). \"device\" produces a high-resolution screenshot using device pixels (larger, accounts for the device pixel ratio). Default is css.","type":"string","enum":["css","device"]}},"required":["scale"],"additionalProperties":false}},
+ {"name":"browser_snapshot","description":"Capture accessibility snapshot of the current page, this is better than screenshot","inputSchema":{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","properties":{"target":{"description":"Exact target element reference from the page snapshot, or a unique element selector","type":"string"},"filename":{"description":"Save snapshot to a file instead of returning it in the response. Relative file names are resolved against the workspace root.","type":"string"},"depth":{"description":"Limit the depth of the snapshot tree","type":"number"},"boxes":{"description":"Include each element's bounding box as [box=x,y,width,height] in the snapshot. Coordinates are viewport-relative, in CSS pixels (Element.getBoundingClientRect)","type":"boolean"}},"additionalProperties":false}},
+ {"name":"browser_navigate","description":"Navigate to a URL","inputSchema":{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","properties":{"url":{"type":"string","description":"The URL to navigate to"}},"required":["url"],"additionalProperties":false}},
+ {"name":"browser_console_messages","description":"Returns all console messages","inputSchema":{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","properties":{"level":{"default":"info","description":"Level of the console messages to return. Each level includes the messages of more severe levels. Defaults to \"info\".","type":"string","enum":["error","warning","info","debug"]},"all":{"description":"Return all console messages since the beginning of the session, not just since the last navigation. Defaults to false.","type":"boolean"},"filename":{"description":"File name to save the console messages to. Relative file names are resolved against the workspace root. If not provided, messages are returned as text.","type":"string"}},"required":["level"],"additionalProperties":false}},
+ {"name":"read_text_file","description":"Read the complete contents of a file from the file system as text. Handles various text encodings and provides detailed error messages if the file cannot be read. Use this tool when you need to examine the contents of a single file. Use the 'head' parameter to read only the first N lines of a file, or the 'tail' parameter to read only the last N lines of a file. Operates on the file as text regardless of extension. Only works within allowed directories.","inputSchema":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"path":{"type":"string"},"tail":{"description":"If provided, returns only the last N lines of the file","type":"number"},"head":{"description":"If provided, returns only the first N lines of the file","type":"number"}},"required":["path"]}},
+ {"name":"read_file","description":"Read the complete contents of a file as text. DEPRECATED: Use read_text_file instead.","inputSchema":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"path":{"type":"string"},"tail":{"description":"If provided, returns only the last N lines of the file","type":"number"},"head":{"description":"If provided, returns only the first N lines of the file","type":"number"}},"required":["path"]}},
+ {"name":"read_multiple_files","description":"Read the contents of multiple files simultaneously. This is more efficient than reading files one by one when you need to analyze or compare multiple files. Each file's content is returned with its path as a reference. Failed reads for individual files won't stop the entire operation. Only works within allowed directories.","inputSchema":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"paths":{"minItems":1,"type":"array","items":{"type":"string"},"description":"Array of file paths to read. Each path must be a string pointing to a valid file within allowed directories."}},"required":["paths"]}}
+];
+// tables keyed by words, names or phrases from the input have no prototype: "constructor" or "__proto__" is an ordinary key
+var STOP=Object.assign(Object.create(null),{the:1,a:1,an:1,of:1,to:1,and:1,or:1,in:1,on:1,at:1,for:1,with:1,by:1,is:1,are:1,it:1,its:1,that:1,this:1,given:1,type:1,string:1,object:1,number:1,boolean:1,array:1,"的":1});
+// light stemmer: file/files, read/reading, create/created all land on one form; keeps -ss words (process) intact
+function stem(w){return w.replace(/ies$/,'y').replace(/(?<=.{3})(?:ing|ed)$|(?<=.{3}[^s])s$/,'').replace(/(?<=.{2})e$/,'')}
+// shortcut: hand-picked English verb groups, extend when real tool sets show other synonym misses
+// every word in a group becomes one "~group" token at SYNW weight, so sharing only a verb (exact or synonym) stays a weak signal
+var SYN=Object.create(null),SHOW=Object.create(null),SYNW=0.5;
+[['get','fetch','retrieve','obtain','read','load'],['delete','remove','erase','destroy','drop'],['create','add','insert'],['update','modify','edit','change','patch'],
+ ['search','find','query','lookup'],['run','exec','execute','invoke','call','launch'],['directory','folder','dir']].forEach(function(g){SHOW['~'+stem(g[0])]='≈'+g[0];g.forEach(function(w){SYN[stem(w)]=stem(g[0])})});
+// verb compatibility: a name that starts with a known verb has an action and an object (list_issues = list + issue).
+// Different actions, or the same action on objects neither description mentions, multiply the score by COMPAT.
+// shortcut: English verb list only; a name without a known leading verb is never adjusted
+var VERBS=Object.create(null),COMPAT=0.5;
+('list write push pull move copy send upload download merge fork close open navigate click type select toggle trigger save export import install start stop check validate verify '+
+ 'reply post comment review commit sort filter count scroll press hover drag resize wait evaluate take set print echo sign log subscribe unsubscribe publish schedule cancel '+
+ 'approve reject assign invite share rename archive restore sync fill submit translate summarize generate convert render parse analyze compare calculate describe show display view browse watch notify track')
+ .split(' ').forEach(function(w){VERBS[stem(w)]=1});
+// different verbs on the same object that are near-twins (list/search issues, create/push files): SAMECLASS instead of COMPAT.
+// create vs update are opposite lifecycle steps, so edit-edit stays COMPAT; only edit vs store (push/write/upload/set/save) counts
+// get stays out of the query class: it takes an id, list/search take conditions
+var VCLASS=Object.create(null),SAMECLASS=0.8,NEAR={'query query':1,'edit store':1,'store edit':1};
+'list search'.split(' ').forEach(function(w){VCLASS[SYN[stem(w)]||stem(w)]='query'});
+'create update'.split(' ').forEach(function(w){VCLASS[SYN[stem(w)]||stem(w)]='edit'});
+'write push upload set save'.split(' ').forEach(function(w){VCLASS[SYN[stem(w)]||stem(w)]='store'});
+// get_pull_request vs get_pull_request_files / _comments: same name up to a trailing sub-resource word means a different resource
+// shortcut: fixed sub-resource word list, extend when real tool sets show others
+var SUBRES=Object.create(null);
+'files comments reviews status commits branches labels members tags releases assets attachments events jobs artifacts settings permissions collaborators checks logs replies reactions fields'
+ .split(' ').forEach(function(w){SUBRES[stem(w)]=1});
+function subres(a,b){
+  var s=a.length<=b.length?a:b,l=s===a?b:a,n=s.length;
+  if(!n)return false; // a name with no object left has nothing to share
+  if(l.length===n)return n>1&&s.slice(0,n-1).join(' ')===l.slice(0,n-1).join(' ')&&s[n-1]!==l[n-1]&&SUBRES[s[n-1]]&&SUBRES[l[n-1]];
+  return l.length===n+1&&s.join(' ')===l.slice(0,n).join(' ')&&SUBRES[l[n]];
+}
+// a non-verb first word shared by >= 3 tools (browser_drag, browser_hover...) is a namespace: the verb rules read the next word
+var NS=Object.create(null);
+function setNS(tools){
+  var c=Object.create(null);NS=Object.create(null);
+  tools.forEach(function(x){if(x.source==='skill')return;var w=splitName(x.name).toLowerCase().match(/[a-z0-9]{2,}/g)||[];if(w.length>1)c[w[0]]=(c[w[0]]||0)+1});
+  Object.keys(c).forEach(function(w){var s=stem(w);if(c[w]>=3&&!SYN[s]&&!VERBS[s])NS[w]=1});
+}
+function nameParts(n){
+  var ws=splitName(n).toLowerCase().match(/[a-z0-9]{2,}/g)||[],ns=ws.length>1&&NS[ws[0]];if(ns)ws=ws.slice(1);
+  var v=ws.length>1||ns?stem(ws[0]):'',g=SYN[v]||(VERBS[v]?v:null);
+  return {verb:g,obj:g?ws.slice(1).filter(function(w){return !STOP[w]&&!SYN[stem(w)]}).map(stem):[],words:ws.filter(function(w){return !STOP[w]}).map(stem)};
+}
+function compat(a,b){
+  if(!a.verb||!b.verb)return null;
+  // names minus the verb: one is the other plus a sub-resource word (create_issue / add_issue_comment), or they differ only in it
+  if(subres(a.words.slice(1),b.words.slice(1)))return {f:COMPAT,tag:'sub'};
+  var ab=a.obj.some(function(w){return b.set[w]}),ba=b.obj.some(function(w){return a.set[w]});
+  if(a.verb!==b.verb){
+    var same=a.obj.length&&a.obj.length===b.obj.length&&a.obj.every(function(w){return b.obj.indexOf(w)>=0});
+    if(same&&NEAR[VCLASS[a.verb]+' '+VCLASS[b.verb]])return {f:SAMECLASS,tag:''};
+    return {f:COMPAT,tag:ab||ba?'act':''};
+  }
+  if(a.obj.length&&b.obj.length&&!(ab&&ba))return {f:COMPAT,tag:'obj'};
+  return null;
+}
+function splitName(n){return String(n).replace(/([a-z0-9])([A-Z])/g,'$1 $2').replace(/[_\-.:/]+/g,' ')}
+// plain: no synonym-verb groups (skills); word forms are still merged by stem()
+function tok(text,plain){
+  var t=String(text||'').toLowerCase(),out=[],m,re=/[a-z0-9]{2,}/g;
+  while((m=re.exec(t))){if(STOP[m[0]])continue;var s=stem(m[0]);if(SYN[s]&&!plain){out.push('~'+SYN[s]);continue}if(!SHOW[s])SHOW[s]=m[0];out.push(s)}
+  var cj=t.replace(/[^㐀-鿿]/g,' ').split(/\s+/);
+  cj.forEach(function(run){for(var i=0;i<run.length-1;i++)out.push(run.substr(i,2))});
+  return out;
+}
+function docOf(tool){
+  var props=tool.params||{};
+  var names=Object.keys(props);
+  var parts=[];
+  // a skill is matched on its description text alone: none of the MCP name rules (verbs, sub-resources, namespaces, synonym verbs) apply
+  if(tool.source==='skill'){
+    var sset=Object.create(null);parts=tok(tool.description,true);parts.forEach(function(w){sset[w]=1});
+    return {toks:parts,props:{},names:[],verb:null,obj:[],words:[],set:sset};
+  }
+  var nameToks=tok(splitName(tool.name));
+  nameToks.forEach(function(w){parts.push(w,w)}); // name weighs double
+  tok(tool.description).forEach(function(w){parts.push(w)});
+  names.forEach(function(k){tok(splitName(k)).forEach(function(w){parts.push(w)});tok(props[k]&&props[k].description).forEach(function(w){parts.push(w)})});
+  var np=nameParts(tool.name),set=Object.create(null);parts.forEach(function(w){set[w]=1});
+  return {toks:parts,props:props,names:names,verb:np.verb,obj:np.obj,words:np.words,set:set};
+}
+// does x's description name tool y? (read_file: 'DEPRECATED: Use read_text_file instead')
+// shortcut: multi-word names only, since a one-word name like search matches ordinary prose; revisit if one-word tools need it
+function mentions(x,y){
+  var n=String(y.name);if(!/[_\-.:/]|[a-z][A-Z]/.test(n))return false;
+  var d=String(x.description||''),k=d.indexOf(n);
+  while(k>=0){if(!/[\w-]/.test(d.charAt(k-1)||' ')&&!/[\w-]/.test(d.charAt(k+n.length)||' '))return true;k=d.indexOf(n,k+1)}
+  return false;
+}
+// ---- skill signals, shown apart from the text similarity ----
+// trigger words: content words from "Use when…", "Triggers on…", "when the user…" clauses, plus every quoted phrase
+// shortcut: clause ends at the next . ; ! ? or newline, so "e.g." cuts a clause short; good enough for trigger lists
+var TRIG_EN=/\b(?:use (?:this skill |this |it )?(?:when|whenever|for|if|any time)|triggers?(?: on| when| include| for)?|when(?:ever)? (?:the |a |your )?(?:user|human)|any time)\b/gi,
+    TRIG_ZH=/(?:適用於|適用|當使用者|使用時機|觸發|使用者要求|使用者提到)/g,
+    TRIG_GENERIC=Object.create(null);
+'use user users human partner ask asks asked want wants wanted need needs when whenever skill this any time request requests mention mentions trigger triggers like something anything work working'
+ .split(' ').forEach(function(w){TRIG_GENERIC[stem(w)]=1});
+// function words carry no trigger or topic: kept out of trigger words and suggestion words (the similarity score does not use this list)
+// The standard English stopword list (NLTK's 179 words) plus the modal auxiliaries it lacks and a few abbreviations.
+var FUNC_WORDS=Object.create(null);
+('i me my myself we our ours ourselves you your yours yourself yourselves he him his himself she her hers herself it its itself they them their theirs themselves '+
+ 'what which who whom this that these those am is are was were be been being have has had having do does did doing a an the and but if or because as until while '+
+ 'of at by for with about against between into through during before after above below to from up down in out on off over under again further then once here there '+
+ 'when where why how all any both each few more most other some such no nor not only own same so than too very can will just don should now '+
+ 'aren couldn didn doesn hadn hasn haven isn mightn mustn needn shan shouldn wasn weren won wouldn '+
+ 'could would may might must shall also either neither another many much less onto whose done via per etc e.g ie')
+ .split(' ').forEach(function(w){FUNC_WORDS[stem(w)]=1});
+function quoted(d){
+  var out=Object.create(null),m,re=/["“「『]([^"”」』\n]{2,60})["”」』]|(?:^|[\s(:,])'([^'\n]{2,60})'(?=[\s.,;:)!?]|$)/g;
+  while((m=re.exec(d)))out[(m[1]||m[2]).trim().toLowerCase()]=1;
+  return out;
+}
+function triggers(desc){
+  var d=String(desc||'').replace(/\s+/g,' '),words=Object.create(null),m,clauses=[];
+  // "Do NOT trigger when …" lists what the item is not for: its exclusion sentences are never trigger clauses
+  exclusions(d).forEach(function(s){d=d.split(s).join(' . ')});
+  [TRIG_EN,TRIG_ZH].forEach(function(re){re.lastIndex=0;while((m=re.exec(d)))clauses.push(d.slice(m.index+m[0].length).split(SENT_END)[0])});
+  clauses.forEach(function(c){tok(c,true).forEach(function(w){if(!TRIG_GENERIC[w]&&!FUNC_WORDS[w])words[w]=1})});
+  return {words:words,phrases:quoted(d)};
+}
+// exclusion sentences ("Do NOT use…", "not for…", "…instead", "However, if…"), checked for a mention of the other item's name
+// pointer phrases ("which has its own skill", "→ that format's skill") hand off to another skill without a "not for" or "instead"
+var EXCL=/\b(?:do not|don't|never|not) use\b|\b(?:do not|don't|never) (?:trigger|invoke|activate)\b|\bnot (?:for|when)\b|\binstead\b|\bhowever,? if\b|\bskip (?:it |this )?(?:when|if|only)\b|\brather than\b|\b(?:has|have) (?:its|their) own skill\b|\bthat \w+'s skill\b|(?:→|->)(?:[^.;]|\.(?=\S))*\bskill\b|\b(?:another|a different|a separate|the other) skill\b|不要用|不適用|請改用|改用|而不是|而非|另有 ?skill/i;
+// A sentence ends at . ; ! ? followed by a space or the end of the text, or at Chinese full-width punctuation.
+// A dot right before a letter is part of a word (.docx, topic.instructions, docs.google.com) and never ends a sentence.
+var SENT_END=/[.;!?](?=\s|$)|[。；！？]/;
+function sentences(d){return String(d||'').replace(/\s+/g,' ').split(/(?<=[.;!?])(?=\s|$)\s*|(?<=[。；！？])\s*/).filter(function(s){return s.trim()})}
+function exclusions(desc){
+  return sentences(desc).filter(function(s){return EXCL.test(s)});
+}
+// a name counts as mentioned as written or with - and _ read as spaces (pdf-tools, pdf_tools, "pdf tools"), never inside a longer word
+function namedIn(s,name){
+  var sp=function(x){return String(x).toLowerCase().replace(/[-_]+/g,' ')},low=sp(s),v=sp(name),k=low.indexOf(v);
+  while(k>=0){if(!/\w/.test(low.charAt(k-1)||' ')&&!/\w/.test(low.charAt(k+v.length)||' '))return true;k=low.indexOf(v,k+1)}
+  return false;
+}
+// does an exclusion sentence of self point at other? Its full name, or all words of other's name that self's own name lacks
+// ("Claude in Chrome" -> chrome-browser, while "browser" is shared with built-in-browser and proves nothing).
+// Full names of other items in the set are blanked out first, so "use doc-editor instead" never points at doc-review through "doc".
+// shortcut: a hand-off to a skill outside the set that shares such a word still counts, hiding that pair from the top list
+var NAME_GENERIC=Object.create(null);'skill skills tool tools mcp server helper agent assistant the and for with'.split(' ').forEach(function(w){NAME_GENERIC[w]=1});
+// Anchors: what an item is called besides its name, each enough on its own. Title-case product names from the part of its
+// description that says what it does (Word, Chrome, Google; not sentence-initial words, not its own exclusion sentences),
+// plus file formats it handles and their product names (docx <-> Word, xlsx <-> Excel / spreadsheet, pptx <-> PowerPoint).
+// shortcut: hand-written format table and generic-word list; extend when real skills show other products
+var FORMAT_ALIAS=Object.assign(Object.create(null),{docx:['word'],dotx:['word'],xls:['excel','spreadsheet'],xlsx:['excel','spreadsheet'],xlsm:['excel','spreadsheet'],ppt:['powerpoint'],pptx:['powerpoint'],potx:['powerpoint'],pdf:[]});
+var ANCHOR_GENERIC=Object.create(null);'claude anthropic api apis mcp ai sdk json html css markdown python javascript typescript node use using if do not when whenever the this that these also trigger skill skills tool tools writing code file files document documents data user users'
+ .split(' ').forEach(function(w){ANCHOR_GENERIC[w]=1});
+function anchors(x,ex){
+  var text=String(x.description||'').replace(/\s+/g,' '),out=Object.create(null),m;
+  (ex||[]).forEach(function(s){text=text.split(s).join(' . ')}); // what it says it is not for is not what it is
+  var re=/([A-Z][a-z]{2,}(?:[A-Z][a-z]+)*)\b/g;
+  while((m=re.exec(text))){if(!/(^|[.!?:;]\s*)$/.test(text.slice(0,m.index)))out[m[1].toLowerCase()]=1}
+  (String(x.name)+' '+text).toLowerCase().split(/[^a-z0-9]+/).forEach(function(w){if(FORMAT_ALIAS[w]){out[w]=1;FORMAT_ALIAS[w].forEach(function(a){out[a]=1})}});
+  Object.keys(out).forEach(function(w){if(ANCHOR_GENERIC[w])delete out[w]});
+  return out;
+}
+// -> how s points at other ({by:'name'|'words'|'anchor', word}), or null
+function pointsTo(s,other,self,names,ao,as){
+  if(namedIn(s,other.name))return {by:'name',word:other.name};
+  var low=' '+String(s).toLowerCase().replace(/[-_]+/g,' ')+' ';
+  (names||[]).forEach(function(n){
+    var v=String(n).toLowerCase().replace(/[-_]+/g,' ');
+    if(n!==other.name&&n!==self.name&&v)low=low.split(new RegExp('(?<![\\w])'+v.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?![\\w])','g')).join(' ');
+  });
+  // every distinctive word must be there: one word alone ("writing" in "is writing code") matched writing-plans and writing-skills
+  var own=Object.create(null);String(self.name).toLowerCase().split(/[^a-z0-9㐀-鿿]+/).forEach(function(w){own[w]=1});
+  var ws=String(other.name).toLowerCase().split(/[^a-z0-9㐀-鿿]+/).filter(function(w){return w.length>=3&&!own[w]&&!NAME_GENERIC[w]});
+  if(ws.length>0&&ws.every(function(w){return namedIn(low,w)}))return {by:'words',word:ws.join(' ')};
+  // any anchor of other that self does not share ("Do NOT use for … Word …" -> docx)
+  var hit=Object.keys(ao||{}).filter(function(w){return !(as||{})[w]&&(namedIn(low,w)||namedIn(low,w+'s'))})[0];
+  return hit?{by:'anchor',word:hit}:null;
+}
+// rules-v3: routing clauses that send a scope to another item without "not for" or "instead":
+// "For <scope>, use <name>", "…; for <scope> see <name>". The clause starts the sentence or follows ; or , and begins with "for";
+// at most 12 words (commas allowed) lead to "use" or "see" and a name. Only another loaded item's exact full name counts.
+// "Use when …" trigger clauses never match (they do not start with "for"), nor does "after this, use X" (out of scope).
+var HANDOFF=/(?:^|[;,]\s*)for\s+(?:\S+\s+){0,12}?(?:use|see)\s+([A-Za-z0-9](?:[\w.-]*[A-Za-z0-9])?)/gi;
+function handoffs(desc){
+  var out=[];
+  sentences(desc).forEach(function(s){var m;HANDOFF.lastIndex=0;while((m=HANDOFF.exec(s)))out.push({s:s,target:m[1],cue:m[0].replace(/^[;,]\s*/,'')})});
+  return out;
+}
+function sameName(a,b){var n=function(x){return String(x).toLowerCase().replace(/[-_]+/g,' ')};return n(a)===n(b)}
+// the first exclusion sentence of self that points at other, with how it matched and the hand-off cue that made it an exclusion;
+// failing that, the first routing clause (hs) that names other in full
+function evidence(ex,other,self,names,ao,as,hs){
+  for(var k=0;k<ex.length;k++){var v=pointsTo(ex[k],other,self,names,ao,as);if(v){v.s=ex[k];v.cue=(ex[k].match(EXCL)||[''])[0];return v}}
+  for(k=0;k<(hs||[]).length;k++)if(sameName(hs[k].target,other.name))return {by:'handoff',word:other.name,s:hs[k].s,cue:hs[k].cue};
+  return null;
+}
+// 'both': each description excludes the other; 'ab': only a's does (b should add one); 'ba': only b's; 'none'
+function exclState(a,b,ea,eb,names,aa,ab,ha,hb){
+  var x=evidence(ea,b,a,names,ab,aa,ha),y=evidence(eb,a,b,names,aa,ab,hb);
+  return x&&y?'both':x?'ab':y?'ba':'none';
+}
+function analyze(tools){
+  setNS(tools);var docs=tools.map(docOf),N=docs.length,df=Object.create(null);
+  var trig=tools.map(function(x){return triggers(x.description)}),exc=tools.map(function(x){return exclusions(x.description)}),names=tools.map(function(x){return x.name});
+  var anc=tools.map(function(x,k){return anchors(x,exc[k])}),hand=tools.map(function(x){return handoffs(x.description)});
+  // a word in more than a third of the loaded descriptions does not tell two items apart, so it is no shared trigger;
+  // the floor of 2 keeps small sets meaningful (with 2-6 items, a word both share would otherwise always be "common")
+  var ddf=Object.create(null),COMMON=Math.max(2,N/3);
+  tools.forEach(function(x){var seen=Object.create(null);tok(x.description,true).forEach(function(w){if(!seen[w]){seen[w]=1;ddf[w]=(ddf[w]||0)+1}})});
+  docs.forEach(function(d){var seen=Object.create(null);d.toks.forEach(function(w){if(!seen[w]){seen[w]=1;df[w]=(df[w]||0)+1}})});
+  var vecs=docs.map(function(d){
+    var tf=Object.create(null);d.toks.forEach(function(w){tf[w]=(tf[w]||0)+(w[0]==='~'?SYNW:1)});
+    var v=Object.create(null),norm=0;
+    Object.keys(tf).forEach(function(w){var x=(tf[w]>=1?1+Math.log(tf[w]):tf[w])*(Math.log((N+1)/(df[w]+1))+1);v[w]=x;norm+=x*x});
+    norm=Math.sqrt(norm)||1;Object.keys(v).forEach(function(w){v[w]/=norm});
+    return v;
+  });
+  var M=[],pairs=[];
+  for(var i=0;i<N;i++){M.push([]);for(var j=0;j<N;j++){
+    if(i===j){M[i].push(1);continue}
+    if(j<i){M[i].push(M[j][i]);continue}
+    var s=0,sh=[];
+    Object.keys(vecs[i]).forEach(function(w){if(vecs[j][w]){var c=vecs[i][w]*vecs[j][w];s+=c;sh.push([w,c])}});
+    sh.sort(function(a,b){return b[1]-a[1]});
+    var raw=s,cp=compat(docs[i],docs[j]);if(cp)s*=cp.f;
+    M[i].push(s);
+    var skill=tools[i].source==='skill'||tools[j].source==='skill',tw=[];
+    // same rule as exclState, kept with its evidence so the page can show which sentence decided it
+    var e1=evidence(exc[i],tools[j],tools[i],names,anc[j],anc[i],hand[i]),e2=evidence(exc[j],tools[i],tools[j],names,anc[i],anc[j],hand[j]);
+    // shared trigger words and quoted phrases are a skill signal: MCP descriptions rarely carry trigger clauses
+    if(skill){
+      Object.keys(trig[i].phrases).forEach(function(q){if(trig[j].phrases[q])tw.push('"'+q+'"')});
+      Object.keys(trig[i].words).forEach(function(w){if(trig[j].words[w]&&ddf[w]<=COMMON)tw.push(SHOW[w]||w)});
+    }
+    pairs.push({i:i,j:j,s:s,raw:raw,tag:cp&&cp.tag,ref:mentions(tools[i],tools[j])||mentions(tools[j],tools[i]),shared:sh.slice(0,6).map(function(x){return SHOW[x[0]]||x[0]}),
+      skill:skill,trig:tw,trigQ:tw.filter(function(w){return w[0]==='"'}).length,excl:e1&&e2?'both':e1?'ab':e2?'ba':'none',ev:[e1,e2]});
+  }}
+  pairs.sort(function(a,b){return b.s-a.s});
+  return {M:M,pairs:pairs,docs:docs,vecs:vecs,exc:exc,hand:hand};
+}
+// the n highest-weight words of item i that item j's text lacks; function words are skipped (display only, scores are untouched)
+function distinct(R,i,j,n){
+  var vi=R.vecs[i],vj=R.vecs[j];
+  return Object.keys(vi).filter(function(w){return w[0]!=='~'&&!vj[w]&&!/^\d+$/.test(w)&&!TRIG_GENERIC[w]&&!FUNC_WORDS[w]&&(w.length>2||/[㐀-鿿]/.test(w))}).sort(function(a,b){return vi[b]-vi[a]}).slice(0,n).map(function(w){return SHOW[w]||w});
+}
+// For each side that still lacks an exclusion: a fill-in template ("Not for ___; use B instead.", in the language of the
+// description it goes into) plus each side's distinctive words as hints. The words are never assembled into a sentence:
+// word lists read as nonsense prose ("For independent or tasks…"), so the user writes the blank.
+// -> {merge:true} when the descriptions have no words of their own, else {items:[{into, other, tpl, otherWords, ownWords}]}
+// the opening of the other item's own description, quoted as written (never rewritten): it shows what the blank can say
+function opening(d){
+  var s=String(d||'').replace(/\s+/g,' ').trim();
+  if(s.length<=150)return s;
+  var cut=s.slice(0,150),k=cut.lastIndexOf(' ');
+  return (k>60?cut.slice(0,k):cut)+'…';
+}
+function suggestion(R,tools,p){
+  if(p.excl==='both')return {items:[]};
+  var a=tools[p.i],b=tools[p.j],da=distinct(R,p.i,p.j,4),db=distinct(R,p.j,p.i,4);
+  if(!da.length&&!db.length)return {merge:true,items:[]};
+  function tpl(into,other){return /[㐀-鿿]/.test(into.description)?'不適用於 ___；請改用 '+other.name+'。':'Not for ___; use '+other.name+' instead.'}
+  var items=[];
+  if(p.excl!=='ab')items.push({into:a.name,other:b.name,tpl:tpl(a,b),otherWords:db,ownWords:da,otherDesc:b.description});
+  if(p.excl!=='ba')items.push({into:b.name,other:a.name,tpl:tpl(b,a),otherWords:da,ownWords:db,otherDesc:a.description});
+  return {items:items};
+}
+// plain-text lines of a suggestion, for the report
+function sugLines(sg,lg){
+  var T=S[lg||L];
+  if(sg.merge)return [T.sugMerge];
+  return sg.items.map(function(x){return T.sugAdd(x.into)+' '+x.tpl+' '+T.sugWords(x.other,x.otherWords,x.into,x.ownWords)});
+}
+// rough token count from characters: about 4 characters per token for English, about 1.25 per token for Chinese, Japanese and Korean.
+// An estimate only: every model's tokenizer differs, and code-like text (JSON, paths) usually runs denser than prose.
+function estTok(s){
+  s=String(s||'');var cj=(s.match(/[぀-ヿ㐀-鿿가-힯豈-﫿]/g)||[]).length;
+  return Math.round((s.length-cj)/4+cj/1.25);
+}
+// what is loaded up front: an MCP tool's name, description and inputSchema; a skill's name and description (its body loads only when used)
+function tokenEst(x){
+  return x.source==='skill'?estTok(x.name+'\n'+x.description):estTok(JSON.stringify({name:x.name,description:x.description,inputSchema:x.schema}));
+}
+function bodyEst(x){return x.source==='skill'&&x.body?estTok(x.body):0}
+// High risk: not a same-family pair, neither description excludes the other, and either very similar text,
+// or (with a skill involved) a shared quoted trigger phrase or two shared trigger words. Defaults picked before any labels; not tuned.
+var TOP=5; // the first screen shows only a few pairs
+function trigSig(p){return p.skill&&(p.trigQ>=1||p.trig.length-p.trigQ>=2)}
+function signal(p){return p.tag!=='sub'&&(p.s>=0.5||trigSig(p))}
+// shared triggers (two words, or one quoted phrase) alone make a pair high risk only when the descriptions are also alike overall:
+// rules-v3 raised this from 0.20 to 0.30; below it the pair goes to the collapsed weak-signal block. Similarity >= 0.50 is unaffected.
+var TRIG_MIN_SIM=0.3;
+var TRIG_SHOW=20; // weak-signal pairs shown before "Show more"
+function isRisk(p){return p.excl==='none'&&p.tag!=='sub'&&(p.s>=0.5||trigSig(p)&&p.s>=TRIG_MIN_SIM)}
+// shared triggers but little else in common: kept out of the top list, shown in a collapsed block
+function isTrigOnly(p){return p.excl==='none'&&p.tag!=='sub'&&p.s<TRIG_MIN_SIM&&trigSig(p)}
+// only one side excludes the other: never collapsed or dropped; shown with a suggestion for the side that is missing
+function isOneSided(p){return (p.excl==='ab'||p.excl==='ba')&&p.tag!=='sub'&&(p.s>=0.3||signal(p))}
+function audit(R,tools){
+  var risky=R.pairs.filter(isRisk).sort(function(a,b){return b.s-a.s}),top=risky.slice(0,TOP),used={},lo=0,hi=0;
+  // tokens saved by removing one item of each listed pair; a pair sharing an item with one already counted is skipped so nothing counts twice
+  top.forEach(function(p){
+    if(used[p.i]||used[p.j])return;used[p.i]=used[p.j]=1;
+    var a=tokenEst(tools[p.i]),b=tokenEst(tools[p.j]);lo+=Math.min(a,b);hi+=Math.max(a,b);
+  });
+  return {risky:risky,top:top,lo:lo,hi:hi};
+}
+function issues(t,d,dup){
+  var out=[],desc=String(t.description||'');
+  if(dup)out.push(S[L].dupName);
+  if(!desc.trim())out.push(S[L].noDesc);
+  else if(desc.length<25&&!/[㐀-鿿]/.test(desc))out.push(S[L].short(desc.length));
+  else if(/[㐀-鿿]/.test(desc)&&desc.length<8)out.push(S[L].shortCJ);
+  if(desc&&!/(use when|when to use|do not|don't|only|instead|適合|不要|僅|請勿|何時|當你)/i.test(desc))out.push(S[L].noWhen);
+  var np=d.names.length,nd=d.names.filter(function(k){return d.props[k]&&d.props[k].description}).length;
+  if(np&&nd<np)out.push(S[L].params(nd,np));
+  if(np&&!(d.props[d.names[0]]&&d.props[d.names[0]].type))out.push(S[L].noType);
+  var n=String(t.name);
+  if(/[A-Z]/.test(n)&&/_/.test(n))out.push(S[L].mixed);
+  return out;
+}
+function nameStyle(n){return /[㐀-鿿]/.test(n)?'cjk':/_/.test(n)?'snake':/-/.test(n)?'kebab':/[A-Z]/.test(n)?'camel':'plain'}
+function cellColor(v){
+  /* sequential one hue: mix teal into the empty cell color by similarity */
+  var p=Math.round(Math.min(1,v)*100);
+  return 'color-mix(in srgb,var(--teal) '+p+'%,var(--cell0))';
+}
+function advice(a,b,sh){
+  var na=a.name.replace(/[^a-z]/gi,'').toLowerCase(),nb=b.name.replace(/[^a-z]/gi,'').toLowerCase(),same=!!na&&na===nb;
+  var h=t('adv');
+  if(sh.length&&/^(path|file|city|name|id|query)$/.test(sh[0]))h+=S[L].advParam(sh[0]);
+  if(same)h=t('advSame');
+  return h;
+}
+// clipboard API first; a hidden textarea and execCommand when the frame refuses it
+function copyText(s){
+  var api=navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(s):Promise.reject();
+  return api.catch(function(){
+    var ta=document.createElement('textarea'),ok=false;ta.value=s;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();try{ok=document.execCommand('copy')}catch(e){}ta.remove();
+    if(!ok)throw new Error('copy');
+  });
+}
+// Shared words as shown to people: function words and request filler (which, any, even, whenever, asks, person…) are left out.
+// Display only: the scores, triggers and every judgement still use the full list in p.shared.
+var SHOW_SKIP=Object.create(null);'person people someone something anyone anything thing things way even ever'.split(' ').forEach(function(w){SHOW_SKIP[stem(w)]=1});
+function shownWords(ws){return ws.filter(function(w){var s=stem(String(w).toLowerCase());return w[0]==='≈'||!(FUNC_WORDS[s]||TRIG_GENERIC[s]||SHOW_SKIP[s])})}
+function saveText(A){return A.lo===A.hi?A.lo.toLocaleString():A.lo.toLocaleString()+'–'+A.hi.toLocaleString()}
+// plain-language reason for a high-risk pair
+function why(p,lg){
+  var T=S[lg||L],out=[];
+  if(p.s>=0.5)out.push(T.whySim(p.s.toFixed(2)));
+  if(p.skill&&p.trig.length&&(p.trigQ>=1||p.trig.length-p.trigQ>=2))out.push(T.whyTrig(p.trig.slice(0,5).join(T.sep)));
+  out.push(T.whyNoEx);
+  return out.join(' ');
+}
+// Markdown for a PR description or comment, in either language
+function report(R,tools,A,lg){
+  var T=S[lg],md=function(s){return String(s).replace(/([\\`*_|<>\[\]])/g,'\\$1')},src=function(x){return x.source==='skill'?'skill':'MCP'};
+  var tot=tools.reduce(function(s,x){return s+tokenEst(x)},0),ns=tools.filter(function(x){return x.source==='skill'}).length;
+  var o=['## '+T.h1+(lg==='zh'?' · 審計報告':' · audit report'),'',
+    '- '+T.tItems+': '+tools.length+' (MCP '+(tools.length-ns)+', skill '+ns+')',
+    '- '+T.tTok+': ≈'+tot.toLocaleString(),
+    '- '+T.tRisk+': '+A.risky.length,
+    '- '+T.tWeak+': '+R.pairs.filter(isTrigOnly).length,
+    '- '+T.tSave+': ≈'+saveText(A),'','### '+T.topH,''];
+  // with weak signals present, an empty top list is not an all-clear
+  var trig=R.pairs.filter(isTrigOnly).length;
+  if(!A.top.length)o.push(trig?T.noFix+(lg==='zh'?'':' ')+T.weakNote(trig):T.noRisk);
+  A.top.forEach(function(p,k){
+    var a=tools[p.i],b=tools[p.j];
+    o.push((k+1)+'. **'+md(a.name)+'** ('+src(a)+') ↔ **'+md(b.name)+'** ('+src(b)+') · '+p.s.toFixed(2),'   - '+md(why(p,lg)));
+    sugLines(suggestion(R,tools,p),lg).forEach(function(l){o.push('   - '+md(l))});
+    o.push('   - '+md(T.save(a.name,tokenEst(a),b.name,tokenEst(b))));
+  });
+  if(A.risky.length>A.top.length)o.push('',T.more(A.risky.length-A.top.length));
+  var rest=R.pairs.filter(function(p){return p.s>=0.3&&p.tag!=='sub'&&p.excl!=='both'&&A.top.indexOf(p)<0}).slice(0,15);
+  if(rest.length){
+    o.push('','### '+T.twins,'','| pair | '+(lg==='zh'?'相似度':'similarity')+' |','|---|---|');
+    rest.forEach(function(p){o.push('| '+md(tools[p.i].name)+' ↔ '+md(tools[p.j].name)+' | '+p.s.toFixed(2)+' |')});
+  }
+  o.push('','### '+T.per,'','| '+T.thName+' | '+(lg==='zh'?'來源':'source')+' | '+T.thTok+' |','|---|---|---|');
+  tools.forEach(function(x){o.push('| '+md(x.name)+' | '+src(x)+' | '+tokenEst(x)+' |')});
+  o.push('','> '+T.tokNote,'> '+(lg==='zh'?'這是啟發式檢查，可能誤報或漏報。資料只在瀏覽器內處理，沒有上傳。':'This is a heuristic check and can raise false alarms or miss real twins. The data was processed in the browser only and never uploaded.'));
+  return o.join('\n');
+}
+// small inline icons (no emoji): state of the conclusion card and of each lane, always next to words
+var ICON={
+  risky:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17.5v.01"/></svg>',
+  better:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16V8M8.5 11.5 12 8l3.5 3.5"/></svg>',
+  clean:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m7.5 12.5 3 3 6-6.5"/></svg>'
+};
+function show(tools,copies){
+  hmClose(); // a re-render (new analysis or a language switch) never leaves a stale full-screen heatmap behind
+  var R=analyze(tools),N=tools.length,h='',fam={};
+  // when MCP tools and skills are mixed, every name in the results carries its source
+  var mixed=tools.some(function(x){return x.source==='skill'})&&tools.some(function(x){return x.source!=='skill'});
+  function nm(x){return (mixed?'<span class="src">'+(x.source==='skill'?'SKILL':'MCP')+'</span>':'')+esc(x.name)}
+  function exLabel(p){return p.excl==='both'?t('exBoth'):p.excl==='none'?t('exNone'):S[L].exOne(tools[p.excl==='ab'?p.j:p.i].name)}
+  function sigHtml(p){
+    return '<div class="sig"><span class="src">'+t('sigTitle')+'</span>'+(p.trig.length?t('sigTrig')+esc(p.trig.slice(0,8).join(t('sep'))):t('sigNoTrig'))+t('isep')+'<span class="'+(p.excl==='both'?'ok':'iss')+'">'+exLabel(p)+'</span></div>'+rawHtml(p)+sugHtml(p);
+  }
+  // each side's exclusion sentences, verbatim, whatever the detector concluded, so the user can judge the pointer themselves
+  function exHtml(p){
+    return '<ul class="exq">'+[p.i,p.j].map(function(k,side){
+      var ss=R.exc[k].concat(R.hand[k].map(function(x){return x.s}).filter(function(s,n,a){return R.exc[k].indexOf(s)<0&&a.indexOf(s)===n})),ev=p.ev&&p.ev[side];
+      return '<li>'+esc(S[L].exFound(tools[k].name))+(ss.length?ss.map(function(s){
+        return '<q>'+esc(s)+'</q>'+(ev&&ev.s===s?' <span class="badge mid used">'+esc(S[L].exUsed(ev.by,ev.word,ev.cue))+'</span>':'');
+      }).join(' '):'<span class="sub">'+t('exNoneFound')+'</span>')+'</li>';
+    }).join('')+'</ul>';
+  }
+  function rawHtml(p){return '<details class="raw"><summary>'+t('rawH')+'</summary>'+exHtml(p)+'</details>'}
+  // one row per side to fix: the template to paste (the main button copies exactly the template, blank included) and the hint words
+  function sugHtml(p){
+    var sg=suggestion(R,tools,p);
+    if(sg.merge)return '<p class="fix">'+t('sugMerge')+'</p>';
+    return sg.items.map(function(x){
+      return '<div class="sug"><p class="fix">'+esc(S[L].sugAdd(x.into))+' <code class="tpl">'+esc(x.tpl)+'</code><br><span class="sub">'+esc(S[L].sugWords(x.other,x.otherWords,x.into,x.ownWords))+'</span></p>'+
+        '<p class="note">'+esc(S[L].sugWhere(x.into,x.other))+'</p>'+
+        (x.otherDesc?'<p class="note">'+esc(S[L].sugOther(x.other))+'<q class="otherd">'+esc(opening(x.otherDesc))+'</q></p>':'')+
+        '<details class="how"><summary class="sub">'+esc(t('howH'))+'</summary><ol class="note">'+S[L].howSteps(esc(x.into),esc(x.other)).map(function(l){return '<li>'+l+'</li>'}).join('')+'</ol><p class="note">'+esc(t('howEx'))+'</p></details>'+
+        '<button type="button" class="btn p s copy" data-copy="'+esc(x.tpl)+'">'+t('copySug')+'</button></div>';
+    }).join('');
+  }
+  // pair card: both names as tags, a similarity bar between them, shared words as chips, then the card's own body
+  function trigCard(p){return pairCard(p,'<div class="sig">'+t('sigTrig')+esc(p.trig.slice(0,8).join(t('sep')))+'</div>')}
+  function pairCard(p,body){
+    var pc=Math.round(Math.min(1,p.s)*100);
+    return '<div class="pair" data-i="'+p.i+'" data-j="'+p.j+'"><div class="duo"><span class="name">'+nm(tools[p.i])+'</span>'+
+      '<span class="meter" role="img" aria-label="'+esc(t('sim').trim()+' '+p.s.toFixed(2))+'"><span class="track"><span class="fill" style="width:'+pc+'%"></span></span><span class="val">'+p.s.toFixed(2)+'</span></span>'+
+      '<span class="name">'+nm(tools[p.j])+'</span></div>'+
+      (pairWords(p).length?'<ul class="chips" aria-label="'+esc(t('shared'))+'">'+pairWords(p).map(function(w){return '<li>'+esc(w)+'</li>'}).join('')+'</ul>':'')+body+'</div>';
+  }
+  // up to 6 shared words for display, strongest first, filler left out; read from the vectors, so p.shared (engine data) is untouched
+  function pairWords(p){
+    var vi=R.vecs[p.i],vj=R.vecs[p.j];
+    return shownWords(Object.keys(vi).filter(function(w){return vj[w]}).sort(function(a,b){return vi[b]*vj[b]-vi[a]*vj[a]}).map(function(w){return SHOW[w]||w})).slice(0,6);
+  }
+  function laneHead(icon,title,n){return '<div class="lane-h">'+ICON[icon]+'<h2>'+t(title)+'</h2><span class="count">'+n+'</span></div>'}
+  function num(v,label,pre){return '<div class="num"><div class="v" data-v="'+v+'" data-pre="'+(pre||'')+'">'+(pre||'')+v.toLocaleString()+'</div><div class="l">'+t(label)+'</div></div>'}
+
+  var A=audit(R,tools),both={};
+  R.pairs.forEach(function(p){if(p.tag==='sub')fam[p.i+'-'+p.j]=1;if(p.excl==='both')both[p.i+'-'+p.j]=1});
+  var cnt=Object.create(null);tools.forEach(function(x){cnt[x.name]=(cnt[x.name]||0)+1});
+  var dups=Object.keys(cnt).filter(function(k){return cnt[k]>1});
+  var tot=tools.reduce(function(s,x){return s+tokenEst(x)},0);
+  // same-family and both-sides-explained pairs have their own collapsed blocks, so the twin counts and list leave them out
+  var listed=function(p){return p.tag!=='sub'&&p.excl!=='both'};
+  var hi=R.pairs.filter(function(p){return p.s>=0.5&&listed(p)}).length,mid=R.pairs.filter(function(p){return p.s>=0.3&&p.s<0.5&&listed(p)}).length;
+  var weakI=tools.map(function(x,i){return i}).filter(function(i){return issues(tools[i],R.docs[i]).length>=2}),weak=weakI.length;
+  var oneP=R.pairs.filter(isOneSided),trigP=R.pairs.filter(isTrigOnly),bothP=R.pairs.filter(function(p){return p.excl==='both'&&p.tag!=='sub'});
+  var styles={};tools.forEach(function(x){if(x.source!=='skill')styles[nameStyle(x.name)]=1}); // skill names follow their own kebab-case convention
+
+  if(dups.length){
+    h+='<p class="msg">'+esc(S[L].dup(dups.join(t('sep'))))+'</p>';
+    var src=[];tools.forEach(function(x){if(cnt[x.name]>1)src.push(x.name+' ← '+(x.from&&x.from.length?x.from[0]:'?'))});
+    h+='<p class="note">'+esc(S[L].dupWhy(src.slice(0,6).join(t('sep'))+(src.length>6?' …':'')))+'</p>';
+  }
+  var plug=tools.filter(function(x){return (x.from||[]).some(function(f){return /(^|\/)plugins\//i.test(f)})}).length;
+  if(plug)h+='<p class="note">'+esc(S[L].plugNote(plug))+'</p>';
+  // one line per copied item: not a conflict, so not counted as a pair, a rename or tokens to save
+  (copies||[]).forEach(function(x){
+    var n={};x.from.forEach(function(f){n[f]=(n[f]||0)+1});
+    h+='<p class="note copies">'+esc(S[L].copies(x.name,x.source,x.from.length,Object.keys(n).map(function(f){return f+(n[f]>1?' ×'+n[f]:'')}).join(t('sep'))))+'</p>';
+  });
+
+  // token share per item, largest first (used by the stacked bar in the conclusion and by the token chart)
+  var order=tools.map(function(x){return {x:x,v:tokenEst(x)}}).sort(function(a,b){return b.v-a.v}),max=order.length?order[0].v||1:1;
+
+  // conclusion: what is right first, then what to handle; three numbers and a thin stacked bar of each item's token share
+  var state=A.risky.length?'risky':(oneP.length||weak||trigP.length)?'better':'clean',inRisk={};
+  A.risky.forEach(function(p){inRisk[p.i]=inRisk[p.j]=1});
+  var say=state==='risky'?S[L].vRisky(N,N-Object.keys(inRisk).length,bothP.length,A.risky.length):state==='better'?S[L].vBetter(oneP.length,weak,trigP.length):S[L].vClean(N);
+  h+='<section class="card verdict '+state+'" data-state="'+state+'" aria-labelledby="vh"><h2 id="vh" class="sr">'+t('vH')+'</h2><div class="verdict-h">'+ICON[state]+'<p>'+esc(say)+'</p></div>'+
+     '<div class="nums">'+num(N,'nItems')+num(tot,'nTok','≈')+num(A.risky.length,'nFix')+'</div>'+
+     '<div class="stack" role="img" aria-label="'+esc(S[L].stackLabel(order.slice(0,3).map(function(o){return o.x.name}).join(t('sep'))))+'">'+order.map(function(o,k){
+       return '<span class="'+(k<3?'big':'')+'" style="flex-grow:'+Math.max(o.v,1)+'" title="'+esc(o.x.name+': ≈'+o.v.toLocaleString()+' token')+'"></span>';
+     }).join('')+'</div>'+
+     '<div class="bar"><span class="brand">'+t('rep')+'</span><button type="button" class="btn s rep-copy" data-lg="zh">'+S.zh.repZh+'</button><button type="button" class="btn s rep-copy" data-lg="en">'+S.en.repEn+'</button></div>'+
+     '<details><summary class="sub">'+t('repPrev')+'</summary><textarea class="rep" readonly aria-label="'+t('rep')+'">'+esc(report(R,tools,A,L))+'</textarea></details></section>';
+
+  // lane 1: fix first (the top list); with nothing to fix it shrinks to one line
+  var fixH='<section class="card lane fix top" aria-label="'+esc(t('laneFix'))+'">';
+  if(!A.top.length)fixH+='<div class="lane-h">'+ICON.risky+'<h2>'+t('laneFix')+'</h2><span class="count">0</span>'+(trigP.length?'<span class="sub">'+esc(t('noFix')+(L==='zh'?'':' ')+S[L].weakNote(trigP.length))+'</span>':'<span class="sub ok">'+t('noRisk')+'</span>')+'</div>';
+  else{
+    fixH+=laneHead('risky','laneFix',A.risky.length)+'<p class="sub">'+t('topSub')+'</p>';
+    A.top.forEach(function(p){
+      var a=tools[p.i],b=tools[p.j];
+      fixH+=pairCard(p,'<p class="why">'+esc(why(p))+'</p>'+sugHtml(p)+'<div class="sub">'+esc(S[L].save(a.name,tokenEst(a),b.name,tokenEst(b)))+'</div>'+rawHtml(p));
+    });
+    if(A.risky.length>A.top.length)fixH+='<p class="sub">'+esc(S[L].more(A.risky.length-A.top.length))+'</p>';
+  }
+  fixH+='</section>';
+
+  // lane 2: could be better (one side explained, under-documented items, trigger words only)
+  var betterH='<section class="card lane better" aria-label="'+esc(t('laneBetter'))+'">'+laneHead('better','laneBetter',oneP.length+weak);
+  if(!oneP.length&&!weak&&!trigP.length)betterH+='<p class="sub ok">'+t('laneBetterNone')+'</p>';
+  if(oneP.length){
+    betterH+='<div class="block one"><h3>'+t('oneH')+' <span class="sub">'+oneP.length+'</span></h3><p class="sub">'+t('oneSub')+'</p>'+oneP.map(function(p){
+      return pairCard(p,'<div class="sig"><span class="iss">'+exLabel(p)+'</span>'+(p.trig.length?t('isep')+t('sigTrig')+esc(p.trig.slice(0,8).join(t('sep'))):'')+'</div>'+sugHtml(p)+rawHtml(p));
+    }).join('')+'</div>';
+  }
+  if(weak){
+    betterH+='<div class="block weak"><h3>'+t('weakH')+' <span class="sub">'+weak+'</span></h3><ul class="exq">'+weakI.map(function(i){
+      return '<li><span class="name">'+nm(tools[i])+'</span> <span class="iss">'+issues(tools[i],R.docs[i]).map(esc).join(t('isep'))+'</span></li>';
+    }).join('')+'</ul></div>';
+  }
+  if(trigP.length){
+    betterH+='<details class="block trigonly"><summary><h3>'+t('trigOnlyH')+'</h3><span class="sub">'+trigP.length+'</span></summary><p class="sub">'+t('trigOnlySub')+'</p>';
+    // large sets can have hundreds of weak signals: the first TRIG_SHOW are rendered, the rest only when asked for
+    betterH+=trigP.slice(0,TRIG_SHOW).map(trigCard).join('')+(trigP.length>TRIG_SHOW?'<button class="btn s trig-more" type="button">'+esc(S[L].moreTrig(trigP.length-TRIG_SHOW))+'</button>':'');
+    betterH+='</details>';
+  }
+  betterH+='</section>';
+
+  // lane 3: done right (pairs that explain each other), collapsed; every pair with both sides' sentences and the deciding one marked
+  var doneH='<section class="card lane done" aria-label="'+esc(t('laneDone'))+'">'+laneHead('clean','laneDone',bothP.length);
+  if(!bothP.length)doneH+='<p class="sub">'+t('laneDoneNone')+'</p>';
+  else{
+    doneH+='<details class="block both"><summary><h3>'+esc(S[L].doneBoth(bothP.length))+'</h3></summary><p class="sub">'+t('bothSub')+'</p>';
+    bothP.forEach(function(p){doneH+=pairCard(p,'<div class="sig ok">'+t('exBoth')+'</div>'+exHtml(p))});
+    doneH+='</details>';
+  }
+  doneH+='</section>';
+
+  // token bars, largest first; past 40 MCP tools only the first 20 show and the rest fold away
+  var cut=tools.filter(function(x){return x.source!=='skill'}).length>40?20:order.length;
+  function bar(o,k){
+    var lab=o.x.name+': ≈'+o.v.toLocaleString()+' token';
+    return '<li class="'+(k<3?'big':'')+'" tabindex="0" title="'+esc(lab)+'" aria-label="'+esc(lab)+'"><span class="bn">'+nm(o.x)+'</span><span class="bt"><span class="bf" style="width:'+Math.max(1,Math.round(o.v/max*100))+'%"></span></span><span class="bv">'+o.v.toLocaleString()+'</span></li>';
+  }
+  var tokH='<section class="card tokens" aria-labelledby="tokh"><h2 id="tokh">'+t('tokH')+'</h2><p class="sub">'+t('tokSub')+'</p><ul class="bars">'+order.slice(0,cut).map(bar).join('')+'</ul>';
+  if(order.length>cut)tokH+='<details><summary class="sub">'+esc(S[L].tokMore(order.length-cut))+'</summary><ul class="bars">'+order.slice(cut).map(function(o,k){return bar(o,k+cut)}).join('')+'</ul></details>';
+  tokH+='<p class="note">'+t('bodyNote')+' '+t('tokNote')+'</p></section>';
+
+  // with pairs to fix, they come first and the token chart after; with none, tokens lead and the fix lane is one line
+  h+=A.risky.length?fixH+betterH+doneH+tokH:tokH+fixH+betterH+doneH;
+
+  // details: totals, heatmap, similar pairs, same family, per-item checks
+  h+='<details class="card details"><summary><h2>'+t('detailsH')+'</h2></summary>';
+  h+='<div class="tiles"><div class="tile"><div class="v">'+A.risky.length+'</div><div class="l">'+t('tRisk')+'</div></div>'+
+     '<div class="tile"><div class="v">≈'+saveText(A)+'</div><div class="l">'+t('tSave')+'</div></div>'+
+     '<div class="tile"><div class="v">'+hi+'</div><div class="l">'+t('tHi')+'</div></div>'+
+     '<div class="tile"><div class="v">'+mid+'</div><div class="l">'+t('tMid')+'</div></div>'+
+     '<div class="tile"><div class="v">'+weak+'</div><div class="l">'+t('tWeak')+'</div></div></div>';
+  h+='<div class="card hmcard"><div class="hm-head"><h2>'+t('hm')+'</h2><button type="button" class="btn s hm-open" aria-haspopup="dialog">'+t('hmFull')+'</button></div><p class="sub">'+t('hmSub')+'</p><div class="hm"><div class="grid" style="grid-template-columns:150px repeat('+N+',26px);--n:'+N+'"><span></span>';
+  for(var j=0;j<N;j++)h+='<span class="cl">'+(j+1)+'</span>';
+  var tab=N>40?' tabindex="-1"':''; // past 40 tools the grid would be thousands of tab stops; the twin list and table carry the same findings
+  for(var i=0;i<N;i++){
+    h+='<span class="rl" title="'+esc(tools[i].name)+'">'+(i+1)+' '+esc(tools[i].name)+'</span>';
+    for(j=0;j<N;j++){
+      var v=R.M[i][j];
+      if(i===j){h+='<span class="cell diag" aria-hidden="true"></span>';continue}
+      h+='<button type="button"'+tab+' class="cell'+(v>=0.55?' dk':'')+'" style="background:'+cellColor(v)+'" data-i="'+i+'" data-j="'+j+'"'+(fam[Math.min(i,j)+'-'+Math.max(i,j)]?' data-fam="1"':'')+(both[Math.min(i,j)+'-'+Math.max(i,j)]?' data-both="1"':'')+' aria-label="'+esc(tools[i].name)+t('vs')+esc(tools[j].name)+t('sim')+v.toFixed(2)+'">'+(N<=12?Math.round(v*100):'')+'</button>';
+    }
+  }
+  h+='</div></div><div class="scale">0<i></i>1</div></div>';
+  var top=R.pairs.filter(function(p){return p.s>=0.3&&listed(p)}).slice(0,8);
+  h+='<div class="card twins"><h2>'+t('twins')+'</h2>';
+  if(!top.length)h+='<p class="sub ok">'+t('noTwins')+'</p>';
+  top.forEach(function(p){
+    var a=tools[p.i],b=tools[p.j];
+    h+='<div class="pair"><div><b>'+nm(a)+' ↔ '+nm(b)+'</b><span class="badge '+(p.s>=0.5?'hi':'mid')+'">'+p.s.toFixed(2)+'</span>'+(p.tag?'<span class="badge mid">'+t({act:'tagAct',obj:'tagObj',sub:'tagSub'}[p.tag])+'</span>':'')+(p.ref?'<span class="badge mid">'+t('tagRef')+'</span>':'')+'</div><div class="shared">'+t('shared')+esc(pairWords(p).join(t('sep'))||'—')+'</div>'+
+      (p.skill?sigHtml(p):'<div class="fix">'+esc(advice(a,b,p.shared))+'</div>')+'</div>';
+  });
+  h+='</div>';
+  var famP=R.pairs.filter(function(p){return p.tag==='sub'&&p.raw>=0.3}).sort(function(a,b){return b.raw-a.raw}).slice(0,8);
+  if(famP.length){
+    h+='<details class="card"><summary><h2>'+t('fam')+'</h2><span class="sub">'+famP.length+'</span></summary><p class="sub">'+t('famSub')+'</p>';
+    famP.forEach(function(p){h+='<div class="pair"><div><b>'+nm(tools[p.i])+' ↔ '+nm(tools[p.j])+'</b><span class="badge mid">'+p.s.toFixed(2)+'</span><span class="badge mid">'+t('tagSub')+'</span>'+(p.ref?'<span class="badge mid">'+t('tagRef')+'</span>':'')+'</div></div>'});
+    h+='</details>';
+  }
+  h+='<div class="card"><h2>'+t('per')+'</h2><div class="tw"><table><thead><tr><th>#</th><th>'+t('thName')+'</th><th>'+t('thTok')+'</th><th>'+t('thFind')+'</th></tr></thead><tbody>';
+  tools.forEach(function(x,i){
+    var is=issues(x,R.docs[i],cnt[x.name]>1);
+    h+='<tr><td class="n">'+(i+1)+'</td><td>'+nm(x)+'</td><td class="n">'+tokenEst(x)+(bodyEst(x)?'<div class="sub">'+S[L].bodyTok(bodyEst(x).toLocaleString())+'</div>':'')+'</td><td>'+(is.length?'<span class="iss">'+is.map(esc).join(t('isep'))+'</span>':'<span class="ok">'+t('fine')+'</span>')+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+  if(Object.keys(styles).length>1)h+='<p class="sub iss">'+esc(S[L].styles(Object.keys(styles).join(t('sep'))))+'</p>';
+  h+='</div></details>';
+  // a plain link to the feedback poll, only under results; the address lives once, in the footer link
+  h+='<p class="note poll"><a class="home" href="'+esc($('#pollLink').href)+'" target="_blank" rel="noopener">'+t('poll')+'</a></p>';
+  $('#out').innerHTML=h;
+  document.querySelectorAll('#out .copy').forEach(function(b){b.onclick=function(){
+    copyText(b.getAttribute('data-copy')).then(function(){b.textContent=t('copied')},function(){b.textContent=t('copyFail')});
+    setTimeout(function(){b.textContent=t('copySug')},2000);
+  }});
+  document.querySelectorAll('#out .rep-copy').forEach(function(b){b.onclick=function(){
+    var lg=b.getAttribute('data-lg'),label=S[lg][lg==='zh'?'repZh':'repEn'];
+    copyText(report(R,tools,A,lg)).then(function(){b.textContent=S[lg].copied},function(){b.textContent=S[lg].copyFail});
+    setTimeout(function(){b.textContent=label},2000);
+  }});
+  var mb=$('#out .trig-more');
+  if(mb)mb.onclick=function(){
+    mb.insertAdjacentHTML('beforebegin',trigP.slice(TRIG_SHOW).map(trigCard).join(''));
+    var f=mb.parentNode.querySelectorAll('.pair')[TRIG_SHOW];mb.remove();f.setAttribute('tabindex','-1');f.focus();
+  };
+  countUp();
+  var tip=$('#tip');
+  document.querySelectorAll('.cell[data-i]').forEach(function(c){
+    function put(e){
+      var i=+c.getAttribute('data-i'),j=+c.getAttribute('data-j');
+      var sh=R.pairs.filter(function(p){return (p.i===Math.min(i,j))&&(p.j===Math.max(i,j))})[0];
+      tip.innerHTML=esc(tools[i].name)+' ↔ '+esc(tools[j].name)+'<br><b>'+R.M[i][j].toFixed(2)+'</b>'+(sh&&sh.shared.length?'　'+t('shared')+esc(sh.shared.slice(0,4).join(t('sep'))):'');
+      tip.style.display='block';
+      var r=c.getBoundingClientRect(),x=Math.min(window.innerWidth-270,Math.max(8,r.left-20)),y=r.top-52;
+      tip.style.left=x+'px';tip.style.top=(y<8?r.bottom+8:y)+'px';
+    }
+    c.onmouseenter=put;c.onfocus=put;c.onclick=put;c.onmouseleave=function(){tip.style.display='none'};c.onblur=function(){tip.style.display='none'};
+  });
+  var hmBtn=$('#out .hm-open');
+  if(hmBtn)hmBtn.onclick=function(){hmFull(hmBtn,N)};
+}
+// every input becomes one item shape: {source:'mcp'|'skill', name, description, params (MCP input properties), schema (MCP inputSchema), body (SKILL.md text after the frontmatter)}
+function mcpItem(x){
+  var sc=x.inputSchema||x.input_schema||x.parameters;
+  return {source:'mcp',name:String(x.name),description:x.description==null?'':String(x.description),params:(sc&&sc.properties)||{},schema:sc};
+}
+// YAML frontmatter, top-level scalar keys only: plain, 'single' / "double" quoted, multi-line plain, and > / | blocks.
+// shortcut: nested maps and lists are skipped; enough for name and description, swap in a YAML parser if more keys matter
+function frontmatter(lines){
+  var out={},i=0,blank=function(l){return !/\S/.test(l)};
+  // a value continues on indented lines, and on blank lines that come before more indented lines
+  function contAt(i){
+    if(/^[ \t]+\S/.test(lines[i]))return true;
+    if(!blank(lines[i]))return false;
+    for(var k=i+1;k<lines.length;k++)if(!blank(lines[k]))return /^[ \t]/.test(lines[k]);
+    return false;
+  }
+  while(i<lines.length){
+    var m=/^([A-Za-z0-9_-]+):(?:[ \t]+(.*))?$/.exec(lines[i]);i++;
+    if(!m)continue;
+    var v=(m[2]||'').replace(/\s+$/,''),cont=[];
+    while(i<lines.length&&contAt(i))cont.push(lines[i++]);
+    var bm=/^([>|])[+-]?\d*[+-]?(?:\s+#.*)?$/.exec(v),val;
+    if(bm){
+      var ind=Math.min.apply(null,cont.filter(function(l){return !blank(l)}).map(function(l){return l.match(/^[ \t]*/)[0].length}).concat([1e9]));
+      var ls=cont.map(function(l){return blank(l)?'':l.slice(ind)});
+      val=bm[1]==='|'?ls.join('\n'):fold(ls);
+    }else{
+      val=fold([v].concat(cont.map(function(l){return l.trim()})));
+      if(val[0]==='"'&&val.lastIndexOf('"')>0)val=val.slice(1,val.lastIndexOf('"')).replace(/\\(.)/g,function(x,c){return {n:'\n',t:'\t'}[c]||c});
+      else if(val[0]==="'"&&val.lastIndexOf("'")>0)val=val.slice(1,val.lastIndexOf("'")).replace(/''/g,"'");
+    }
+    out[m[1]]=val.trim();
+  }
+  return out;
+}
+// YAML line folding: lines join with a space, a blank line becomes a newline
+function fold(ls){
+  var s='';
+  ls.forEach(function(l){if(!/\S/.test(l))s+='\n';else s+=(s&&!/\n$/.test(s)?' ':'')+l});
+  return s;
+}
+// one or more SKILL.md files pasted back to back (one=true: a single file, never split).
+// A skill starts at a --- line outside a ``` fence whose block up to the next --- has a name: or description: key,
+// so a SKILL.md template quoted in a code block (writing-skills does this) stays in the body.
+function parseSkills(text,fallback,one){
+  var lines=text.replace(/^﻿/,'').replace(/\r\n?/g,'\n').split('\n'),out=[];
+  function end(i){if(!/^---\s*$/.test(lines[i]||''))return -1;for(var j=i+1;j<lines.length;j++)if(/^---\s*$/.test(lines[j]))return j;return -1}
+  function start(i){var e=end(i);return e>0&&lines.slice(i+1,e).some(function(l){return /^(name|description):/.test(l)})}
+  var i=0;while(i<lines.length&&!start(i))i++;
+  while(i<lines.length){
+    var e=end(i),fm=frontmatter(lines.slice(i+1,e)),k=e+1,fence=false;
+    for(;k<lines.length;k++){if(/^\s*(```|~~~)/.test(lines[k]))fence=!fence;else if(!one&&!fence&&start(k))break}
+    out.push({source:'skill',name:fm.name||fallback||'skill-'+(out.length+1),description:fm.description||'',body:lines.slice(e+1,k).join('\n').trim()});
+    i=k;
+  }
+  return out;
+}
+// text from the box or a file -> {items, unnamed}; throws with a message the page can show. one: the text is a single file
+function itemsOf(raw,fallback,one){
+  var s=String(raw||'').replace(/^﻿/,'').trim();
+  if(!s)return {items:[],unnamed:0};
+  if(/^---\s*$/.test(s.split('\n')[0])){var sk=parseSkills(s,fallback,one);if(!sk.length)throw new Error(t('noFm'));return {items:sk,unnamed:0}}
+  var data;try{data=JSON.parse(s)}catch(e){throw new Error(t('badJson')+e.message)}
+  var list=Array.isArray(data)?data:(data&&data.result&&data.result.tools)||(data&&data.tools);
+  if(!Array.isArray(list))throw new Error(t('need2'));
+  var named=list.filter(function(x){return x&&x.name});
+  return {unnamed:list.length-named.length,items:named.map(function(x){
+    return x.source==='skill'?{source:'skill',name:String(x.name),description:x.description==null?'':String(x.description),body:x.body?String(x.body):''}:mcpItem(x);
+  })};
+}
+var FILES=[]; // files added by picking or dropping: {label, items}
+// A refresh keeps what the user loaded: the box text and the added files are saved in sessionStorage, which lives only in this
+// tab, stays on this device and is gone when the tab closes. If it will not fit, the skill bodies (only used for an extra
+// token note) are dropped first; if it still does not fit or storage is blocked, nothing is kept and the page behaves as before.
+function saveState(){
+  try{
+    var v=$('#inp').value;
+    if(!FILES.length&&(!v.trim()||v===JSON.stringify(DEMO,null,1))){sessionStorage.removeItem('olab-state');return}
+    var st={inp:v===JSON.stringify(DEMO,null,1)?'':v,files:FILES};
+    try{sessionStorage.setItem('olab-state',JSON.stringify(st))}
+    catch(e){
+      st.files=FILES.map(function(f){return {label:f.label,items:f.items.map(function(x){var c=Object.assign({},x);delete c.body;return c})}});
+      sessionStorage.setItem('olab-state',JSON.stringify(st));
+    }
+  }catch(e){try{sessionStorage.removeItem('olab-state')}catch(e2){}}
+}
+function loadState(){
+  try{
+    var st=JSON.parse(sessionStorage.getItem('olab-state')||'null');
+    if(!st||!Array.isArray(st.files)||typeof st.inp!=='string')return false;
+    if(!st.files.length&&!st.inp.trim())return false;
+    FILES=st.files.filter(function(f){return f&&Array.isArray(f.items)});
+    $('#inp').value=st.inp;
+    return true;
+  }catch(e){return false}
+}
+// a chip shows what was added (the skill's name, or a JSON file's name and tool count), never the folder path;
+// past 6 files the chips fold under one line "Added 13 skills · Clear"
+function chipName(f){return f.items.length===1&&f.items[0].source==='skill'?f.items[0].name:f.label.split('/').pop()+' · '+f.items.length}
+function renderFiles(){
+  var chips=FILES.map(function(f,k){var n=chipName(f);return '<li>'+esc(n)+'<button type="button" class="rm" data-k="'+k+'" aria-label="'+esc(S[L].rmFile(n))+'">×</button></li>'}).join(''),ns=0,nt=0;
+  FILES.forEach(function(f){f.items.forEach(function(x){x.source==='skill'?ns++:nt++})});
+  $('#flist').innerHTML=FILES.length>6?'<li class="fsum"><details><summary>'+esc(S[L].filesSum(ns,nt))+'</summary><ul class="flist">'+chips+'</ul></details><button type="button" class="link" id="fclear">'+t('clearAll')+'</button></li>':chips;
+  document.querySelectorAll('#flist .rm').forEach(function(b){b.onclick=function(){var f=FILES.splice(+b.getAttribute('data-k'),1)[0];renderFiles();status(S[L].removed(chipName(f)))}});
+  var c=$('#fclear');if(c)c.onclick=function(){FILES=[];renderFiles();status(t('cleared'))};
+  mixNote();saveState();
+}
+// with files added and the user's own text in the box, say that both are analyzed together
+function mixNote(){$('#mix').hidden=!(FILES.length&&$('#inp').value.trim())}
+// Status line beside the buttons. Adding or removing files does not re-analyze; the line says so and the user presses Analyze.
+function status(s){$('#stat').textContent=s}
+// list: [{path, file}]. A SKILL.md with no name: takes its folder's name.
+function addFiles(list){
+  Promise.all(list.map(function(f){return f.file.text().then(function(txt){return {path:f.path,txt:txt}},function(e){return {path:f.path,err:String(e&&e.message||e)}})})).then(function(rs){
+    var bad=[],ns=0,nt=0;
+    rs.forEach(function(r){
+      if(r.err){bad.push(S[L].badFile(r.path,r.err));return}
+      var dir=r.path.split('/').slice(-2,-1)[0];
+      try{var it=itemsOf(r.txt,/skill\.md$/i.test(r.path)?dir:'',true);if(it.items.length){FILES.push({label:r.path,items:it.items});it.items.forEach(function(x){x.source==='skill'?ns++:nt++})}else bad.push(S[L].badFile(r.path,t('noFm')))}
+      catch(e){bad.push(S[L].badFile(r.path,e.message))}
+    });
+    // untouched demo data would be mixed into the user's files, so it goes; anything the user typed or pasted stays
+    var cleared=$('#inp').value===JSON.stringify(DEMO,null,1);
+    if(cleared)$('#inp').value='';
+    renderFiles();
+    var sk=SKIPPED,sd=SCAN.dirs,cap=SCAN.capped;SKIPPED=0;SCAN.dirs=0;SCAN.capped=false;
+    status(S[L].added(ns,nt)+(cleared?' '+t('demoCleared'):'')+(sk?' '+S[L].skipped(sk):'')+(sd?' '+S[L].skipDirs(sd):'')+(cap?' '+t('scanCap'):''));
+    $('#msg').textContent=bad.join(t('isep'));
+  });
+}
+var wantTop=function(p){return /\.(md|json)$/i.test(p)},wantDeep=function(p){
+  if(!/(^|\/)skill\.md$/i.test(p))return false; // inside folders only SKILL.md counts
+  // Someone may pick the whole .claude folder. Plugin marketplaces are catalog clones (not what is installed) and
+  // node_modules / .git hold copies of other projects, so those SKILL.md files are left out and counted for a note.
+  if(/(^|\/)(plugins\/marketplaces|node_modules|\.git)\//i.test(p)){SKIPPED++;return false}
+  return true;
+},SKIPPED=0;
+$('#pickF').onclick=function(){$('#fileF').click()};
+// Folder picking and folder drops need webkitdirectory and a desktop pointer; phones usually have neither.
+// There the folder button, the drop hint and the skills-location popover go, and a note points to the demo or pasting.
+var folderOK='webkitdirectory' in document.createElement('input')&&!(window.matchMedia&&matchMedia('(pointer: coarse)').matches&&!matchMedia('(any-pointer: fine)').matches);
+if(!folderOK){
+  ['#pickD','.where','.drop-h','#pickDNote'].forEach(function(s){$(s).hidden=true});
+  $('#drop').classList.add('nodrop');$('#mobileNote').hidden=false;
+}
+// "Where are my skills?" popover: opens below its button, closes on Esc, Close, or a click outside; focus goes back to the button
+// It also opens by itself when the mouse rests on the button or the button gets keyboard focus (no click needed);
+// a click pins it open so the copy buttons stay reachable. quiet = opened or closed by hovering, focus stays where it is.
+var wherePinned=false,whereTimer=null,whereSkip=false;
+function wherePop(open,quiet){
+  clearTimeout(whereTimer);
+  $('#wherePop').hidden=!open;$('#whereBtn').setAttribute('aria-expanded',open?'true':'false');
+  if(!open)wherePinned=false;
+  if(quiet)return;
+  if(open)$('#wherePop .cp').focus();else{whereSkip=true;$('#whereBtn').focus();whereSkip=false} // whereSkip: this focus must not reopen it
+}
+var whereEl=$('.where');
+if(window.matchMedia&&matchMedia('(hover: hover)').matches){
+  whereEl.addEventListener('mouseenter',function(){clearTimeout(whereTimer);if($('#wherePop').hidden)wherePop(true,true)});
+  whereEl.addEventListener('mouseleave',function(){if(wherePinned)return;whereTimer=setTimeout(function(){if(!wherePinned)wherePop(false,true)},200)}); // a short delay lets the pointer cross the gap to the popup
+}
+whereEl.addEventListener('focusin',function(e){if(!whereSkip&&e.target.id==='whereBtn'&&$('#wherePop').hidden)wherePop(true,true)});
+whereEl.addEventListener('focusout',function(e){if(wherePinned||whereEl.contains(e.relatedTarget))return;whereTimer=setTimeout(function(){if(!wherePinned)wherePop(false,true)},200)});
+$('#whereBtn').onclick=function(){
+  clearTimeout(whereTimer);
+  if($('#wherePop').hidden){wherePop(true);wherePinned=true}
+  else if(!wherePinned)wherePinned=true; // it opened on hover: the click keeps it open
+  else wherePop(false);
+};
+$('#whereClose').onclick=function(){wherePop(false)};
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('#wherePop').hidden){e.preventDefault();wherePop(false)}});
+document.addEventListener('click',function(e){if(!$('#wherePop').hidden&&!e.target.closest('.where'))wherePop(false,true)});
+// Heatmap full screen: the same .hm node moves into a fixed overlay (its tooltips keep working) and back on close.
+// Esc or the Back button closes it; focus returns to the button that opened it.
+var hmState=null;
+function hmClose(){
+  if(!hmState)return;
+  var s=hmState;hmState=null;
+  s.home.insertBefore(s.hm,s.next);
+  s.ov.remove();document.body.style.overflow=s.overflow;$('#tip').style.display='none';
+  s.inert.forEach(function(el){el.inert=false});
+  window.removeEventListener('resize',s.onResize);
+  if(s.btn&&document.contains(s.btn))s.btn.focus();
+}
+function hmFull(btn,N){
+  if(hmState)return;
+  var hm=btn.closest('.hmcard').querySelector('.hm'),grid=hm.firstChild;
+  var ov=document.createElement('div');
+  ov.className='hm-full';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');ov.setAttribute('aria-label',t('hm'));
+  ov.innerHTML='<div class="hm-bar"><h2>'+esc(t('hm'))+'</h2><span class="note">'+esc(t('hmEsc'))+'</span><button type="button" class="btn p s hm-back">'+esc(t('hmBack'))+'</button></div><div class="hm-body"></div>';
+  var inert=[].filter.call(document.body.children,function(el){return !/^(SCRIPT|STYLE|META|NOSCRIPT)$/.test(el.tagName)&&el.id!=='tip'});
+  hmState={ov:ov,hm:hm,home:hm.parentNode,next:hm.nextSibling,btn:btn,overflow:document.body.style.overflow,inert:inert};
+  ov.querySelector('.hm-body').appendChild(hm);
+  // cell size: as large as fits the width (label column 170px, 2px gaps), kept between 18 and 40px; a tall grid scrolls up and down
+  function size(){grid.style.setProperty('--cs',Math.max(18,Math.min(40,Math.floor((window.innerWidth-32-170-2*N)/N),Math.floor((window.innerHeight-130)/N)-2))+'px')}
+  hmState.onResize=size;size();window.addEventListener('resize',size);
+  inert.forEach(function(el){el.inert=true});
+  document.body.appendChild(ov);document.body.style.overflow='hidden';
+  ov.querySelector('.hm-back').onclick=hmClose;
+  ov.querySelector('.hm-back').focus();
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&hmState){e.preventDefault();hmClose()}});
+document.querySelectorAll('#wherePop .cp').forEach(function(b){b.onclick=function(){
+  copyText(document.getElementById(b.getAttribute('data-path')).textContent).then(function(){b.textContent=t('copied')},function(){b.textContent=t('copyFail')});
+  setTimeout(function(){b.textContent=t('copyPath')},2000);
+}});
+$('#pickD').onclick=function(){$('#fileD').click()};
+$('#fileF').onchange=function(){addFiles([].filter.call(this.files,function(f){return wantTop(f.name)}).map(function(f){return {path:f.name,file:f}}));this.value=''};
+$('#fileD').onchange=function(){addFiles([].filter.call(this.files,function(f){return wantDeep(f.webkitRelativePath||f.name)}).map(function(f){return {path:f.webkitRelativePath||f.name,file:f}}));this.value=''};
+// Dropping a big folder (a whole home folder, say) must not freeze the page: well-known heavy or irrelevant folders are not entered,
+// the walk is at most 8 levels deep and stops after 20,000 entries; the status line says when either happened.
+var PRUNE=/^(node_modules|\.git|appdata|\$recycle\.bin|windows|program files|program files \(x86\)|programdata|library|\.cache|\.npm|\.venv|venv|__pycache__|\.gradle|\.m2|\.cargo|\.rustup)$/i,
+    SCAN={dirs:0,capped:false,n:0},SCAN_MAX=20000,DEPTH_MAX=8;
+function walk(entry,path,deep,acc,depth){
+  depth=depth||0;
+  if(SCAN.capped)return Promise.resolve();
+  if(++SCAN.n>SCAN_MAX){SCAN.capped=true;return Promise.resolve()}
+  if(entry.isFile)return new Promise(function(res){
+    if(!(deep?wantDeep:wantTop)(path))return res(); // only SKILL.md (or a top-level .md/.json) is opened
+    entry.file(function(f){acc.push({path:path,file:f});res()},function(){res()});
+  });
+  if(!entry.isDirectory)return Promise.resolve();
+  if(deep&&(PRUNE.test(entry.name)||/(^|\/)plugins\/marketplaces$/i.test(path))){SCAN.dirs++;return Promise.resolve()}
+  if(depth>=DEPTH_MAX){SCAN.capped=true;return Promise.resolve()}
+  var rd=entry.createReader();
+  return new Promise(function(res){
+    var all=[];(function more(){rd.readEntries(function(es){if(!es.length)return res(Promise.all(all.map(function(e){return walk(e,path+'/'+e.name,true,acc,depth+1)})));all=all.concat([].slice.call(es));if(SCAN.capped)return res();more()},function(){res()})})();
+  });
+}
+var drop=$('#drop');
+drop.addEventListener('dragover',function(e){if(e.dataTransfer&&[].indexOf.call(e.dataTransfer.types,'Files')>=0){e.preventDefault();drop.classList.add('over')}});
+drop.addEventListener('dragleave',function(e){if(!drop.contains(e.relatedTarget))drop.classList.remove('over')});
+drop.addEventListener('drop',function(e){
+  if(!e.dataTransfer||[].indexOf.call(e.dataTransfer.types,'Files')<0)return;
+  e.preventDefault();drop.classList.remove('over');
+  var acc=[],its=[].slice.call(e.dataTransfer.items||[]).map(function(x){return x.webkitGetAsEntry&&x.webkitGetAsEntry()}).filter(Boolean);
+  if(!its.length){addFiles([].filter.call(e.dataTransfer.files,function(f){return wantTop(f.name)}).map(function(f){return {path:f.name,file:f}}));return}
+  SCAN.dirs=0;SCAN.capped=false;SCAN.n=0;status(t('scanning'));
+  setTimeout(function(){Promise.all(its.map(function(en){return walk(en,en.name,false,acc,0)})).then(function(){addFiles(acc)})},20); // a frame for the status to paint first
+});
+// Copies: the same source, name, description and input schema loaded more than once (a skill installed in two places, a file picked
+// twice) become one item that remembers every place it came from. Same name with different content is not a copy: that keeps the
+// duplicate-name warning.
+function dedupe(items){
+  var seen={},out=[];
+  items.forEach(function(x){
+    var k=[x.source,x.name,x.description,JSON.stringify(x.schema||null)].join('\u0000');
+    if(seen[k]){seen[k].from.push(x.from);return}
+    out.push(seen[k]=Object.assign({},x,{from:[x.from]}));
+  });
+  return {items:out,copies:out.filter(function(x){return x.from.length>1})};
+}
+function run(){
+  var msg=$('#msg'),r;msg.textContent='';
+  // the paste box stays folded for the untouched demo and opens once it holds the user's own text
+  var v=$('#inp').value;if(v.trim()&&v!==JSON.stringify(DEMO,null,1))$('#paste').open=true;
+  try{r=itemsOf($('#inp').value)}catch(e){msg.textContent=e.message;return}
+  var items=r.items.map(function(x){return Object.assign(x,{from:t('fromBox')})});
+  FILES.forEach(function(f){items=items.concat(f.items.map(function(x){return Object.assign({},x,{from:f.label})}))});
+  var d=dedupe(items);items=d.items;
+  if(items.length<2){msg.textContent=t(r.unnamed?'needName':'need2');return}
+  if(items.length>MAX){msg.textContent=S[L].cap(MAX);items=items.slice(0,MAX)}
+  show(items,d.copies.filter(function(x){return items.indexOf(x)>=0}));
+  var box=items.filter(function(x){return x.from[0]===t('fromBox')}).length;
+  return {n:items.length,box:box,files:items.length-box};
+}
+// the conclusion numbers count up briefly on arrival; with reduced motion they simply show (the final value is in the DOM from the start)
+function countUp(){
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var els=[].slice.call(document.querySelectorAll('#out .num .v')),t0=null,done=false;
+  function put(e){els.forEach(function(el){el.textContent=el.getAttribute('data-pre')+Math.round(+el.getAttribute('data-v')*e).toLocaleString()})}
+  function step(ts){
+    if(done)return;
+    if(t0===null)t0=ts;
+    var k=Math.min(1,(ts-t0)/700);
+    put(1-Math.pow(1-k,3));
+    if(k<1)requestAnimationFrame(step);else done=true;
+  }
+  requestAnimationFrame(step);
+  // frames can stall (background tab, headless): after 800 ms the final values land and no late frame may overwrite them
+  setTimeout(function(){done=true;put(1)},800);
+}
+// Hero illustration: two skill cards whose shared words are highlighted, a similarity badge between them, and a green
+// "explain each other" badge. Static SVG drawn from the theme tokens, rebuilt on a language change for its two labels.
+function art(){
+  function card(x,name,lines){
+    var s='<rect x="'+x+'" y="14" width="116" height="112" rx="12" fill="var(--page)" stroke="var(--rule)" stroke-width="1.5"/>'+
+      '<text x="'+(x+12)+'" y="38" font-family="var(--f-mono)" font-size="13" font-weight="700" fill="var(--ink)">'+name+'</text>';
+    lines.forEach(function(l,k){
+      var y=60+k*17;
+      if(l.hl)s+='<rect x="'+(x+9)+'" y="'+(y-12)+'" width="'+(l.text.length*7.4+8)+'" height="16" rx="4" fill="var(--hl)"/>';
+      s+='<text x="'+(x+13)+'" y="'+y+'" font-family="var(--f-mono)" font-size="12" fill="'+(l.hl?'var(--ink)':'var(--muted)')+'">'+l.text+'</text>';
+    });
+    return s;
+  }
+  // 380-wide canvas: cards at 8-124 and 256-372 leave a 132-wide gap, enough for the badge in either language
+  var sim=t('artSim'),both=t('artBoth'),sw=Math.min(124,Math.max(92,sim.length*(L==='zh'?12:7)+22)),bw=Math.max(110,both.length*(L==='zh'?13:7)+44);
+  $('#art').innerHTML='<svg class="art" viewBox="0 0 380 176" xmlns="http://www.w3.org/2000/svg">'+
+    card(8,'pdf-forms',[{text:'Fill'},{text:'PDF forms',hl:1},{text:'and merge'},{text:'pages',hl:1}])+
+    card(256,'pdf-editor',[{text:'Edit'},{text:'PDF forms',hl:1},{text:'and split'},{text:'pages',hl:1}])+
+    '<path d="M124 70H256" stroke="var(--teal)" stroke-width="2" stroke-dasharray="4 4"/>'+
+    '<rect x="'+(190-sw/2)+'" y="56" width="'+sw+'" height="28" rx="14" fill="var(--teal)"/>'+
+    '<text x="190" y="75" text-anchor="middle" font-family="var(--f-body)" font-size="13" font-weight="700" fill="var(--on-teal)">'+esc(sim)+'</text>'+
+    '<rect x="'+(190-bw/2)+'" y="140" width="'+bw+'" height="28" rx="14" fill="var(--ok-bg)" stroke="var(--ok)" stroke-width="1.5"/>'+
+    '<path d="M'+(190-bw/2+14)+' 154l4 4 8-8" fill="none" stroke="var(--ok)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>'+
+    '<text x="'+(190-bw/2+32)+'" y="159" font-family="var(--f-body)" font-size="13" font-weight="700" fill="var(--ok)">'+esc(both)+'</text></svg>';
+}
+function lang(){
+  document.documentElement.lang=L==='zh'?'zh-Hant':'en';
+  document.querySelectorAll('[data-t]').forEach(function(e){e.textContent=t(e.getAttribute('data-t'))});
+  art();
+  $('#repoLink').textContent=t('repoLink')+' → '+REPO_URL;
+  $('#inp').setAttribute('aria-label',t('label'));
+  document.querySelectorAll('#lang button').forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-l')===L?'true':'false')});
+}
+document.querySelectorAll('#lang button').forEach(function(b){b.onclick=function(){L=b.getAttribute('data-l');try{localStorage.setItem('olab-lang',L)}catch(e){}lang();run()}});
+// Analyze: "Analyzing…" on the pressed button while it works, then "Analyzed N items" and a scroll to the results
+function analyzeFrom(b){
+  var label=b.textContent;b.disabled=true;b.textContent=t('running');status('');
+  setTimeout(function(){
+    var n=run();b.disabled=false;b.textContent=label;
+    if(!n)return;
+    status(S[L].analyzed(n.n,n.box,n.files));
+    var calm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+    $('#out').scrollIntoView({behavior:calm?'auto':'smooth',block:'start'});
+  },30); // a frame for the button text to paint before the work blocks
+}
+$('#run').onclick=function(){analyzeFrom($('#run'))};
+// "Try the demo": load the demo, analyze, scroll to the results
+$('#tryDemo').onclick=function(){$('#inp').value=JSON.stringify(DEMO,null,1);mixNote();saveState();analyzeFrom($('#tryDemo'))};
+$('#demo').onclick=function(){$('#inp').value=JSON.stringify(DEMO,null,1);mixNote();saveState();run()};
+var saveT=null;
+$('#inp').addEventListener('input',function(){mixNote();clearTimeout(saveT);saveT=setTimeout(saveState,400)});
+$('#repoLink').href=REPO_URL;
+try{if(location.search&&history.replaceState)history.replaceState(null,'',location.pathname+location.hash)}catch(e){} // drop ?utm_… / fbclid so the address bar stays short
+lang();
+if(loadState()){renderFiles();run();status(t('restored'))}else{$('#inp').value=JSON.stringify(DEMO,null,1);run()}
+})();
+</script>
+</body>
+</html>

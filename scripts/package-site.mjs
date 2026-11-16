@@ -11,6 +11,9 @@ function safePath(path) {
   const license = /^(OFL[^/]*|LICENSE[^/]*)\.md$/i.test(parts.at(-1));
   if (!extensions.has(extname(path).toLowerCase()) && !license && !['_headers','_redirects'].includes(path)) throw new Error('Not a public asset: ' + path);
 }
+export function isPublicPath(path) {
+  try { safePath(path); return true; } catch { return false; }
+}
 function within(root, candidate) {
   const rel = relative(root,candidate);
   return rel === '' || (!isAbsolute(rel) && rel !== '..' && !rel.startsWith('..' + sep));

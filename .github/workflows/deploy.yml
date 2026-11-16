@@ -1,0 +1,42 @@
+# 合併到 main 就自動部署 onholdlab.com（Cloudflare Pages 專案 onholdlab）。不經過任何 AI。
+# 流程：測試 → scripts/build-dist.mjs 只打包 git 追蹤且公開的檔案（點開頭、tests、scripts 一律排除，
+# 必要頁面少一個就停止）→ wrangler 上傳 dist/。
+# 需要的 GitHub Secrets：CLOUDFLARE_API_TOKEN（只給 Cloudflare Pages 編輯權限）、CLOUDFLARE_ACCOUNT_ID。
+# 還沒設定 secrets 時只會建置、不會部署。
+name: deploy
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: deploy-onholdlab-com-${{ github.event_name == 'pull_request' && github.ref || 'production' }}
+  cancel-in-progress: false
+jobs:
+  deploy:
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 測試（邏輯與靜態規則）
+        run: node --test && node i18n/check.mjs
+      - name: 打包公開檔案到 runner 的暫存目錄
+        run: node scripts/build-dist.mjs "$RUNNER_TEMP/dist"
+      - name: 部署到 Cloudflare Pages
+        if: github.ref == 'refs/heads/main'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [[ -z "$CLOUDFLARE_API_TOKEN" || -z "$CLOUDFLARE_ACCOUNT_ID" ]]; then
+            echo "::warning::CLOUDFLARE_API_TOKEN 或 CLOUDFLARE_ACCOUNT_ID 還沒設定，只建置、沒有部署。"
+            exit 0
+          fi
+          npx --yes wrangler@3 pages deploy "$RUNNER_TEMP/dist" --project-name onholdlab --branch main --commit-hash "$GITHUB_SHA" --commit-message "deploy ${GITHUB_SHA::7}"

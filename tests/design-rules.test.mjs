@@ -4,13 +4,19 @@ import { readFileSync } from 'node:fs';
 
 // 設計規則（AGENTS.md）：不要有框、不要有底線；區分用文字顏色或粗細，鍵盤焦點用變色。
 // 首頁場景裡「畫出來的東西」（叫號窗口、被貓打的假廣告、舞台與地板、特效）是插畫，不算介面框，暫不套用。
-const PAGES = ['index.html', 'devlog/index.html', 'privacy/index.html', 'weekly/index.html',
-  'weekly/2026-11-10/index.html', 'weekly/2026-11-03/index.html'];
+const PAGES = ['index.html', 'devlog/index.html', 'privacy/index.html', '404.html', 'weekly/index.html',
+  'weekly/2026-11-10/index.html', 'weekly/2026-11-03/index.html', 'weekly/en/index.html',
+  'weekly/en/2026-11-10/index.html', 'weekly/en/2026-11-03/index.html',
+  'weekly/en/2026-11-10/medium/index.html', 'weekly/en/2026-11-03/medium/index.html'];
 const SCENE_ART = /^(\[data-d="a"\]\s*)?\.(win|ad|stage|deco|ringfx|spark|ghost|shutter|sh-l)\b|\.lang::after/;
 
 const rules = file => {
   const html = readFileSync(new URL(`../${file}`, import.meta.url), 'utf8');
-  const css = [...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m => m[1]).join('\n').replace(/\/\*[\s\S]*?\*\//g, '');
+  // 頁內 <style> 加上連到站內的 .css 檔（例如週報的 /weekly/news.css）一起檢查。
+  const linked = [...html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+\.css)(\?[^"]*)?"/g)]
+    .map(m => m[1]).filter(h => !/^https?:/.test(h))
+    .map(h => readFileSync(new URL(h.startsWith('/') ? `..${h}` : `../${file.replace(/[^/]*$/, '')}${h}`, import.meta.url), 'utf8'));
+  const css = [...[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m => m[1]), ...linked].join('\n').replace(/\/\*[\s\S]*?\*\//g, '');
   return [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(m => ({ sel: m[1].trim(), body: m[2].replace(/\s+/g, '') }));
 };
 
