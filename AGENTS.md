@@ -21,6 +21,12 @@
 - `test-guard` 要等它合併進 `main` 之後，才會檢查之後送往 `main` 的 PR。有紅叉就不要合併；要讓紅叉真的擋住合併，需在 GitHub 另設分支保護。
 - 本機第一次跑：在專案資料夾執行 `npm i --no-save @playwright/test@1.56.1`，之後 `node --test && node i18n/check.mjs && npx playwright test`。需要電腦上有 Google Chrome。
 
+## 部署（onholdlab.com）
+
+- 合併到 `main` 就由 `.github/workflows/deploy.yml` 自動部署到 Cloudflare Pages（專案 `onholdlab`）。不要再從本機資料夾手動 `wrangler pages deploy`，本機資料夾會夾帶 `.wrangler` 等私人檔案。
+- 只上線 git 追蹤、且通過 `scripts/package-site.mjs` 公開規則的檔案（`scripts/build-dist.mjs`）。`REQUIRED` 列的頁面少一個就不部署；新增網站區塊時要加進去。
+- 遊戲資料夾（`midterm-sim/`、`crossroad/` 等）是 2026-11-16 線上版本的快照，來源仍是各遊戲自己的 repo。哪款遊戲要改，在它的 repo 改完後，順便開 PR 把要上線的檔案同步到這裡的同名資料夾。
+
 ## 設計規則（onholdlab 本人定的）
 
 - 不要有框：不用底色色塊、螢光筆底色、邊線、陰影、圓角面板，鍵盤焦點也不用外框。
