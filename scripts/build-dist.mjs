@@ -13,7 +13,11 @@ export const REQUIRED = [
   'devlog/index.html', 'privacy/index.html',
   'weekly/index.html', 'weekly/news.css', 'weekly/editorial.css', 'weekly/news.js', 'weekly/feed.xml',
   'weekly/en/index.html', 'weekly/en/feed.xml',
+  'weekly/2026-11-03/index.html', 'weekly/2026-11-10/index.html',
+  'weekly/en/2026-11-03/index.html', 'weekly/en/2026-11-10/index.html',
+  'weekly/en/2026-11-03/medium/index.html', 'weekly/en/2026-11-10/medium/index.html',
   'midterm-sim/index.html', 'wish-lamp/index.html', 'crossroad/index.html', 'relay-ai-guess/index.html',
+  'crossroad/survive/index.html', 'crossroad/bump/index.html',
   'clapping-cat/index.html', 'dodge-dog/index.html', 'tool-twins/index.html',
 ];
 // 公開規則以外，另外不上線的 repo 設定檔。

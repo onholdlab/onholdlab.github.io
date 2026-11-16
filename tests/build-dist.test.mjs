@@ -3,11 +3,12 @@ import assert from 'node:assert/strict';
 import { mkdtemp, readdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { buildDist, REQUIRED } from '../scripts/build-dist.mjs';
 
 // 規格：自動部署只上傳 git 追蹤、且通過 package-site 公開規則的檔案；
 // 線上一定要有的頁面（首頁、週報中英文、開發日誌、各遊戲…）少一個就停止，不部署。
-const repo = new URL('..', import.meta.url).pathname;
+const repo = fileURLToPath(new URL('..', import.meta.url));
 async function walk(dir, root = dir) {
   const out = [];
   for (const e of await readdir(dir, { withFileTypes: true })) {
