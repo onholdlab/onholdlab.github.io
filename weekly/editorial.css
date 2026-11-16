@@ -67,9 +67,9 @@ footer p{margin:0 0 8px}
 .spec dt{font:700 11px/1.4 "Inter",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .spec dd{margin:0;font-size:15px;font-weight:400;line-height:1.5;color:var(--ink);min-width:0}
 .spec dd.yes{color:var(--accent);font-weight:600}
-.spec dd.yes::before,.spec dd.no::before{ content:"";display:inline-block;width:.5em;height:.5em;border-radius:50%;margin-right:.45em;vertical-align:.08em;background:var(--accent) }
+.spec dd.yes::before,.spec dd.no::before{ content:"●";display:inline-block;margin-right:.45em;font-size:.7em;vertical-align:.12em;color:var(--accent) }
 .spec dd.no,.spec dd.tbd{color:var(--muted)}
-.spec dd.no::before{background:var(--tag)}
+.spec dd.no::before{color:var(--tag)}
 .spec-note{font-size:13px!important;line-height:1.6;color:var(--muted);margin-top:12px}
 
 /* 首頁鉤子清單（2026-11-11）：每款一句「你會做什麼」，遊戲名與科學退成小字；無邊框 */
