@@ -16,6 +16,8 @@ export const REQUIRED = [
   'weekly/2026-11-03/index.html', 'weekly/2026-11-10/index.html',
   'weekly/en/2026-11-03/index.html', 'weekly/en/2026-11-10/index.html',
   'weekly/en/2026-11-03/medium/index.html', 'weekly/en/2026-11-10/medium/index.html',
+  'weekly/2026-11-17/index.html', 'weekly/en/2026-11-17/index.html', 'weekly/en/2026-11-17/medium/index.html',
+  ...['cover', 'fig-01', 'fig-02', 'fig-03', 'fig-04'].map(name => `weekly/en/2026-11-17/medium/${name}.png`),
   'midterm-sim/index.html', 'wish-lamp/index.html', 'crossroad/index.html', 'relay-ai-guess/index.html',
   'crossroad/survive/index.html', 'crossroad/bump/index.html',
   'clapping-cat/index.html', 'dodge-dog/index.html', 'tool-twins/index.html',
