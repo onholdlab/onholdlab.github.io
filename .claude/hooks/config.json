@@ -27,7 +27,8 @@
       "privacy/index.html",
       "weekly/index.html",
       "weekly/2026-11-10/index.html",
-      "weekly/2026-11-03/index.html"
+      "weekly/2026-11-03/index.html",
+      "weekly/2026-11-17/index.html"
     ],
     "mountedRoutes": ["/relay-ai-guess/"],
     "inappLock": "none",
