@@ -1,0 +1,30 @@
+name: 通知上鎖網站重建
+
+# 公開版（onholdlab.com）一更新，就叫 dev.onholdlab.com 重建，
+# 讓「公開版現況」頁抓到最新進度。
+# 需要在本 repo 的 Settings → Secrets and variables → Actions 加一個 secret：
+#   DEV_DEPLOY_HOOK = Cloudflare Pages 專案 onholdlab-dev 的 deploy hook 網址
+# 沒設 secret 時這個 job 會直接略過，不會失敗。
+
+on:
+  push:
+    branches: [main]
+  # 其他公開 repo（各個遊戲）更新時不會觸發上面那條，所以每 6 小時再補抓一次
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 呼叫 Cloudflare deploy hook
+        env:
+          HOOK: ${{ secrets.DEV_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "DEV_DEPLOY_HOOK 還沒設，略過。"
+            exit 0
+          fi
+          curl -fsS -X POST "$HOOK" > /dev/null
+          echo "已通知 onholdlab-dev 重建。"
