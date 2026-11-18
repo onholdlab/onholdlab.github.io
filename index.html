@@ -585,24 +585,42 @@ function impact(a){a.dead=true;const r=a.el.getBoundingClientRect(),s=stage.getB
   stage.animate([{transform:'translate(0,0)'},{transform:'translate(0,5px)'},{transform:'translate(0,-2px)'},{transform:'none'}],{duration:340})}
  a.el.classList.add('hit');a.el.classList.remove('tgt');
  count++;$('cnt').textContent=count;
- setTimeout(()=>toLines(a,r),RM?0:380)}
-/* 廣告只剩線條,從展示框頂端掉下來落定(全程在框內,框外會被裁掉) */
-function toLines(a,r){
+ setTimeout(()=>toLines(a),RM?0:380)}
+/* 廣告只剩線條：從被打掉的廣告位置沿拋物線飛到右下展示區，落在預設位置（展示區沒有框，所以整段軌跡都要看得到） */
+function toLines(a){
  const w=40+Math.random()*50,hh=w*.54,px=10+Math.random()*(280-w),py=10+Math.random()*(180-hh),rot=(Math.random()-.5)*40;
  const rec={x:+px.toFixed(1),y:+py.toFixed(1),w:+w.toFixed(1),h:+hh.toFixed(1),r:+rot.toFixed(1),t:a.txt.length};
- a.el.style.opacity=0;a.el.remove();ads=ads.filter(z=>z!==a);addArt(rec,true);const L=store.get('ohl_art',[]);L.push(rec);store.set('ohl_art',L.slice(-80))}
-function addArt(o,fresh){const art=$('art'),NS='http://www.w3.org/2000/svg',g=document.createElementNS(NS,'g');
+ const from=a.el.getBoundingClientRect();
+ a.el.style.opacity=0;a.el.remove();ads=ads.filter(z=>z!==a);
+ const L=store.get('ohl_art',[]);L.push(rec);store.set('ohl_art',L.slice(-80));
+ if(RM||!flyArt(rec,from))addArt(rec,true)}
+function artGroup(o){const NS='http://www.w3.org/2000/svg',g=document.createElementNS(NS,'g');
  g.setAttribute('transform',`rotate(${o.r} ${o.x+o.w/2} ${o.y+o.h/2})`);g.setAttribute('fill','none');g.setAttribute('stroke','var(--art)');g.setAttribute('stroke-width','1.4');
  const ln=(x1,y1,x2,y2)=>{const l=document.createElementNS(NS,'line');l.setAttribute('x1',x1);l.setAttribute('y1',y1);l.setAttribute('x2',x2);l.setAttribute('y2',y2);g.appendChild(l)};
  const{x,y,w,h}=o,bar=h*.19;ln(x,y,x+w,y);ln(x+w,y,x+w,y+h);ln(x+w,y+h,x,y+h);ln(x,y+h,x,y);ln(x,y+bar,x+w,y+bar);
  const lines=1+(o.t>8?1:0);for(let i=0;i<lines;i++)ln(x+w*.12,y+bar+h*(.3+i*.25),x+w*(.5+((o.t*7+i*13)%40)/100),y+bar+h*(.3+i*.25));
- let node=g;
- if(fresh&&!RM){node=document.createElementNS(NS,'g');node.appendChild(g);node.style.transformBox='fill-box';node.style.transformOrigin='center';
-  const d=o.y+o.h*1.6+16,sw=(Math.random()-.5)*50;
-  node.animate([{transform:`translateY(${-d}px) rotate(${sw}deg)`,easing:'cubic-bezier(.5,0,1,.6)'},
-   {transform:'translateY(0) rotate(0deg)',offset:.62,easing:'ease-out'},
-   {transform:`translateY(-7px) rotate(${-sw*.15}deg)`,offset:.8,easing:'ease-in'},
-   {transform:'translateY(0) rotate(0deg)'}],{duration:760})}
+ return g}
+function flyArt(o,from){const art=$('art'),to=art.getBoundingClientRect();
+ if(!to.width||!from.width)return false;
+ const NS='http://www.w3.org/2000/svg',k=to.width/300,sx=scrollX,sy=scrollY;
+ const fly=document.createElementNS(NS,'svg');fly.setAttribute('viewBox','0 0 300 200');fly.setAttribute('aria-hidden','true');
+ Object.assign(fly.style,{position:'absolute',left:(to.left+sx)+'px',top:(to.top+sy)+'px',width:to.width+'px',height:to.height+'px',overflow:'visible',pointerEvents:'none',zIndex:50});
+ fly.appendChild(artGroup(o));document.body.appendChild(fly);
+ // 終點中心（頁面座標）與起點中心的位移；縮放從廣告大小縮到線稿大小
+ const ex=to.left+(o.x+o.w/2)*k,ey=to.top+(o.y+o.h/2)*k,dx=from.left+from.width/2-ex,dy=from.top+from.height/2-ey;
+ const s0=from.width/(o.w*k),sw=(Math.random()-.5)*60,dist=Math.hypot(dx,dy),hop=Math.min(140,60+dist*.12);
+ fly.style.transformOrigin=`${(o.x+o.w/2)*k}px ${(o.y+o.h/2)*k}px`;
+ const N=14,fr=[];
+ for(let i=0;i<=N;i++){const t=i/N,e=1-t,
+  x=dx*e,y=dy*e-hop*4*t*e,sc=1+(s0-1)*Math.pow(e,1.6),r=(-o.r)*e+sw*Math.sin(Math.PI*t);
+  fr.push({transform:`translate(${x}px,${y}px) rotate(${r}deg) scale(${sc})`,offset:t*.82})}
+ fr.push({transform:'translate(0,-8px) rotate(0deg) scale(1)',offset:.91},{transform:'translate(0,0) rotate(0deg) scale(1)',offset:1});
+ const an=fly.animate(fr,{duration:Math.min(1500,700+dist*.6),easing:'linear'});
+ an.onfinish=an.oncancel=()=>{fly.remove();addArt(o,false)};
+ return true}
+function addArt(o,fresh){const art=$('art');let node=artGroup(o);
+ if(fresh&&!RM){const g=node;node=document.createElementNS('http://www.w3.org/2000/svg','g');node.appendChild(g);node.style.transformBox='fill-box';node.style.transformOrigin='center';
+  node.animate([{transform:'translateY(-10px)',opacity:0},{transform:'translateY(0)',opacity:1}],{duration:300,easing:'ease-out'})}
  art.appendChild(node);$('artn').textContent=art.childNodes.length;$('empty').hidden=true}
 store.get('ohl_art',[]).forEach(o=>addArt(o,false));
 applyLangHooks.push(()=>{ads.forEach(a=>{if(a.dead)return;a.txt=t('ads')[a.ai];a.el.querySelector('b').textContent=a.txt;a.el.setAttribute('aria-label',t('adAria')+a.txt)});layoutAds()});
